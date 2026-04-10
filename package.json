@@ -1,0 +1,13 @@
+{
+  "name": "urban-landscape-supplies",
+  "version": "1.0.0",
+  "description": "Urban Landscape Supplies — e-commerce site",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "nodemailer": "^8.0.5",
+    "square": "^39.0.0"
+  }
+}
