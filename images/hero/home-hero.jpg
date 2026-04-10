@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#676d4b"/>
+  <!-- Grid texture -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#b59677" stroke-width="0.4" stroke-opacity="0.3"/>
+  </pattern>
+  <rect width="800" height="600" fill="url(#grid)"/>
+  <!-- Center icon area -->
+  <rect x="300" y="210" width="200" height="180" rx="12" fill="#b59677" fill-opacity="0.15"/>
+  <!-- Camera icon -->
+  <g transform="translate(400,300)" fill="#b59677" fill-opacity="0.5">
+    <circle cx="0" cy="0" r="32" fill="none" stroke="#b59677" stroke-width="3" stroke-opacity="0.5"/>
+    <circle cx="0" cy="0" r="16" fill="#b59677" fill-opacity="0.4"/>
+    <rect x="-40" y="-26" width="80" height="52" rx="8" fill="none" stroke="#b59677" stroke-width="2.5" stroke-opacity="0.5"/>
+    <rect x="-14" y="-36" width="28" height="14" rx="4" fill="#b59677" fill-opacity="0.4"/>
+  </g>
+  <!-- Product name label -->
+  <text x="400" y="430" font-family="Georgia, serif" font-size="22" font-weight="bold"
+        fill="#ffffff" text-anchor="middle" opacity="0.85">Home Hero</text>
+  <text x="400" y="460" font-family="Arial, sans-serif" font-size="13"
+        fill="#ffffff" text-anchor="middle" opacity="0.45">Image coming soon</text>
+</svg>

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bulk Quote | Urban Landscape Supplies Sydney</title>
+  <meta name="description" content="Request a bulk quote for sand, soil, mulch and gravel delivery across Sydney. Our team confirms pricing within 2 hours." />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <style>
+    body { background: var(--color-bg-bulk); }
+
+    .quote-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: var(--sp-10);
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .quote-layout { grid-template-columns: 1fr; }
+    }
+
+    .quote-section {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-lg);
+      padding: var(--sp-6);
+      margin-bottom: var(--sp-5);
+    }
+
+    .quote-section__heading {
+      font-family: var(--font-heading);
+      font-size: var(--text-xl);
+      color: var(--color-white);
+      margin-bottom: var(--sp-5);
+      padding-bottom: var(--sp-4);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .quote-section .form-label { color: rgba(255,255,255,0.75); }
+
+    .quote-section .form-input,
+    .quote-section .form-select,
+    .quote-section .form-textarea {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.15);
+      color: var(--color-white);
+    }
+
+    .quote-section .form-input::placeholder,
+    .quote-section .form-textarea::placeholder { color: rgba(255,255,255,0.30); }
+
+    .quote-section .form-input:focus,
+    .quote-section .form-select:focus,
+    .quote-section .form-textarea:focus {
+      border-color: var(--color-taupe);
+      box-shadow: 0 0 0 3px rgba(181,150,119,0.15);
+    }
+
+    .quote-section .form-hint { color: rgba(255,255,255,0.40); }
+    .quote-section select option { background: var(--color-bg-bulk); color: var(--color-white); }
+
+    .quote-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-4);
+    }
+
+    .quote-form-grid .form-group.full { grid-column: 1 / -1; }
+
+    @media (max-width: 600px) {
+      .quote-form-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Bulk quote items */
+    .bulk-quote-item {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: var(--sp-4);
+      align-items: center;
+      padding: var(--sp-4) 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .bulk-quote-item__name {
+      color: var(--color-white);
+      font-size: var(--text-base);
+      font-weight: var(--weight-medium);
+    }
+
+    .bulk-quote-item__unit {
+      font-size: var(--text-xs);
+      color: rgba(255,255,255,0.45);
+      margin-top: 2px;
+    }
+
+    .bulk-qty-input {
+      width: 80px;
+      padding: var(--sp-2) var(--sp-3);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--radius-sm);
+      color: var(--color-white);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      text-align: center;
+    }
+
+    .bulk-qty-input:focus { outline: none; border-color: var(--color-taupe); }
+
+    .bulk-remove-btn {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.30);
+      cursor: pointer;
+      font-size: 18px;
+      padding: var(--sp-1) var(--sp-2);
+      transition: color var(--duration-fast) var(--ease-out);
+    }
+
+    .bulk-remove-btn:hover { color: var(--color-error); }
+
+    /* Summary sidebar */
+    .quote-sidebar-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: sticky;
+      top: calc(var(--utility-height) + var(--header-height) + var(--sp-6));
+    }
+
+    .quote-sidebar-header {
+      padding: var(--sp-4) var(--sp-5);
+      background: rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      color: var(--color-white);
+      font-family: var(--font-heading);
+      font-size: var(--text-lg);
+    }
+
+    .quote-sidebar-body { padding: var(--sp-5); }
+
+    .quote-info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sp-3);
+      font-size: var(--text-sm);
+      color: rgba(255,255,255,0.55);
+      margin-bottom: var(--sp-4);
+      line-height: var(--leading-normal);
+    }
+
+    .quote-info-item svg { color: var(--color-taupe-light); flex-shrink: 0; margin-top: 1px; }
+
+    #quote-success {
+      background: rgba(74,124,89,0.15);
+      border: 1px solid rgba(74,124,89,0.4);
+      border-radius: var(--radius-md);
+      padding: var(--sp-6);
+      color: var(--color-white);
+      text-align: center;
+      display: none;
+    }
+
+    #quote-error {
+      background: rgba(192,57,43,0.15);
+      border: 1px solid rgba(192,57,43,0.35);
+      border-radius: var(--radius-sm);
+      padding: var(--sp-3) var(--sp-4);
+      font-size: var(--text-sm);
+      color: #fca5a5;
+      display: none;
+      margin-bottom: var(--sp-4);
+    }
+  </style>
+</head>
+<body>
+
+<div class="utility-bar">
+  <div class="container">
+    <div class="utility-bar__inner">
+      <div class="utility-bar__msg">
+        <span>🚛 Bulk delivery across Sydney metro</span>
+        <span class="sep"></span>
+        <span class="hide-mobile">We confirm quotes within 2 business hours</span>
+      </div>
+      <a class="utility-bar__contact" href="tel:1300872267">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        1300 872 267
+      </a>
+    </div>
+  </div>
+</div>
+
+<header class="site-header" id="site-header" style="background:var(--color-bg-bulk);border-bottom-color:rgba(255,255,255,0.08)">
+  <div class="container">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <div class="site-logo__wordmark" style="color:var(--color-white)">Urban Landscape<span class="site-logo__sub">Supplies</span></div>
+      </a>
+      <nav class="primary-nav">
+        <a href="products.html" class="nav-link" style="color:rgba(255,255,255,0.6)">Products</a>
+        <a href="bulk-materials.html" class="nav-link active" style="color:var(--color-taupe-light)">Bulk Materials</a>
+        <a href="trade.html" class="nav-link" style="color:rgba(255,255,255,0.6)">Trade</a>
+        <a href="about.html" class="nav-link" style="color:rgba(255,255,255,0.6)">About</a>
+        <a href="contact.html" class="nav-link" style="color:rgba(255,255,255,0.6)">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <button class="header-cart-btn" id="cart-toggle" style="color:rgba(255,255,255,0.7)">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.4 7M17 13l1.4 7M9 20a1 1 0 100 2 1 1 0 000-2zm8 0a1 1 0 100 2 1 1 0 000-2z"/></svg>
+          <span class="cart-count" id="cart-count">0</span>
+        </button>
+        <button class="mobile-menu-btn" id="mobile-menu-btn" style="--span-bg:rgba(255,255,255,0.8)"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="overlay" id="overlay"></div>
+
+<section class="section">
+  <div class="container">
+
+    <nav class="breadcrumb" style="margin-bottom:var(--sp-6)">
+      <span class="breadcrumb__item"><a href="index.html" style="color:rgba(255,255,255,0.45)">Home</a></span>
+      <span class="breadcrumb__sep" style="color:rgba(255,255,255,0.25)">›</span>
+      <span class="breadcrumb__item"><a href="bulk-materials.html" style="color:rgba(255,255,255,0.45)">Bulk Materials</a></span>
+      <span class="breadcrumb__sep" style="color:rgba(255,255,255,0.25)">›</span>
+      <span style="color:rgba(255,255,255,0.7)">Get a Quote</span>
+    </nav>
+
+    <div style="margin-bottom:var(--sp-10)">
+      <p class="eyebrow" style="color:var(--color-taupe-light)">Bulk Yard</p>
+      <h1 style="font-size:var(--text-4xl);color:var(--color-white);margin-top:var(--sp-2)">Request a Bulk Quote</h1>
+      <p style="font-size:var(--text-md);color:rgba(255,255,255,0.60);margin-top:var(--sp-3)">Tell us what you need and we'll confirm pricing, availability and delivery scheduling within 2 business hours.</p>
+    </div>
+
+    <!-- Success Message (shown after submit) -->
+    <div id="quote-success">
+      <div style="font-size:40px;margin-bottom:var(--sp-4)">✓</div>
+      <h2 style="font-size:var(--text-2xl);color:var(--color-white);margin-bottom:var(--sp-3)">Quote Request Received!</h2>
+      <p style="color:rgba(255,255,255,0.65);margin-bottom:var(--sp-2)">Thank you — our team will review your request and contact you within 2 business hours to confirm pricing, delivery and scheduling.</p>
+      <p style="color:rgba(255,255,255,0.45);font-size:var(--text-sm)">Reference: <strong id="quote-ref" style="color:var(--color-taupe-light)"></strong></p>
+      <div style="margin-top:var(--sp-6);display:flex;gap:var(--sp-3);justify-content:center;flex-wrap:wrap">
+        <a href="bulk-materials.html" class="btn btn--ghost">← Back to Materials</a>
+        <a href="products.html" class="btn btn--bulk">Shop Bagged Products</a>
+      </div>
+    </div>
+
+    <div id="quote-form-area">
+      <div id="quote-error"></div>
+
+      <div class="quote-layout">
+
+        <!-- LEFT: Form -->
+        <div>
+          <!-- Quote Items -->
+          <div class="quote-section">
+            <h2 class="quote-section__heading">Your Quote Items</h2>
+
+            <div id="bulk-quote-items">
+              <!-- Populated by JS -->
+            </div>
+
+            <p id="quote-empty-msg" style="color:rgba(255,255,255,0.45);font-size:var(--text-sm);padding:var(--sp-4) 0;display:none">
+              No items added yet. <a href="bulk-materials.html" style="color:var(--color-taupe-light)">Browse bulk materials →</a>
+            </p>
+
+            <a href="bulk-materials.html" style="display:inline-flex;align-items:center;gap:var(--sp-2);font-size:var(--text-sm);color:var(--color-taupe-light);margin-top:var(--sp-3)">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              Add more materials
+            </a>
+          </div>
+
+          <!-- Delivery Details -->
+          <div class="quote-section">
+            <h2 class="quote-section__heading">Delivery Details</h2>
+            <div class="quote-form-grid">
+              <div class="form-group full">
+                <label class="form-label form-label--required" for="q-address">Street Address</label>
+                <input id="q-address" type="text" class="form-input" placeholder="123 Garden St" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label form-label--required" for="q-suburb">Suburb</label>
+                <input id="q-suburb" type="text" class="form-input" placeholder="Parramatta" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label form-label--required" for="q-postcode">Postcode</label>
+                <input id="q-postcode" type="text" class="form-input" placeholder="2150" maxlength="4" required />
+              </div>
+              <div class="form-group full">
+                <label class="form-label" for="q-access">Site Access Notes</label>
+                <textarea id="q-access" class="form-textarea" placeholder="Tight driveway, no overhead wires, dogs on site, gate code 1234..." style="min-height:80px"></textarea>
+                <p class="form-hint" style="color:rgba(255,255,255,0.35)">Important — our drivers need to know about access challenges before delivery.</p>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="q-date-from">Preferred Delivery From</label>
+                <input id="q-date-from" type="date" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="q-date-to">Preferred Delivery To</label>
+                <input id="q-date-to" type="date" class="form-input" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact -->
+          <div class="quote-section">
+            <h2 class="quote-section__heading">Your Contact Details</h2>
+            <div class="quote-form-grid">
+              <div class="form-group">
+                <label class="form-label form-label--required" for="q-first">First Name</label>
+                <input id="q-first" type="text" class="form-input" placeholder="Jane" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label form-label--required" for="q-last">Last Name</label>
+                <input id="q-last" type="text" class="form-input" placeholder="Smith" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label form-label--required" for="q-email">Email</label>
+                <input id="q-email" type="email" class="form-input" placeholder="jane@example.com" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label form-label--required" for="q-phone">Phone</label>
+                <input id="q-phone" type="tel" class="form-input" placeholder="04XX XXX XXX" required />
+              </div>
+              <div class="form-group full">
+                <label class="form-check">
+                  <input type="checkbox" id="q-trade" />
+                  <span class="form-check__label" style="color:rgba(255,255,255,0.65)">I have (or am interested in) a trade account</span>
+                </label>
+              </div>
+              <div class="form-group full">
+                <label class="form-label" for="q-notes">Additional Notes</label>
+                <textarea id="q-notes" class="form-textarea" placeholder="Project details, special requirements, questions..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn--bulk btn--lg btn--full" id="quote-submit-btn">Submit Quote Request</button>
+
+          <p style="font-size:var(--text-xs);color:rgba(255,255,255,0.35);text-align:center;margin-top:var(--sp-3)">
+            By submitting you agree to our <a href="privacy.html" style="color:rgba(255,255,255,0.45)">Privacy Policy</a>. We won't share your details.
+          </p>
+        </div>
+
+        <!-- RIGHT: Info sidebar -->
+        <div>
+          <div class="quote-sidebar-box">
+            <div class="quote-sidebar-header">What Happens Next</div>
+            <div class="quote-sidebar-body">
+              <div class="quote-info-item">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>Our team reviews your request and confirms pricing within <strong style="color:var(--color-white)">2 business hours</strong>.</span>
+              </div>
+              <div class="quote-info-item">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                <span>We'll call or email you to confirm your delivery date and arrange payment.</span>
+              </div>
+              <div class="quote-info-item">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                <span>Materials are delivered on your agreed date by our professional drivers.</span>
+              </div>
+              <div class="quote-info-item">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                <span>All bulk pricing is <strong style="color:var(--color-white)">indicative</strong> — final price confirmed by our team based on delivery location.</span>
+              </div>
+
+              <div style="margin-top:var(--sp-5);padding-top:var(--sp-5);border-top:1px solid rgba(255,255,255,0.08)">
+                <p style="font-size:var(--text-sm);color:rgba(255,255,255,0.55);margin-bottom:var(--sp-3)">Need to speak with someone?</p>
+                <a href="tel:1300872267" class="btn btn--ghost btn--sm btn--full" style="justify-content:center;gap:var(--sp-2)">
+                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                  Call 1300 872 267
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-lower" style="border-top:none;padding:var(--sp-6) 0">
+      <p class="footer-lower__copy">© 2025 Urban Landscape Supplies Pty Ltd.</p>
+      <div class="footer-lower__links"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
+    </div>
+  </div>
+</footer>
+
+<aside class="cart-drawer" id="cart-drawer">
+  <div class="cart-drawer__header">
+    <h2 class="cart-drawer__title">Your Cart <span class="cart-drawer__count" id="drawer-item-count"></span></h2>
+    <button class="cart-drawer__close" id="cart-close">
+      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="cart-drawer__body" id="cart-drawer-items"></div>
+  <div class="cart-drawer__footer">
+    <div class="cart-subtotal"><span class="cart-subtotal__label">Subtotal</span><span class="cart-subtotal__amount" id="cart-subtotal">$0.00</span></div>
+    <a href="checkout.html" class="btn btn--primary btn--full" id="drawer-checkout-btn">Checkout</a>
+  </div>
+</aside>
+
+<div class="toast" id="toast"><span class="toast__icon">✓</span><span id="toast-msg"></span></div>
+
+<script src="js/cart.js"></script>
+<script src="js/ui.js"></script>
+<script>
+  // Render bulk quote items on page load
+  function renderBulkQuoteItems() {
+    const quote = getBulkQuote();
+    const container = document.getElementById('bulk-quote-items');
+    const emptyMsg = document.getElementById('quote-empty-msg');
+    if (!container) return;
+
+    if (quote.length === 0) {
+      container.innerHTML = '';
+      if (emptyMsg) emptyMsg.style.display = 'block';
+      return;
+    }
+
+    if (emptyMsg) emptyMsg.style.display = 'none';
+
+    container.innerHTML = quote.map(item => `
+      <div class="bulk-quote-item" data-id="${item.id}">
+        <div>
+          <p class="bulk-quote-item__name">${item.name}</p>
+          <p class="bulk-quote-item__unit">Sold per ${item.unit}</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--sp-2)">
+          <input
+            type="number"
+            class="bulk-qty-input"
+            value="${item.quantity}"
+            min="1"
+            step="0.5"
+            onchange="updateBulkQty('${item.id}', this.value); renderBulkQuoteItems()"
+            aria-label="Quantity in ${item.unit}"
+          />
+          <span style="font-size:var(--text-xs);color:rgba(255,255,255,0.45)">${item.unit}</span>
+        </div>
+        <button class="bulk-remove-btn" onclick="removeFromBulkQuote('${item.id}'); renderBulkQuoteItems()" aria-label="Remove">×</button>
+      </div>
+    `).join('');
+  }
+
+  document.addEventListener('DOMContentLoaded', renderBulkQuoteItems);
+
+  // Set default delivery date range (tomorrow + 14 days)
+  document.addEventListener('DOMContentLoaded', () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const twoWeeks = new Date();
+    twoWeeks.setDate(twoWeeks.getDate() + 14);
+
+    const fmt = d => d.toISOString().split('T')[0];
+    document.getElementById('q-date-from').value = fmt(tomorrow);
+    document.getElementById('q-date-to').value = fmt(twoWeeks);
+    document.getElementById('q-date-from').min = fmt(tomorrow);
+    document.getElementById('q-date-to').min = fmt(tomorrow);
+  });
+
+  // Submit handler
+  document.getElementById('quote-submit-btn')?.addEventListener('click', async () => {
+    const quote = getBulkQuote();
+    const errorEl = document.getElementById('quote-error');
+    const clearErr = () => { errorEl.style.display = 'none'; };
+    const showErr = msg => { errorEl.textContent = msg; errorEl.style.display = 'block'; errorEl.scrollIntoView({ behavior:'smooth', block:'nearest' }); };
+
+    clearErr();
+
+    if (quote.length === 0) { showErr('Please add at least one bulk material to your quote before submitting.'); return; }
+
+    const required = [
+      { id:'q-address',  label:'delivery address' },
+      { id:'q-suburb',   label:'suburb' },
+      { id:'q-postcode', label:'postcode' },
+      { id:'q-first',    label:'first name' },
+      { id:'q-last',     label:'last name' },
+      { id:'q-email',    label:'email' },
+      { id:'q-phone',    label:'phone' },
+    ];
+
+    for (const f of required) {
+      const el = document.getElementById(f.id);
+      if (!el?.value.trim()) {
+        el?.classList.add('error');
+        showErr(`Please enter your ${f.label}.`);
+        el?.focus();
+        return;
+      }
+      el?.classList.remove('error');
+    }
+
+    const email = document.getElementById('q-email').value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showErr('Please enter a valid email address.');
+      return;
+    }
+
+    const btn = document.getElementById('quote-submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border-width:2px;margin-right:8px"></span> Submitting...';
+
+    const payload = {
+      items: quote,
+      delivery: {
+        address:   document.getElementById('q-address').value.trim(),
+        suburb:    document.getElementById('q-suburb').value.trim(),
+        postcode:  document.getElementById('q-postcode').value.trim(),
+        access:    document.getElementById('q-access').value.trim(),
+        dateFrom:  document.getElementById('q-date-from').value,
+        dateTo:    document.getElementById('q-date-to').value,
+      },
+      contact: {
+        firstName: document.getElementById('q-first').value.trim(),
+        lastName:  document.getElementById('q-last').value.trim(),
+        email:     email,
+        phone:     document.getElementById('q-phone').value.trim(),
+        isTrade:   document.getElementById('q-trade').checked,
+        notes:     document.getElementById('q-notes').value.trim(),
+      }
+    };
+
+    try {
+      const response = await fetch('/api/quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.message || `Server error: ${response.status}`);
+      }
+
+      const { referenceId } = await response.json();
+
+      // Clear bulk quote
+      localStorage.removeItem('uls_bulk_quote');
+      syncBulkQuoteUI?.();
+
+      // Show success
+      document.getElementById('quote-form-area').style.display = 'none';
+      const successEl = document.getElementById('quote-success');
+      successEl.style.display = 'block';
+      document.getElementById('quote-ref').textContent = referenceId || 'BQ-' + Date.now().toString(36).toUpperCase();
+      successEl.scrollIntoView({ behavior: 'smooth' });
+
+    } catch (err) {
+      console.error('Quote submit error:', err);
+      showErr(
+        err.message.includes('fetch')
+          ? 'Unable to connect. Please call us on 1300 872 267 or try again shortly.'
+          : err.message
+      );
+      btn.disabled = false;
+      btn.textContent = 'Submit Quote Request';
+    }
+  });
+</script>
+
+</body>
+</html>

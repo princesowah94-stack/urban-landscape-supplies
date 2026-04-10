@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmed | Urban Landscape Supplies</title>
+  <meta name="robots" content="noindex" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+</head>
+<body>
+
+<div class="utility-bar">
+  <div class="container">
+    <div class="utility-bar__inner">
+      <div class="utility-bar__msg"><span>🌿 Thank you for your order!</span></div>
+      <a class="utility-bar__contact" href="tel:1300872267">1300 872 267</a>
+    </div>
+  </div>
+</div>
+
+<header class="site-header" id="site-header">
+  <div class="container">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <div class="site-logo__wordmark">Urban Landscape<span class="site-logo__sub">Supplies</span></div>
+      </a>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="min-height:60vh">
+  <div class="container container--narrow" style="text-align:center;padding-top:var(--sp-16)">
+
+    <div style="width:72px;height:72px;background:rgba(74,124,89,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto var(--sp-6);font-size:32px">✓</div>
+
+    <p class="eyebrow eyebrow--sage" style="margin-bottom:var(--sp-2)">Payment Successful</p>
+    <h1 style="font-size:var(--text-4xl);margin-bottom:var(--sp-4)">Order Confirmed!</h1>
+    <p style="font-size:var(--text-md);color:var(--color-text-secondary);max-width:48ch;margin:0 auto var(--sp-6);line-height:var(--leading-normal)">
+      Thank you — your order has been placed and payment received. We'll send a confirmation email and our team will arrange delivery.
+    </p>
+
+    <div style="background:var(--color-gray-50);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--sp-6);text-align:left;margin:var(--sp-8) auto;max-width:440px">
+      <p style="font-size:var(--text-xs);font-weight:700;letter-spacing:var(--tracking-wider);text-transform:uppercase;color:var(--color-text-muted);margin-bottom:var(--sp-3)">Order Details</p>
+      <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:var(--sp-2)">
+        <span>Transaction ID</span>
+        <span id="order-txn" style="font-family:monospace;color:var(--color-text-primary)">—</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);color:var(--color-text-secondary)">
+        <span>Status</span>
+        <span style="color:var(--color-success);font-weight:700">Confirmed ✓</span>
+      </div>
+    </div>
+
+    <div style="background:var(--color-taupe-pale);border-radius:var(--radius-md);padding:var(--sp-5);margin-bottom:var(--sp-8);text-align:left">
+      <p style="font-weight:700;font-size:var(--text-sm);margin-bottom:var(--sp-2)">What happens next?</p>
+      <ul style="font-size:var(--text-sm);color:var(--color-text-secondary);list-style:disc;padding-left:var(--sp-5);display:flex;flex-direction:column;gap:var(--sp-2)">
+        <li>You'll receive a confirmation email with your order summary</li>
+        <li>Our team will contact you within 1 business day to arrange delivery</li>
+        <li>Standard delivery: 3–5 business days across Sydney metro</li>
+        <li>Questions? Call <a href="tel:1300872267" style="color:var(--color-sage)">1300 872 267</a></li>
+      </ul>
+    </div>
+
+    <div style="display:flex;gap:var(--sp-4);justify-content:center;flex-wrap:wrap">
+      <a href="products.html" class="btn btn--secondary btn--lg">Continue Shopping</a>
+      <a href="index.html" class="btn btn--primary btn--lg">Return Home</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-lower" style="border-top:none;padding:var(--sp-6) 0">
+      <p class="footer-lower__copy">© 2025 Urban Landscape Supplies Pty Ltd.</p>
+      <div class="footer-lower__links"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/cart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Clear cart on successful payment
+    clearCart?.();
+
+    // Show transaction ID from URL params
+    const params = new URLSearchParams(window.location.search);
+    const txnId = params.get('transactionId') || params.get('orderId') || params.get('payment_id');
+    if (txnId) {
+      document.getElementById('order-txn').textContent = txnId.slice(0, 20) + (txnId.length > 20 ? '...' : '');
+    }
+  });
+</script>
+</body>
+</html>

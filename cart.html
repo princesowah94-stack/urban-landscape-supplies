@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Cart | Urban Landscape Supplies</title>
+  <meta name="robots" content="noindex" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <style>
+    .cart-page-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: var(--sp-10);
+      align-items: start;
+    }
+    @media (max-width: 900px) { .cart-page-layout { grid-template-columns: 1fr; } }
+
+    .cart-summary-box {
+      background: var(--color-gray-50);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--sp-6);
+      position: sticky;
+      top: calc(var(--utility-height) + var(--header-height) + var(--sp-6));
+    }
+
+    .cart-summary-box h2 {
+      font-size: var(--text-xl);
+      margin-bottom: var(--sp-5);
+      padding-bottom: var(--sp-4);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--sp-3);
+    }
+
+    .summary-row--total {
+      font-size: var(--text-lg);
+      font-weight: var(--weight-bold);
+      color: var(--color-text-primary);
+      padding-top: var(--sp-4);
+      margin-top: var(--sp-2);
+      border-top: 1px solid var(--color-border-strong);
+    }
+
+    .summary-row--total span:last-child { color: var(--color-price); }
+
+    .cart-guarantee {
+      margin-top: var(--sp-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    .guarantee-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+
+    .guarantee-item svg { color: var(--color-sage); flex-shrink: 0; }
+
+    .cart-page-items .cart-item {
+      grid-template-columns: 88px 1fr auto;
+      padding: var(--sp-5) 0;
+    }
+
+    .cart-page-items .cart-item__img {
+      width: 88px;
+      height: 88px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="utility-bar">
+  <div class="container">
+    <div class="utility-bar__inner">
+      <div class="utility-bar__msg">
+        <span>🚚 Free delivery Sydney metro over $150</span>
+        <span class="sep"></span>
+        <span class="hide-mobile">🔒 Secure Square Payments</span>
+      </div>
+      <a class="utility-bar__contact" href="tel:1300872267">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        1300 872 267
+      </a>
+    </div>
+  </div>
+</div>
+
+<header class="site-header" id="site-header">
+  <div class="container">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <div class="site-logo__wordmark">Urban Landscape<span class="site-logo__sub">Supplies</span></div>
+      </a>
+      <nav class="primary-nav">
+        <div class="nav-item">
+          <span class="nav-link" tabindex="0">Products
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4l4 4 4-4"/></svg>
+          </span>
+          <div class="nav-dropdown">
+            <a href="products.html?cat=soil">Garden Beds &amp; Soil</a>
+            <a href="products.html?cat=mulch">Mulch &amp; Bark</a>
+            <a href="products.html?cat=pebbles">Pebbles &amp; Stone</a>
+            <a href="products.html?cat=pavers">Pavers &amp; Edging</a>
+            <a href="products.html?cat=potting">Potting &amp; Compost</a>
+            <a href="products.html?cat=tools">Tools &amp; Equipment</a>
+            <div class="nav-dropdown__divider"></div>
+            <a href="products.html" class="nav-dropdown__cta">View All →</a>
+          </div>
+        </div>
+        <a href="bulk-materials.html" class="nav-link">Bulk Materials</a>
+        <a href="trade.html" class="nav-link">Trade</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <button class="header-cart-btn active" id="cart-toggle" style="background:var(--color-gray-100)">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.4 7M17 13l1.4 7M9 20a1 1 0 100 2 1 1 0 000-2zm8 0a1 1 0 100 2 1 1 0 000-2z"/></svg>
+          <span class="cart-count" id="cart-count">0</span>
+        </button>
+        <button class="mobile-menu-btn" id="mobile-menu-btn"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav">
+  <div class="mobile-nav__section">
+    <a href="products.html" class="mobile-nav__link">Products</a>
+    <a href="bulk-materials.html" class="mobile-nav__link">Bulk Materials</a>
+    <a href="trade.html" class="mobile-nav__link">Trade</a>
+    <a href="about.html" class="mobile-nav__link">About</a>
+    <a href="contact.html" class="mobile-nav__link">Contact</a>
+  </div>
+</nav>
+<div class="overlay" id="overlay"></div>
+
+<!-- BREADCRUMB -->
+<div style="background:var(--color-gray-50);border-bottom:1px solid var(--color-border);padding:var(--sp-3) 0">
+  <div class="container">
+    <nav class="breadcrumb">
+      <span class="breadcrumb__item"><a href="index.html">Home</a></span>
+      <span class="breadcrumb__sep">›</span>
+      <span class="breadcrumb__item breadcrumb__item--current">Cart</span>
+    </nav>
+  </div>
+</div>
+
+<!-- CHECKOUT STEPS -->
+<div style="padding:var(--sp-5) 0;border-bottom:1px solid var(--color-border)">
+  <div class="container">
+    <div class="steps">
+      <div class="step active">
+        <span class="step__num">1</span>
+        <span class="step__label">Cart</span>
+      </div>
+      <div class="step__line"></div>
+      <div class="step">
+        <span class="step__num">2</span>
+        <span class="step__label">Checkout</span>
+      </div>
+      <div class="step__line"></div>
+      <div class="step">
+        <span class="step__num">3</span>
+        <span class="step__label">Confirmation</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <h1 style="font-size:var(--text-3xl);margin-bottom:var(--sp-8)">Your Cart</h1>
+
+    <div class="cart-page-layout">
+      <!-- Cart Items -->
+      <div>
+        <div class="cart-page-items" id="cart-page-items">
+          <!-- Populated by ui.js renderCartPage() -->
+        </div>
+
+        <div style="margin-top:var(--sp-6);padding-top:var(--sp-6);border-top:1px solid var(--color-border);display:flex;gap:var(--sp-4);flex-wrap:wrap">
+          <a href="products.html" class="btn btn--secondary">← Continue Shopping</a>
+        </div>
+
+        <!-- Bulk Quote Promo -->
+        <div style="margin-top:var(--sp-8);background:rgba(181,150,119,0.08);border:1px solid var(--color-taupe-light);border-radius:var(--radius-md);padding:var(--sp-5)">
+          <div style="display:flex;align-items:center;gap:var(--sp-3)">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" style="color:var(--color-taupe);flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            <div>
+              <p style="font-weight:700;font-size:var(--text-sm);color:var(--color-text-primary)">Also ordering bulk materials?</p>
+              <p style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-top:2px">Sand, soil and mulch by the cubic metre are ordered separately via our bulk quote system.</p>
+            </div>
+            <a href="bulk-quote.html" class="btn btn--bulk btn--sm" style="flex-shrink:0;white-space:nowrap">Bulk Quote →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="cart-summary-box">
+        <h2>Order Summary</h2>
+
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span id="cart-page-subtotal">$0.00</span>
+        </div>
+        <div class="summary-row">
+          <span>Delivery</span>
+          <span style="color:var(--color-success)">Calculated at checkout</span>
+        </div>
+        <div class="summary-row--total summary-row">
+          <span>Estimated Total</span>
+          <span id="cart-page-total">$0.00</span>
+        </div>
+
+        <a href="checkout.html" class="btn btn--primary btn--full btn--lg" style="margin-top:var(--sp-5)" id="cart-checkout-btn">
+          Proceed to Checkout
+        </a>
+
+        <div class="cart-guarantee">
+          <div class="guarantee-item">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            Secure payment via Square
+          </div>
+          <div class="guarantee-item">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            Quality guaranteed on all products
+          </div>
+          <div class="guarantee-item">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            Sydney metro delivery available
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-lower" style="border-top:none;padding:var(--sp-6) 0">
+      <p class="footer-lower__copy">© 2025 Urban Landscape Supplies Pty Ltd.</p>
+      <div class="footer-lower__links">
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="faq.html#delivery">Delivery Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<aside class="cart-drawer" id="cart-drawer">
+  <div class="cart-drawer__header">
+    <h2 class="cart-drawer__title">Your Cart <span class="cart-drawer__count" id="drawer-item-count"></span></h2>
+    <button class="cart-drawer__close" id="cart-close">
+      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="cart-drawer__body" id="cart-drawer-items"></div>
+  <div class="cart-drawer__footer">
+    <div class="cart-subtotal">
+      <span class="cart-subtotal__label">Subtotal</span>
+      <span class="cart-subtotal__amount" id="cart-subtotal">$0.00</span>
+    </div>
+    <a href="checkout.html" class="btn btn--primary btn--full" id="drawer-checkout-btn">Checkout</a>
+  </div>
+</aside>
+
+<div class="toast" id="toast"><span class="toast__icon">✓</span><span id="toast-msg"></span></div>
+
+<script src="js/cart.js"></script>
+<script src="js/products.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>

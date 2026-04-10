@@ -1,0 +1,173 @@
+/* ============================================================
+   BULK MATERIALS PAGE
+   ============================================================ */
+
+/* ─── BULK HERO ───────────────────────────────────────────────── */
+.bulk-hero {
+  background: var(--color-bg-bulk);
+  padding: var(--sp-16) 0 var(--sp-12);
+  color: var(--color-white);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.bulk-hero__eyebrow { color: var(--color-taupe-light); margin-bottom: var(--sp-3); }
+
+.bulk-hero__title {
+  font-size: var(--text-4xl);
+  color: var(--color-white);
+  line-height: var(--leading-tight);
+  margin-bottom: var(--sp-4);
+}
+
+.bulk-hero__desc {
+  font-size: var(--text-lg);
+  color: rgba(255,255,255,0.68);
+  max-width: 54ch;
+  line-height: var(--leading-normal);
+  margin-bottom: var(--sp-8);
+}
+
+.bulk-hero__trust {
+  display: flex;
+  gap: var(--sp-6);
+  flex-wrap: wrap;
+}
+
+.bulk-hero__trust-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--text-sm);
+  color: rgba(255,255,255,0.60);
+}
+
+.bulk-hero__trust-item svg { color: var(--color-taupe-light); }
+
+/* ─── CATEGORY NAV ────────────────────────────────────────────── */
+.bulk-cat-nav {
+  background: #242618;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  position: sticky;
+  top: calc(var(--utility-height) + var(--header-height));
+  z-index: var(--z-raised);
+}
+
+.bulk-cat-nav__inner {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.bulk-cat-nav__inner::-webkit-scrollbar { display: none; }
+
+.bulk-cat-link {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-5);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.50);
+  white-space: nowrap;
+  transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+  border-bottom: 2px solid transparent;
+  text-decoration: none;
+}
+
+.bulk-cat-link:hover { color: rgba(255,255,255,0.85); }
+.bulk-cat-link.active { color: var(--color-taupe-light); border-bottom-color: var(--color-taupe); }
+
+/* ─── BULK SECTION ────────────────────────────────────────────── */
+.bulk-material-section {
+  background: var(--color-bg-bulk);
+  padding: var(--sp-16) 0;
+  scroll-margin-top: calc(var(--utility-height) + var(--header-height) + 52px);
+}
+
+.bulk-material-section + .bulk-material-section {
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.bulk-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-6);
+  margin-bottom: var(--sp-10);
+  flex-wrap: wrap;
+}
+
+.bulk-section-header__text {}
+
+.bulk-section-header__tag {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--color-taupe);
+  margin-bottom: var(--sp-2);
+}
+
+.bulk-section-header__title {
+  font-size: var(--text-3xl);
+  color: var(--color-white);
+  line-height: var(--leading-tight);
+  margin-bottom: var(--sp-3);
+}
+
+.bulk-section-header__desc {
+  font-size: var(--text-base);
+  color: rgba(255,255,255,0.55);
+  max-width: 52ch;
+  line-height: var(--leading-normal);
+}
+
+/* ─── QUOTE BASKET FLOAT ──────────────────────────────────────── */
+.bulk-quote-float {
+  position: fixed;
+  bottom: var(--sp-6);
+  right: var(--sp-6);
+  z-index: var(--z-raised);
+  display: none;
+}
+
+.bulk-quote-float-btn {
+  background: var(--color-taupe);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: var(--sp-4) var(--sp-6);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  text-decoration: none;
+  transition: background var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-spring);
+}
+
+.bulk-quote-float-btn:hover {
+  background: var(--color-taupe-light);
+  transform: translateY(-2px);
+}
+
+.bulk-quote-float-count {
+  background: var(--color-white);
+  color: var(--color-taupe);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+}
