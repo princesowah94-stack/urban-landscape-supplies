@@ -1,14 +1,11 @@
 import nodemailer from 'nodemailer';
-import { corsHeaders, handleOptions } from './_cors.js';
+import { corsHeaders, optionsResponse } from './_cors.js';
 
-export default async function handler(request) {
-  const preflight = handleOptions(request);
-  if (preflight) return preflight;
+export function OPTIONS(request) {
+  return optionsResponse(request);
+}
 
-  if (request.method !== 'POST') {
-    return new Response('Method Not Allowed', { status: 405 });
-  }
-
+export async function POST(request) {
   try {
     const { business, abn, firstName, lastName, email, phone, businessType, address, notes } = await request.json();
 
@@ -20,7 +17,7 @@ export default async function handler(request) {
     }
 
     const referenceId = 'TRD-' + Date.now().toString(36).toUpperCase();
-    const from        = `"${process.env.EMAIL_FROM_NAME || 'Urban Landscape Supplies'}" <${process.env.EMAIL_FROM}>`;
+    const from = `"${process.env.EMAIL_FROM_NAME || 'Urban Landscape Supplies'}" <${process.env.EMAIL_FROM}>`;
 
     const transport = nodemailer.createTransport({
       host: process.env.EMAIL_HOST || 'smtp.gmail.com',

@@ -1,9 +1,10 @@
-import { corsHeaders, handleOptions } from './_cors.js';
+import { corsHeaders, optionsResponse } from './_cors.js';
 
-export default async function handler(request) {
-  const preflight = handleOptions(request);
-  if (preflight) return preflight;
+export function OPTIONS(request) {
+  return optionsResponse(request);
+}
 
+export function GET(request) {
   return Response.json(
     {
       status: 'ok',

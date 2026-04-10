@@ -1,4 +1,4 @@
-// Shared CORS helper for all API functions
+// Shared CORS helper for Vercel Functions (Web Request/Response API)
 const ALLOWED_ORIGINS = [
   'http://localhost:3001',
   'https://urban-landscape-supplies.vercel.app',
@@ -16,9 +16,6 @@ export function corsHeaders(request) {
   };
 }
 
-export function handleOptions(request) {
-  if (request.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: corsHeaders(request) });
-  }
-  return null;
+export function optionsResponse(request) {
+  return new Response(null, { status: 204, headers: corsHeaders(request) });
 }

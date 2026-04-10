@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { corsHeaders, handleOptions } from './_cors.js';
+import { corsHeaders, optionsResponse } from './_cors.js';
 
 const SUBJECT_LABELS = {
   order: 'Order enquiry',
@@ -10,14 +10,11 @@ const SUBJECT_LABELS = {
   other: 'Other',
 };
 
-export default async function handler(request) {
-  const preflight = handleOptions(request);
-  if (preflight) return preflight;
+export function OPTIONS(request) {
+  return optionsResponse(request);
+}
 
-  if (request.method !== 'POST') {
-    return new Response('Method Not Allowed', { status: 405 });
-  }
-
+export async function POST(request) {
   try {
     const { name, email, phone, subject, message } = await request.json();
 

@@ -1,11 +1,12 @@
 import { Client, Environment, ApiError } from 'square';
-import { corsHeaders, handleOptions } from './_cors.js';
+import { createRequire } from 'module';
+import { corsHeaders, optionsResponse } from './_cors.js';
 
-// Load product prices server-side to prevent client-side manipulation
+const require = createRequire(import.meta.url);
+
+// Load product prices server-side to prevent client-side price manipulation
 let productPrices = {};
 try {
-  const { createRequire } = await import('module');
-  const require = createRequire(import.meta.url);
   const data = require('../data/products.json');
   data.products.forEach(p => { productPrices[p.id] = p.price; });
 } catch (e) {
@@ -28,14 +29,11 @@ function validateAndPriceCart(items) {
   });
 }
 
-export default async function handler(request) {
-  const preflight = handleOptions(request);
-  if (preflight) return preflight;
+export function OPTIONS(request) {
+  return optionsResponse(request);
+}
 
-  if (request.method !== 'POST') {
-    return new Response('Method Not Allowed', { status: 405 });
-  }
-
+export async function POST(request) {
   try {
     const { items, customer, delivery } = await request.json();
 
