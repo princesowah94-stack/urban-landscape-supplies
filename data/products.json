@@ -9,7 +9,7 @@
       "unit": "per 20kg bag",
       "description": "Classic rounded snow white pebbles — the most popular decorative pebble in Sydney gardens. Clean, bright and timeless for any garden style.",
       "features": ["Rounded smooth finish", "Brilliant white colour", "10–20mm size", "Pool area safe"],
-      "image": "images/products/pebbles-snow-white.jpg",
+      "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=800&fit=crop&auto=format&q=80",
       "badge": "Bestseller",
       "featured": true,
       "inStock": true,
@@ -24,7 +24,7 @@
       "unit": "per 20kg bag",
       "description": "Angular crushed white stone with a bright, clean appearance. Ideal for contemporary pathways, drainage applications and under-downpipe areas.",
       "features": ["Angular crushed stone", "Bright white finish", "Drainage friendly", "10–20mm size"],
-      "image": "images/products/pebbles-crushed-snow-white.jpg",
+      "image": "https://images.unsplash.com/photo-1549241520-425e3dfc01cb?w=800&h=800&fit=crop&auto=format&q=80",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -39,7 +39,7 @@
       "unit": "per 20kg bag",
       "description": "Highly polished jet-black pebbles — a dramatic contrast against light-coloured paving, feature gardens and contemporary landscaping. Smooth to touch.",
       "features": ["Machine polished", "Jet-black finish", "10–20mm size", "Pool area safe"],
-      "image": "images/products/pebbles-black-polished.jpg",
+      "image": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=800&fit=crop&auto=format&q=80",
       "badge": "Premium",
       "featured": true,
       "inStock": true,
@@ -54,7 +54,7 @@
       "unit": "per 20kg bag",
       "description": "Smooth charcoal grey pebbles with subtle earthy variation. A versatile, contemporary choice for garden beds, pathways and water features.",
       "features": ["Smooth finish", "10–25mm size", "Weather resistant", "Versatile application"],
-      "image": "images/products/pebbles-charcoal-grey.jpg",
+      "image": "https://images.unsplash.com/photo-1580651315530-69c8e0026377?w=800&h=800&fit=crop&auto=format&q=80",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -69,7 +69,7 @@
       "unit": "per 20kg bag",
       "description": "Naturally speckled grey pebbles with subtle white and dark flecks. A textured, earthy look for garden beds, feature areas and pathways.",
       "features": ["Natural speckled finish", "10–25mm size", "Earthy tones", "Versatile use"],
-      "image": "images/products/pebbles-speckled-grey.jpg",
+      "image": "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800&h=800&fit=crop&auto=format&q=80",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -84,7 +84,7 @@
       "unit": "per 10kg bag",
       "description": "Lightweight volcanic lava pebbles in dark charcoal tones. Highly porous — ideal as a planting medium, pot topper and feature garden accent.",
       "features": ["Lightweight volcanic rock", "10–30mm size", "Excellent drainage", "Suits potted arrangements"],
-      "image": "images/products/pebbles-charcoal-lava.jpg",
+      "image": "https://images.unsplash.com/photo-1530569673472-307dc017a82d?w=800&h=800&fit=crop&auto=format&q=80",
       "badge": null,
       "featured": true,
       "inStock": true,
@@ -99,7 +99,7 @@
       "unit": "per 10kg bag",
       "description": "Striking volcanic red lava pebbles — warm, bold tones that add drama to garden beds, potted plants and feature areas. Lightweight and highly porous.",
       "features": ["Lightweight volcanic rock", "Warm red tones", "10–30mm size", "Excellent aeration"],
-      "image": "images/products/pebbles-red-lava.jpg",
+      "image": "https://images.unsplash.com/photo-1618220179428-22790b461013?w=800&h=800&fit=crop&auto=format&q=80",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -114,7 +114,7 @@
       "unit": "per 20kg bag",
       "description": "Clean washed sand, free of clay and impurities. Suitable for concrete mixing, bedding under pavers, sandpits and general construction use.",
       "features": ["Washed and graded", "Clay-free", "Suitable for concrete", "Sandpit safe"],
-      "image": "images/products/sand-washed.jpg",
+      "image": "https://images.unsplash.com/photo-1509023464722-18d996393ca8?w=800&h=800&fit=crop&auto=format&q=80",
       "badge": null,
       "featured": true,
       "inStock": true,
@@ -129,7 +129,7 @@
       "unit": "per 20kg bag",
       "description": "Coarse-grade washed sand for drainage improvement, soil conditioning and general landscaping. Ideal for mixing into heavy clay soils or as a drainage layer.",
       "features": ["Coarse grade", "Drainage applications", "Soil improvement", "Lawn topdressing"],
-      "image": "images/products/sand-coarse.jpg",
+      "image": "https://images.unsplash.com/photo-1534126416832-a88fdf2911c2?w=800&h=800&fit=crop&auto=format&q=80",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -144,7 +144,7 @@
       "unit": "per 20kg bag",
       "description": "Fine, washed and screened play sand — safe for children's sandpits and soft fall areas. Dust-reduced with smooth, consistent grain size.",
       "features": ["Washed and screened", "Dust reduced", "Fine grain", "Child safe"],
-      "image": "images/products/sand-play.jpg",
+      "image": "https://images.unsplash.com/photo-1502810365585-56ffa361fdde?w=800&h=800&fit=crop&auto=format&q=80",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -159,7 +159,7 @@
       "unit": "per 25L bag",
       "description": "A rich, well-balanced blend of composted organic matter, perlite and natural minerals. Ideal for garden beds, raised beds and mixed plantings.",
       "features": ["Composted organic matter", "Added perlite for drainage", "pH balanced 6.0–7.0", "Weed-seed free"],
-      "image": "images/products/soil-premium-garden.jpg",
+      "image": "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=800&h=800&fit=crop&auto=format&q=80",
       "badge": "Bestseller",
       "featured": true,
       "inStock": true,
@@ -174,7 +174,7 @@
       "unit": "per 25L bag",
       "description": "Specially formulated for vegetable gardens and herb beds. Nutrient-rich with added trace elements to support healthy food production.",
       "features": ["Added trace elements", "High organic content", "Excellent water retention", "pH 6.2–6.8"],
-      "image": "images/products/soil-vegie-herb.jpg",
+      "image": "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=800&h=800&fit=crop&auto=format&q=80",
       "badge": null,
       "featured": true,
       "inStock": true,
@@ -189,7 +189,7 @@
       "unit": "per 25L bag",
       "description": "A low-phosphorus, free-draining blend specifically designed for Australian native plants. Prevents phosphorus toxicity in sensitive species.",
       "features": ["Low phosphorus formula", "Sandy free-draining base", "Suits banksias, grevilleas, waratahs", "pH 5.5–6.5"],
-      "image": "images/products/soil-native-blend.jpg",
+      "image": "https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=800&h=800&fit=crop&auto=format&q=80",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -204,7 +204,7 @@
       "unit": "per 25L bag",
       "description": "Premium blend engineered for raised garden beds and planter boxes. Provides excellent drainage, aeration and long-term nutrient supply.",
       "features": ["High air porosity", "Slow-release nutrients included", "Worm castings added", "pH balanced"],
-      "image": "images/products/soil-raised-bed.jpg",
+      "image": "https://images.unsplash.com/photo-1591857177580-dc82b9ac4e1e?w=800&h=800&fit=crop&auto=format&q=80",
       "badge": "Premium",
       "featured": false,
       "inStock": true,
@@ -220,7 +220,7 @@
       "unit": "m³",
       "description": "Premium garden soil blend — rich in organic matter, suitable for garden beds, lawn preparation and landscaping fill.",
       "uses": ["Garden beds", "Lawn preparation", "Raised beds", "General fill"],
-      "image": "images/bulk-materials/bulk-garden-soil.jpg",
+      "image": "https://images.unsplash.com/photo-1446329813274-7c9036bd9a1f?w=600&h=400&fit=crop&auto=format&q=80",
       "minOrder": 1
     },
     {
@@ -231,7 +231,7 @@
       "unit": "m³",
       "description": "Premium turf underlay blend with added sand and fertiliser. Ideal for laying new lawns and top dressing established turf.",
       "uses": ["New lawn installation", "Lawn top dressing", "Turf underlay", "Sports fields"],
-      "image": "images/bulk-materials/bulk-turf-blend.jpg",
+      "image": "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=600&h=400&fit=crop&auto=format&q=80",
       "minOrder": 1
     },
     {
@@ -242,7 +242,7 @@
       "unit": "m³",
       "description": "Clean washed concrete sand, free of clay and impurities. Suitable for concrete mixing, plastering and general construction.",
       "uses": ["Concrete mixing", "Plastering", "Under pavers", "Sandpits"],
-      "image": "images/bulk-materials/bulk-washed-sand.jpg",
+      "image": "https://images.unsplash.com/photo-1509023464722-18d996393ca8?w=600&h=400&fit=crop&auto=format&q=80",
       "minOrder": 1
     },
     {
@@ -253,7 +253,7 @@
       "unit": "m³",
       "description": "Coarse-grade washed sand for drainage applications, garden soil improvement and general landscaping use.",
       "uses": ["Soil improvement", "Drainage layers", "Turf dressing", "Levelling"],
-      "image": "images/bulk-materials/bulk-coarse-sand.jpg",
+      "image": "https://images.unsplash.com/photo-1534126416832-a88fdf2911c2?w=600&h=400&fit=crop&auto=format&q=80",
       "minOrder": 1
     },
     {
@@ -264,7 +264,7 @@
       "unit": "m³",
       "description": "Fine plasticity sand for bricklaying, block laying and mortar applications. Consistent particle size for reliable mixes.",
       "uses": ["Bricklaying mortar", "Block laying", "Paver bedding", "Rendering"],
-      "image": "images/bulk-materials/bulk-brickies-sand.jpg",
+      "image": "https://images.unsplash.com/photo-1502810365585-56ffa361fdde?w=600&h=400&fit=crop&auto=format&q=80",
       "minOrder": 1
     },
     {
@@ -275,7 +275,7 @@
       "unit": "tonne",
       "description": "Clean 10mm blue metal aggregate for concrete mixing, drainage, under-slab applications and driveway construction.",
       "uses": ["Concrete aggregate", "Sub-base drainage", "Under slab", "Driveways"],
-      "image": "images/bulk-materials/bulk-blue-metal.jpg",
+      "image": "https://images.unsplash.com/photo-1535551951406-a19828b0a76b?w=600&h=400&fit=crop&auto=format&q=80",
       "minOrder": 1
     },
     {
@@ -286,7 +286,7 @@
       "unit": "tonne",
       "description": "20mm blue metal aggregate for road base, drainage and concrete applications where larger aggregate is specified.",
       "uses": ["Road base", "Drainage fill", "Large concrete pours", "Sub-base"],
-      "image": "images/bulk-materials/bulk-blue-metal.jpg",
+      "image": "https://images.unsplash.com/photo-1535551951406-a19828b0a76b?w=600&h=400&fit=crop&auto=format&q=80",
       "minOrder": 1
     },
     {
@@ -297,7 +297,7 @@
       "unit": "tonne",
       "description": "Fine crushed aggregate — ideal for compacting under pavers, paths and as a levelling base. Binds firmly when compacted and dampened.",
       "uses": ["Paver bedding", "Path levelling", "Compaction base", "Court surfaces"],
-      "image": "images/bulk-materials/bulk-crusher-dust.jpg",
+      "image": "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=600&h=400&fit=crop&auto=format&q=80",
       "minOrder": 1
     },
     {
@@ -308,7 +308,7 @@
       "unit": "tonne",
       "description": "Rounded river gravel in warm natural tones. Beautiful for feature gardens, water features, dry creek beds and large decorative areas.",
       "uses": ["Feature gardens", "Water features", "Dry creek beds", "Decorative fill"],
-      "image": "images/bulk-materials/bulk-river-gravel.jpg",
+      "image": "https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?w=600&h=400&fit=crop&auto=format&q=80",
       "minOrder": 1
     }
   ]

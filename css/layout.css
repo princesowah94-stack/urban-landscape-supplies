@@ -477,6 +477,26 @@
 .page-hero__title { font-size: var(--text-4xl); }
 .page-hero__desc { margin-top: var(--sp-4); max-width: 56ch; color: var(--color-text-secondary); font-size: var(--text-md); }
 
+/* ─── PAGE HERO — background photo variant ───────────── */
+.page-hero--photo {
+  background-size: cover;
+  background-position: center;
+  border-bottom: none;
+  position: relative;
+  overflow: hidden;
+}
+.page-hero--photo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(34,34,26,0.65);
+}
+.page-hero--photo .container { position: relative; z-index: 1; }
+.page-hero--photo .page-hero__title { color: var(--color-white); }
+.page-hero--photo .page-hero__desc { color: rgba(255,255,255,0.80); }
+.page-hero--photo .eyebrow,
+.page-hero--photo .eyebrow--sage { color: rgba(255,255,255,0.70); }
+
 /* ─── FOOTER ──────────────────────────────────────────────────── */
 .site-footer {
   background: var(--color-charcoal);
