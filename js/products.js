@@ -167,9 +167,8 @@ async function renderProductDetail() {
     document.getElementById('breadcrumb-category-label').textContent = product.categoryLabel;
   }
 
-  // Product image
-  const img = document.getElementById('detail-img');
-  if (img) { img.src = product.image; img.alt = product.name; }
+  // Product image / carousel
+  initProductGallery(product);
 
   // Text content
   setTextById('detail-category', product.categoryLabel);
@@ -248,6 +247,50 @@ function injectProductSchema(product) {
 }
 
 // ─── HELPER ────────────────────────────────────────────────────
+function initProductGallery(product) {
+  const images = (product.images && product.images.length > 1) ? product.images : [product.image];
+  let current = 0;
+  const mainImg = document.getElementById('detail-img');
+  const thumbsWrap = document.getElementById('gallery-thumbs');
+  const prevBtn = document.getElementById('gallery-prev');
+  const nextBtn = document.getElementById('gallery-next');
+
+  function goTo(index) {
+    current = (index + images.length) % images.length;
+    if (mainImg) {
+      mainImg.style.opacity = '0';
+      setTimeout(() => {
+        mainImg.src = images[current];
+        mainImg.style.opacity = '1';
+      }, 120);
+    }
+    document.querySelectorAll('.product-gallery__thumb').forEach((t, i) => {
+      t.classList.toggle('product-gallery__thumb--active', i === current);
+    });
+    thumbsWrap?.querySelector('.product-gallery__thumb--active')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
+
+  if (mainImg) {
+    mainImg.src = images[0];
+    mainImg.alt = product.name;
+  }
+
+  if (images.length > 1) {
+    if (prevBtn) { prevBtn.style.display = ''; prevBtn.onclick = () => goTo(current - 1); }
+    if (nextBtn) { nextBtn.style.display = ''; nextBtn.onclick = () => goTo(current + 1); }
+    if (thumbsWrap) {
+      thumbsWrap.innerHTML = images.map((src, i) => `
+        <button class="product-gallery__thumb${i === 0 ? ' product-gallery__thumb--active' : ''}" data-index="${i}" aria-label="View image ${i + 1}">
+          <img src="${src}" alt="${product.name} — image ${i + 1}" loading="lazy" />
+        </button>
+      `).join('');
+      thumbsWrap.querySelectorAll('.product-gallery__thumb').forEach(btn => {
+        btn.onclick = () => goTo(parseInt(btn.dataset.index));
+      });
+    }
+  }
+}
+
 function setTextById(id, text) {
   const el = document.getElementById(id);
   if (el) el.textContent = text;
