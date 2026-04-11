@@ -1,0 +1,142 @@
+{
+  "zones": {
+    "A": {
+      "label": "Metro Core",
+      "deliveryFee": 15,
+      "freeThreshold": 150,
+      "days": "2–3 business days",
+      "description": "Free delivery on orders over $150. $15 flat fee on orders under $150."
+    },
+    "B": {
+      "label": "Mid-Ring",
+      "deliveryFee": 25,
+      "freeThreshold": 200,
+      "days": "3–5 business days",
+      "description": "Free delivery on orders over $200. $25 flat fee on orders under $200."
+    },
+    "C": {
+      "label": "Outer Metro",
+      "deliveryFee": 45,
+      "freeThreshold": 300,
+      "days": "4–7 business days",
+      "description": "Free delivery on orders over $300. $45 flat fee on orders under $300."
+    }
+  },
+  "regions": [
+    {
+      "slug": "inner-west",
+      "name": "Inner West",
+      "zone": "A",
+      "description": "Serving Newtown, Marrickville, Balmain, Leichhardt and surrounding suburbs."
+    },
+    {
+      "slug": "eastern-suburbs",
+      "name": "Eastern Suburbs",
+      "zone": "A",
+      "description": "Serving Bondi, Coogee, Randwick, Paddington and surrounding suburbs."
+    },
+    {
+      "slug": "north-shore",
+      "name": "North Shore",
+      "zone": "A",
+      "description": "Serving Chatswood, Mosman, Lane Cove, Pymble and surrounding suburbs."
+    },
+    {
+      "slug": "northern-beaches",
+      "name": "Northern Beaches",
+      "zone": "B",
+      "description": "Serving Manly, Dee Why, Narrabeen, Newport and surrounding suburbs."
+    },
+    {
+      "slug": "hills-district",
+      "name": "Hills District",
+      "zone": "B",
+      "description": "Serving Castle Hill, Baulkham Hills, Kellyville, Dural and surrounding suburbs."
+    },
+    {
+      "slug": "parramatta-west",
+      "name": "Parramatta & Western Sydney",
+      "zone": "B",
+      "description": "Serving Parramatta, Auburn, Merrylands, Blacktown and surrounding suburbs."
+    },
+    {
+      "slug": "sutherland-shire",
+      "name": "Sutherland Shire & St George",
+      "zone": "B",
+      "description": "Serving Miranda, Cronulla, Hurstville, Kogarah and surrounding suburbs."
+    },
+    {
+      "slug": "outer-west",
+      "name": "Outer Western Sydney",
+      "zone": "C",
+      "description": "Serving Penrith, Campbelltown, Liverpool, Richmond and surrounding areas."
+    }
+  ],
+  "suburbs": [
+    { "name": "Newtown",        "slug": "newtown",        "postcode": "2042", "region": "inner-west",      "zone": "A", "landmark": "King Street" },
+    { "name": "Marrickville",   "slug": "marrickville",   "postcode": "2204", "region": "inner-west",      "zone": "A", "landmark": "Marrickville Road" },
+    { "name": "Balmain",        "slug": "balmain",        "postcode": "2041", "region": "inner-west",      "zone": "A", "landmark": "Darling Street" },
+    { "name": "Leichhardt",     "slug": "leichhardt",     "postcode": "2040", "region": "inner-west",      "zone": "A", "landmark": "Norton Street" },
+    { "name": "Rozelle",        "slug": "rozelle",        "postcode": "2039", "region": "inner-west",      "zone": "A", "landmark": "Victoria Road" },
+    { "name": "Annandale",      "slug": "annandale",      "postcode": "2038", "region": "inner-west",      "zone": "A", "landmark": "Johnston Street" },
+    { "name": "Dulwich Hill",   "slug": "dulwich-hill",   "postcode": "2203", "region": "inner-west",      "zone": "A", "landmark": "New Canterbury Road" },
+    { "name": "Ashfield",       "slug": "ashfield",       "postcode": "2131", "region": "inner-west",      "zone": "A", "landmark": "Liverpool Road" },
+    { "name": "Burwood",        "slug": "burwood",        "postcode": "2134", "region": "inner-west",      "zone": "A", "landmark": "Burwood Road" },
+    { "name": "Strathfield",    "slug": "strathfield",    "postcode": "2135", "region": "inner-west",      "zone": "A", "landmark": "The Boulevarde" },
+    { "name": "Five Dock",      "slug": "five-dock",      "postcode": "2046", "region": "inner-west",      "zone": "A", "landmark": "Great North Road" },
+    { "name": "Bondi",          "slug": "bondi",          "postcode": "2026", "region": "eastern-suburbs", "zone": "A", "landmark": "Campbell Parade" },
+    { "name": "Coogee",         "slug": "coogee",         "postcode": "2034", "region": "eastern-suburbs", "zone": "A", "landmark": "Coogee Bay Road" },
+    { "name": "Randwick",       "slug": "randwick",       "postcode": "2031", "region": "eastern-suburbs", "zone": "A", "landmark": "Belmore Road" },
+    { "name": "Paddington",     "slug": "paddington",     "postcode": "2021", "region": "eastern-suburbs", "zone": "A", "landmark": "Oxford Street" },
+    { "name": "Surry Hills",    "slug": "surry-hills",    "postcode": "2010", "region": "eastern-suburbs", "zone": "A", "landmark": "Crown Street" },
+    { "name": "Woollahra",      "slug": "woollahra",      "postcode": "2025", "region": "eastern-suburbs", "zone": "A", "landmark": "Queen Street" },
+    { "name": "Maroubra",       "slug": "maroubra",       "postcode": "2035", "region": "eastern-suburbs", "zone": "A", "landmark": "Maroubra Road" },
+    { "name": "Chatswood",      "slug": "chatswood",      "postcode": "2067", "region": "north-shore",     "zone": "A", "landmark": "Victoria Avenue" },
+    { "name": "Mosman",         "slug": "mosman",         "postcode": "2088", "region": "north-shore",     "zone": "A", "landmark": "Military Road" },
+    { "name": "Neutral Bay",    "slug": "neutral-bay",    "postcode": "2089", "region": "north-shore",     "zone": "A", "landmark": "Military Road" },
+    { "name": "Lane Cove",      "slug": "lane-cove",      "postcode": "2066", "region": "north-shore",     "zone": "A", "landmark": "Longueville Road" },
+    { "name": "Willoughby",     "slug": "willoughby",     "postcode": "2068", "region": "north-shore",     "zone": "A", "landmark": "High Street" },
+    { "name": "Pymble",         "slug": "pymble",         "postcode": "2073", "region": "north-shore",     "zone": "A", "landmark": "Pacific Highway" },
+    { "name": "Gordon",         "slug": "gordon",         "postcode": "2072", "region": "north-shore",     "zone": "A", "landmark": "Pacific Highway" },
+    { "name": "Turramurra",     "slug": "turramurra",     "postcode": "2074", "region": "north-shore",     "zone": "A", "landmark": "Pacific Highway" },
+    { "name": "Manly",          "slug": "manly",          "postcode": "2095", "region": "northern-beaches","zone": "B", "landmark": "The Corso" },
+    { "name": "Dee Why",        "slug": "dee-why",        "postcode": "2099", "region": "northern-beaches","zone": "B", "landmark": "Pittwater Road" },
+    { "name": "Narrabeen",      "slug": "narrabeen",      "postcode": "2101", "region": "northern-beaches","zone": "B", "landmark": "Narrabeen Lagoon" },
+    { "name": "Collaroy",       "slug": "collaroy",       "postcode": "2097", "region": "northern-beaches","zone": "B", "landmark": "Pittwater Road" },
+    { "name": "Newport",        "slug": "newport",        "postcode": "2106", "region": "northern-beaches","zone": "B", "landmark": "Barrenjoey Road" },
+    { "name": "Mona Vale",      "slug": "mona-vale",      "postcode": "2103", "region": "northern-beaches","zone": "B", "landmark": "Pittwater Road" },
+    { "name": "Brookvale",      "slug": "brookvale",      "postcode": "2100", "region": "northern-beaches","zone": "B", "landmark": "Pittwater Road" },
+    { "name": "Frenchs Forest", "slug": "frenchs-forest", "postcode": "2086", "region": "northern-beaches","zone": "B", "landmark": "Forest Way" },
+    { "name": "Curl Curl",      "slug": "curl-curl",      "postcode": "2096", "region": "northern-beaches","zone": "B", "landmark": "Curl Curl Beach" },
+    { "name": "Castle Hill",    "slug": "castle-hill",    "postcode": "2154", "region": "hills-district",  "zone": "B", "landmark": "Old Northern Road" },
+    { "name": "Baulkham Hills", "slug": "baulkham-hills", "postcode": "2153", "region": "hills-district",  "zone": "B", "landmark": "Windsor Road" },
+    { "name": "Kellyville",     "slug": "kellyville",     "postcode": "2155", "region": "hills-district",  "zone": "B", "landmark": "Windsor Road" },
+    { "name": "Rouse Hill",     "slug": "rouse-hill",     "postcode": "2155", "region": "hills-district",  "zone": "B", "landmark": "Windsor Road" },
+    { "name": "Pennant Hills",  "slug": "pennant-hills",  "postcode": "2120", "region": "hills-district",  "zone": "B", "landmark": "Pennant Hills Road" },
+    { "name": "Cherrybrook",    "slug": "cherrybrook",    "postcode": "2126", "region": "hills-district",  "zone": "B", "landmark": "Shepherds Drive" },
+    { "name": "Dural",          "slug": "dural",          "postcode": "2158", "region": "hills-district",  "zone": "B", "landmark": "Old Northern Road" },
+    { "name": "Norwest",        "slug": "norwest",        "postcode": "2153", "region": "hills-district",  "zone": "B", "landmark": "Norwest Boulevard" },
+    { "name": "Bella Vista",    "slug": "bella-vista",    "postcode": "2153", "region": "hills-district",  "zone": "B", "landmark": "Old Windsor Road" },
+    { "name": "Parramatta",     "slug": "parramatta",     "postcode": "2150", "region": "parramatta-west", "zone": "B", "landmark": "Church Street" },
+    { "name": "Auburn",         "slug": "auburn",         "postcode": "2144", "region": "parramatta-west", "zone": "B", "landmark": "Auburn Road" },
+    { "name": "Merrylands",     "slug": "merrylands",     "postcode": "2160", "region": "parramatta-west", "zone": "B", "landmark": "Merrylands Road" },
+    { "name": "Blacktown",      "slug": "blacktown",      "postcode": "2148", "region": "parramatta-west", "zone": "B", "landmark": "Main Street" },
+    { "name": "Seven Hills",    "slug": "seven-hills",    "postcode": "2147", "region": "parramatta-west", "zone": "B", "landmark": "Windsor Road" },
+    { "name": "Westmead",       "slug": "westmead",       "postcode": "2145", "region": "parramatta-west", "zone": "B", "landmark": "Hawkesbury Road" },
+    { "name": "Granville",      "slug": "granville",      "postcode": "2142", "region": "parramatta-west", "zone": "B", "landmark": "South Street" },
+    { "name": "Miranda",        "slug": "miranda",        "postcode": "2228", "region": "sutherland-shire","zone": "B", "landmark": "The Kingsway" },
+    { "name": "Sutherland",     "slug": "sutherland",     "postcode": "2232", "region": "sutherland-shire","zone": "B", "landmark": "Eton Street" },
+    { "name": "Cronulla",       "slug": "cronulla",       "postcode": "2230", "region": "sutherland-shire","zone": "B", "landmark": "Cronulla Beach" },
+    { "name": "Hurstville",     "slug": "hurstville",     "postcode": "2220", "region": "sutherland-shire","zone": "B", "landmark": "Forest Road" },
+    { "name": "Kogarah",        "slug": "kogarah",        "postcode": "2217", "region": "sutherland-shire","zone": "B", "landmark": "Railway Parade" },
+    { "name": "Rockdale",       "slug": "rockdale",       "postcode": "2216", "region": "sutherland-shire","zone": "B", "landmark": "Princes Highway" },
+    { "name": "Caringbah",      "slug": "caringbah",      "postcode": "2229", "region": "sutherland-shire","zone": "B", "landmark": "Kingsway" },
+    { "name": "Gymea",          "slug": "gymea",          "postcode": "2227", "region": "sutherland-shire","zone": "B", "landmark": "Gymea Bay Road" },
+    { "name": "Penrith",        "slug": "penrith",        "postcode": "2750", "region": "outer-west",      "zone": "C", "landmark": "High Street" },
+    { "name": "St Marys",       "slug": "st-marys",       "postcode": "2760", "region": "outer-west",      "zone": "C", "landmark": "Queen Street" },
+    { "name": "Richmond",       "slug": "richmond",       "postcode": "2753", "region": "outer-west",      "zone": "C", "landmark": "Windsor Street" },
+    { "name": "Campbelltown",   "slug": "campbelltown",   "postcode": "2560", "region": "outer-west",      "zone": "C", "landmark": "Queen Street" },
+    { "name": "Narellan",       "slug": "narellan",       "postcode": "2567", "region": "outer-west",      "zone": "C", "landmark": "Camden Valley Way" },
+    { "name": "Liverpool",      "slug": "liverpool",      "postcode": "2170", "region": "outer-west",      "zone": "C", "landmark": "Macquarie Street" }
+  ]
+}
