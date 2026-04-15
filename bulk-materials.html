@@ -57,7 +57,7 @@
           </span>
           <div class="nav-dropdown">
             <a href="#soil">Bulk Soil &amp; Turf Blend</a>
-            <a href="#mulch">Bulk Mulch</a>
+            <a href="#mulch">Bulk Mulch &amp; Bark</a>
             <a href="#sand">Bulk Sand</a>
             <a href="#gravel">Bulk Gravel &amp; Screenings</a>
             <div class="nav-dropdown__divider"></div>
@@ -88,7 +88,7 @@
 <nav class="mobile-nav" id="mobile-nav">
   <div class="mobile-nav__section">
     <a href="#soil" class="mobile-nav__link" onclick="closeMobileNav()">Bulk Soil</a>
-    <a href="#mulch" class="mobile-nav__link" onclick="closeMobileNav()">Bulk Mulch</a>
+    <a href="#mulch" class="mobile-nav__link" onclick="closeMobileNav()">Bulk Mulch &amp; Bark</a>
     <a href="#sand" class="mobile-nav__link" onclick="closeMobileNav()">Bulk Sand</a>
     <a href="#gravel" class="mobile-nav__link" onclick="closeMobileNav()">Bulk Gravel</a>
     <a href="bulk-quote.html" class="mobile-nav__link">Get a Quote</a>
@@ -146,7 +146,7 @@
   <div class="container">
     <div class="bulk-cat-nav__inner">
       <a href="#soil"   class="bulk-cat-link active">🌱 Soil &amp; Turf</a>
-      <a href="#mulch"  class="bulk-cat-link">🍂 Mulch</a>
+      <a href="#mulch"  class="bulk-cat-link">🍂 Mulch &amp; Bark</a>
       <a href="#sand"   class="bulk-cat-link">⛱ Sand</a>
       <a href="#gravel" class="bulk-cat-link">⛰ Gravel &amp; Stone</a>
       <a href="bulk-quote.html" class="bulk-cat-link" style="color:var(--color-taupe-light);margin-left:auto">→ Get Quote</a>
@@ -246,8 +246,8 @@
     <div class="bulk-section-header">
       <div class="bulk-section-header__text">
         <p class="bulk-section-header__tag">Category</p>
-        <h2 class="bulk-section-header__title">Bulk Mulch</h2>
-        <p class="bulk-section-header__desc">Coarse hardwood and pine bark mulch for large garden beds, parks and landscaping projects. Sold by the cubic metre.</p>
+        <h2 class="bulk-section-header__title">Bulk Mulch &amp; Bark</h2>
+        <p class="bulk-section-header__desc">Hardwood chip, pine bark and black wood chip mulch for large garden beds, parks and landscaping projects. Sold by the cubic metre.</p>
       </div>
     </div>
     <div class="bulk-grid">
@@ -276,12 +276,12 @@
       </div>
       <div class="bulk-card">
         <div class="bulk-card__image-wrap">
-          <img src="images/hero/hero-faq.jpg" alt="Bulk Pine Bark" class="bulk-card__image" loading="lazy" onerror="this.style.display='none'" />
+          <img src="images/products/pebbles-charcoal-grey-1.jpg" alt="Bulk Pine Bark" class="bulk-card__image" loading="lazy" onerror="this.style.display='none'" />
         </div>
         <div class="bulk-card__body">
           <span class="bulk-card__tag">Sold by m³</span>
           <h3 class="bulk-card__name">Bulk Pine Bark</h3>
-          <p class="bulk-card__desc">Screened pine bark mulch. Suitable for garden beds, playgrounds and natural pathways.</p>
+          <p class="bulk-card__desc">Screened pine bark mulch for garden beds, playgrounds and natural pathways. Natural, long-lasting and slow to break down.</p>
           <div style="display:flex;align-items:baseline;gap:var(--sp-2);margin-top:var(--sp-2)">
             <span class="bulk-card__price">$50</span>
             <span class="bulk-card__price-note">per m³ · min. 1m³</span>
@@ -295,6 +295,30 @@
             </div>
           </div>
           <button class="btn btn--bulk btn--full" style="margin-top:var(--sp-4)" onclick="addToBulkQuote({id:'bulk-pine-bark',name:'Bulk Pine Bark',unit:'m³',price:50}); this.textContent='✓ Added'; setTimeout(()=>{this.textContent='Add to Bulk Quote'},1500)">Add to Bulk Quote</button>
+        </div>
+      </div>
+
+      <div class="bulk-card">
+        <div class="bulk-card__image-wrap">
+          <img src="images/bulk/bulk-hardwood-mulch.jpg" alt="Bulk Black Wood Chip" class="bulk-card__image" loading="lazy" onerror="this.style.display='none'" />
+        </div>
+        <div class="bulk-card__body">
+          <span class="bulk-card__tag">Sold by m³</span>
+          <h3 class="bulk-card__name">Bulk Black Wood Chip</h3>
+          <p class="bulk-card__desc">Dyed black wood chip mulch for a bold, contemporary garden look. Excellent weed suppression and moisture retention at scale.</p>
+          <div style="display:flex;align-items:baseline;gap:var(--sp-2);margin-top:var(--sp-2)">
+            <span class="bulk-card__price">$60</span>
+            <span class="bulk-card__price-note">per m³ · min. 1m³</span>
+          </div>
+          <div class="bulk-card__calculator js-bulk-calc">
+            <p class="bulk-card__calc-label">Coverage Calculator</p>
+            <div class="bulk-calc-row">
+              <div class="bulk-calc-field"><label>Area (m²)</label><input type="number" class="js-calc-area" placeholder="e.g. 25" min="0" /></div>
+              <div class="bulk-calc-field"><label>Depth (cm)</label><input type="number" class="js-calc-depth" value="8" min="0" /></div>
+              <div class="bulk-calc-result"><span class="bulk-calc-result__value js-calc-result">0.00</span><span class="bulk-calc-result__unit">m³ needed</span></div>
+            </div>
+          </div>
+          <button class="btn btn--bulk btn--full" style="margin-top:var(--sp-4)" onclick="addToBulkQuote({id:'bulk-black-wood-chip',name:'Bulk Black Wood Chip',unit:'m³',price:60}); this.textContent='✓ Added'; setTimeout(()=>{this.textContent='Add to Bulk Quote'},1500)">Add to Bulk Quote</button>
         </div>
       </div>
     </div>
@@ -446,7 +470,7 @@
         <p class="footer-col__heading">Bulk Materials</p>
         <div class="footer-col__links">
           <a href="#soil">Bulk Soil &amp; Turf</a>
-          <a href="#mulch">Bulk Mulch</a>
+          <a href="#mulch">Bulk Mulch &amp; Bark</a>
           <a href="#sand">Bulk Sand</a>
           <a href="#gravel">Bulk Gravel</a>
           <a href="bulk-quote.html">Get a Quote</a>
