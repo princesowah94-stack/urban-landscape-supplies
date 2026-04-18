@@ -41,22 +41,6 @@
       "sku": "ULS-PEB-002"
     },
     {
-      "id": "pebbles-black-polished",
-      "name": "Black Polished Pebbles",
-      "category": "pebbles",
-      "categoryLabel": "Decorative Pebbles",
-      "price": 24.95,
-      "unit": "per 20kg bag",
-      "description": "Highly polished jet-black pebbles — a dramatic contrast against light-coloured paving, feature gardens and contemporary landscaping. Smooth to touch.",
-      "features": ["Machine polished", "Jet-black finish", "Multiple size options", "Pool area safe"],
-      "sizes": ["20-30mm", "30-50mm", "50-80mm"],
-      "image": "images/products/pebbles-black-polished-1.jpg",
-      "badge": "Premium",
-      "featured": true,
-      "inStock": true,
-      "sku": "ULS-PEB-003"
-    },
-    {
       "id": "pebbles-charcoal-grey",
       "name": "Charcoal Grey Pebbles",
       "category": "pebbles",
@@ -70,21 +54,6 @@
       "featured": false,
       "inStock": true,
       "sku": "ULS-PEB-004"
-    },
-    {
-      "id": "pebbles-speckled-grey",
-      "name": "Speckled Grey Pebbles",
-      "category": "pebbles",
-      "categoryLabel": "Decorative Pebbles",
-      "price": 19.95,
-      "unit": "per 20kg bag",
-      "description": "Naturally speckled grey pebbles with subtle white and dark flecks. A textured, earthy look for garden beds, feature areas and pathways.",
-      "features": ["Natural speckled finish", "10–25mm size", "Earthy tones", "Versatile use"],
-      "image": "images/products/pebbles-speckled-grey-1.jpg",
-      "badge": null,
-      "featured": false,
-      "inStock": true,
-      "sku": "ULS-PEB-005"
     },
     {
       "id": "pebbles-charcoal-lava",
@@ -127,22 +96,6 @@
       "featured": false,
       "inStock": true,
       "sku": "ULS-PEB-007"
-    },
-    {
-      "id": "pebbles-loose-white",
-      "name": "Loose White Pebbles",
-      "category": "pebbles",
-      "categoryLabel": "Decorative Pebbles",
-      "price": 17.95,
-      "unit": "per 20kg bag",
-      "description": "Natural loose white pebbles with a soft, organic appearance. A versatile and affordable choice for garden beds, pathways and feature areas.",
-      "features": ["Natural loose finish", "Soft white tones", "30–50mm size", "Pool area safe"],
-      "sizes": ["30-50mm"],
-      "image": "images/products/pebbles-white-quartz.jpg",
-      "badge": null,
-      "featured": false,
-      "inStock": true,
-      "sku": "ULS-PEB-008"
     },
     {
       "id": "mulch-pine-bark",
