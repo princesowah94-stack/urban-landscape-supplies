@@ -162,7 +162,9 @@ async function initSuburbPage() {
   const root = document.getElementById('suburb-page-root');
   if (!root) return;
 
-  const slug = new URLSearchParams(window.location.search).get('suburb');
+  const slug = new URLSearchParams(window.location.search).get('suburb') ||
+    window.location.pathname.replace(/\/$/, '').split('/').pop().replace(/\.html$/, '') ||
+    null;
   if (!slug) { window.location.href = '/delivery-areas'; return; }
 
   let data;
