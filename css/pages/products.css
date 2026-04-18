@@ -172,38 +172,39 @@
   top: calc(var(--utility-height) + var(--header-height) + var(--sp-6));
 }
 
-/* Outer wrapper */
 .pgal {
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
 }
 
-/* Clipping window */
+/* padding-top trick: always creates a square box regardless of browser */
 .pgal__viewport {
   position: relative;
-  aspect-ratio: 1 / 1;
-  background: var(--color-gray-100);
+  width: 100%;
+  padding-top: 100%;          /* square — content fills via absolute children */
   border-radius: var(--radius-lg);
+  background: var(--color-gray-100);
   overflow: hidden;
 }
 
-/* Sliding track — images sit side-by-side horizontally */
+/* Track fills the viewport absolutely — no height: 100% ambiguity */
 .pgal__track {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   display: flex;
   flex-direction: row;
-  width: 100%;
-  height: 100%;
+  flex-wrap: nowrap;
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
 }
 
-/* Each slide takes the full width/height of the viewport */
+/* Each slide: same dimensions as track (= viewport) */
 .pgal__slide {
-  flex: 0 0 100%;
-  width: 100%;
+  flex: 0 0 100%;   /* 100% of flex container (track) = viewport width ✓ */
+  min-width: 100%;
   height: 100%;
-  overflow: hidden;
 }
 
 .pgal__slide img {
@@ -215,7 +216,7 @@
   -webkit-user-drag: none;
 }
 
-/* Left / right arrow buttons */
+/* Arrow buttons */
 .pgal__arrow {
   position: absolute;
   top: 50%;
@@ -231,9 +232,9 @@
   justify-content: center;
   cursor: pointer;
   z-index: 3;
-  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
   padding: 0;
   color: var(--color-charcoal);
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
 }
 
 .pgal__arrow:hover {
@@ -245,7 +246,7 @@
 .pgal__arrow--prev { left: var(--sp-3); }
 .pgal__arrow--next { right: var(--sp-3); }
 
-/* Dot indicators */
+/* Dots */
 .pgal__dots {
   position: absolute;
   bottom: var(--sp-3);
@@ -260,7 +261,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.5);
   border: none;
   padding: 0;
   cursor: pointer;
@@ -272,7 +273,7 @@
   transform: scale(1.35);
 }
 
-/* "1 / 7" counter */
+/* Counter */
 .pgal__counter {
   text-align: center;
   font-size: var(--text-xs);
