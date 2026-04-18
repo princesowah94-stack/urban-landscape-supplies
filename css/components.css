@@ -193,6 +193,25 @@
   overflow: hidden;
 }
 
+.product-card__sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: var(--sp-3);
+}
+
+.product-card__sizes span {
+  font-size: 10px;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  background: var(--color-gray-100);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+
 .product-card__footer {
   margin-top: auto;
   display: flex;

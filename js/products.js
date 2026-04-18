@@ -48,6 +48,7 @@ function buildProductCard(product) {
         <span class="product-card__category">${product.categoryLabel}</span>
         <h3 class="product-card__name">${product.name}</h3>
         <p class="product-card__desc">${product.description}</p>
+        ${product.sizes && product.sizes.length > 1 ? `<div class="product-card__sizes">${product.sizes.map(s => `<span>${s}</span>`).join('')}</div>` : ''}
         <div class="product-card__footer">
           <div>
             <span class="product-card__price">$${product.price.toFixed(2)}</span>
@@ -178,6 +179,36 @@ async function renderProductDetail() {
   setTextById('detail-unit', product.unit);
   setTextById('detail-sku', product.sku);
 
+  // Size selector
+  const sizeWrap = document.getElementById('detail-size-selector');
+  if (sizeWrap) {
+    if (product.sizes && product.sizes.length > 0) {
+      let selectedSize = product.sizes[0];
+      sizeWrap.innerHTML = `
+        <div class="size-selector">
+          <p class="size-selector__label">Size</p>
+          <div class="size-selector__options">
+            ${product.sizes.map((s, i) => `
+              <button class="size-btn${i === 0 ? ' size-btn--active' : ''}" data-size="${s}">${s}</button>
+            `).join('')}
+          </div>
+          ${product.supplier ? `<p class="size-selector__supplier">Supplied by ${product.supplier}</p>` : ''}
+        </div>
+      `;
+      sizeWrap.querySelectorAll('.size-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          selectedSize = btn.dataset.size;
+          sizeWrap.querySelectorAll('.size-btn').forEach(b => b.classList.remove('size-btn--active'));
+          btn.classList.add('size-btn--active');
+        });
+      });
+      // Expose for Add to Cart
+      sizeWrap._getSelectedSize = () => selectedSize;
+    } else {
+      sizeWrap.innerHTML = '';
+    }
+  }
+
   // Features list
   const featList = document.getElementById('detail-features');
   if (featList && product.features) {
@@ -198,7 +229,10 @@ async function renderProductDetail() {
     } else {
       addBtn.onclick = () => {
         const qty = parseInt(document.getElementById('detail-qty')?.value || '1', 10);
-        addToCart({ id: product.id, name: product.name, price: product.price, unit: product.unit, image: product.image, quantity: qty });
+        const sizeWrap = document.getElementById('detail-size-selector');
+        const selectedSize = sizeWrap?._getSelectedSize?.();
+        const cartName = selectedSize ? `${product.name} (${selectedSize})` : product.name;
+        addToCart({ id: product.id + (selectedSize ? `-${selectedSize}` : ''), name: cartName, price: product.price, unit: product.unit, image: product.image, quantity: qty });
         addBtn.textContent = '✓ Added to Cart';
         addBtn.classList.add('added');
         setTimeout(() => { addBtn.textContent = 'Add to Cart'; addBtn.classList.remove('added'); }, 1600);
@@ -250,44 +284,78 @@ function injectProductSchema(product) {
 function initProductGallery(product) {
   const images = (product.images && product.images.length > 1) ? product.images : [product.image];
   let current = 0;
-  const mainImg = document.getElementById('detail-img');
-  const thumbsWrap = document.getElementById('gallery-thumbs');
-  const prevBtn = document.getElementById('gallery-prev');
-  const nextBtn = document.getElementById('gallery-next');
+  const gallery = document.getElementById('product-gallery');
+  if (!gallery) return;
+
+  const hasMultiple = images.length > 1;
+  const svgPrev = `<svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>`;
+  const svgNext = `<svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>`;
+
+  gallery.innerHTML = `
+    <div class="product-gallery__stage">
+      <div class="product-gallery__track" id="gallery-track">
+        ${images.map((src, i) => `
+          <div class="product-gallery__slide">
+            <img src="${src}" alt="${product.name}${images.length > 1 ? ' — image ' + (i + 1) : ''}"
+              loading="${i === 0 ? 'eager' : 'lazy'}"
+              onerror="this.style.background='var(--color-gray-200)'" />
+          </div>
+        `).join('')}
+      </div>
+      ${hasMultiple ? `
+        <button class="product-gallery__btn product-gallery__btn--prev" id="gallery-prev" aria-label="Previous image">${svgPrev}</button>
+        <button class="product-gallery__btn product-gallery__btn--next" id="gallery-next" aria-label="Next image">${svgNext}</button>
+        <div class="product-gallery__dots" id="gallery-dots">
+          ${images.map((_, i) => `<span class="product-gallery__dot${i === 0 ? ' product-gallery__dot--active' : ''}" data-index="${i}"></span>`).join('')}
+        </div>
+      ` : ''}
+    </div>
+    ${hasMultiple ? `
+    <div class="product-gallery__thumbs" id="gallery-thumbs">
+      ${images.map((src, i) => `
+        <button class="product-gallery__thumb${i === 0 ? ' product-gallery__thumb--active' : ''}" data-index="${i}" aria-label="View image ${i + 1}">
+          <img src="${src}" alt="${product.name} — ${i + 1}" loading="lazy" />
+        </button>
+      `).join('')}
+    </div>
+    ` : ''}
+  `;
+
+  const track = document.getElementById('gallery-track');
 
   function goTo(index) {
     current = (index + images.length) % images.length;
-    if (mainImg) {
-      mainImg.style.opacity = '0';
-      setTimeout(() => {
-        mainImg.src = images[current];
-        mainImg.style.opacity = '1';
-      }, 120);
-    }
-    document.querySelectorAll('.product-gallery__thumb').forEach((t, i) => {
+    track.style.transform = `translateX(-${current * 100}%)`;
+
+    gallery.querySelectorAll('.product-gallery__thumb').forEach((t, i) => {
       t.classList.toggle('product-gallery__thumb--active', i === current);
     });
-    thumbsWrap?.querySelector('.product-gallery__thumb--active')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    gallery.querySelectorAll('.product-gallery__dot').forEach((d, i) => {
+      d.classList.toggle('product-gallery__dot--active', i === current);
+    });
+    gallery.querySelector('.product-gallery__thumb--active')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
 
-  if (mainImg) {
-    mainImg.src = images[0];
-    mainImg.alt = product.name;
-  }
+  if (hasMultiple) {
+    document.getElementById('gallery-prev')?.addEventListener('click', () => goTo(current - 1));
+    document.getElementById('gallery-next')?.addEventListener('click', () => goTo(current + 1));
 
-  if (images.length > 1) {
-    if (prevBtn) { prevBtn.style.display = ''; prevBtn.onclick = () => goTo(current - 1); }
-    if (nextBtn) { nextBtn.style.display = ''; nextBtn.onclick = () => goTo(current + 1); }
-    if (thumbsWrap) {
-      thumbsWrap.innerHTML = images.map((src, i) => `
-        <button class="product-gallery__thumb${i === 0 ? ' product-gallery__thumb--active' : ''}" data-index="${i}" aria-label="View image ${i + 1}">
-          <img src="${src}" alt="${product.name} — image ${i + 1}" loading="lazy" />
-        </button>
-      `).join('');
-      thumbsWrap.querySelectorAll('.product-gallery__thumb').forEach(btn => {
-        btn.onclick = () => goTo(parseInt(btn.dataset.index));
-      });
-    }
+    gallery.querySelectorAll('.product-gallery__thumb').forEach(btn => {
+      btn.addEventListener('click', () => goTo(parseInt(btn.dataset.index)));
+    });
+
+    gallery.querySelectorAll('.product-gallery__dot').forEach(dot => {
+      dot.addEventListener('click', () => goTo(parseInt(dot.dataset.index)));
+    });
+
+    // Touch swipe
+    let touchStartX = 0;
+    const stage = gallery.querySelector('.product-gallery__stage');
+    stage.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    stage.addEventListener('touchend', e => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) goTo(current + (diff > 0 ? 1 : -1));
+    });
   }
 }
 
