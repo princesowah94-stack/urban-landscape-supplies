@@ -4,3 +4,7 @@ backend/node_modules/
 backend/.env
 .DS_Store
 *.log
+.vercel
+
+# Raw project assets (large source files)
+Project Assets/
