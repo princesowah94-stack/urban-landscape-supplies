@@ -287,76 +287,61 @@ function initProductGallery(product) {
   const gallery = document.getElementById('product-gallery');
   if (!gallery) return;
 
-  const hasMultiple = images.length > 1;
-  const svgPrev = `<svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>`;
-  const svgNext = `<svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>`;
+  const multi = images.length > 1;
+  const chevL = `<svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>`;
+  const chevR = `<svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>`;
 
   gallery.innerHTML = `
-    <div class="product-gallery__stage">
-      <div class="product-gallery__track" id="gallery-track">
-        ${images.map((src, i) => `
-          <div class="product-gallery__slide">
-            <img src="${src}" alt="${product.name}${images.length > 1 ? ' — image ' + (i + 1) : ''}"
-              loading="${i === 0 ? 'eager' : 'lazy'}"
-              onerror="this.style.background='var(--color-gray-200)'" />
-          </div>
-        `).join('')}
-      </div>
-      ${hasMultiple ? `
-        <button class="product-gallery__btn product-gallery__btn--prev" id="gallery-prev" aria-label="Previous image">${svgPrev}</button>
-        <button class="product-gallery__btn product-gallery__btn--next" id="gallery-next" aria-label="Next image">${svgNext}</button>
-        <div class="product-gallery__dots" id="gallery-dots">
-          ${images.map((_, i) => `<span class="product-gallery__dot${i === 0 ? ' product-gallery__dot--active' : ''}" data-index="${i}"></span>`).join('')}
+    <div class="pgal">
+      <div class="pgal__viewport">
+        <div class="pgal__track" id="pgal-track">
+          ${images.map((src, i) => `
+            <div class="pgal__slide">
+              <img src="${src}" alt="${product.name}" loading="${i === 0 ? 'eager' : 'lazy'}" onerror="this.style.background='var(--color-gray-200)'" />
+            </div>
+          `).join('')}
         </div>
+
+        ${multi ? `
+          <button class="pgal__arrow pgal__arrow--prev" id="pgal-prev" aria-label="Previous image">${chevL}</button>
+          <button class="pgal__arrow pgal__arrow--next" id="pgal-next" aria-label="Next image">${chevR}</button>
+          <div class="pgal__dots">
+            ${images.map((_, i) => `<button class="pgal__dot${i === 0 ? ' pgal__dot--on' : ''}" data-i="${i}" aria-label="Image ${i + 1}"></button>`).join('')}
+          </div>
+        ` : ''}
+      </div>
+
+      ${multi ? `
+        <div class="pgal__counter" id="pgal-counter">1 / ${images.length}</div>
       ` : ''}
     </div>
-    ${hasMultiple ? `
-    <div class="product-gallery__thumbs" id="gallery-thumbs">
-      ${images.map((src, i) => `
-        <button class="product-gallery__thumb${i === 0 ? ' product-gallery__thumb--active' : ''}" data-index="${i}" aria-label="View image ${i + 1}">
-          <img src="${src}" alt="${product.name} — ${i + 1}" loading="lazy" />
-        </button>
-      `).join('')}
-    </div>
-    ` : ''}
   `;
 
-  const track = document.getElementById('gallery-track');
+  if (!multi) return;
+
+  const track   = document.getElementById('pgal-track');
+  const counter = document.getElementById('pgal-counter');
+  const dots    = gallery.querySelectorAll('.pgal__dot');
 
   function goTo(index) {
     current = (index + images.length) % images.length;
     track.style.transform = `translateX(-${current * 100}%)`;
-
-    gallery.querySelectorAll('.product-gallery__thumb').forEach((t, i) => {
-      t.classList.toggle('product-gallery__thumb--active', i === current);
-    });
-    gallery.querySelectorAll('.product-gallery__dot').forEach((d, i) => {
-      d.classList.toggle('product-gallery__dot--active', i === current);
-    });
-    gallery.querySelector('.product-gallery__thumb--active')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    if (counter) counter.textContent = `${current + 1} / ${images.length}`;
+    dots.forEach((d, i) => d.classList.toggle('pgal__dot--on', i === current));
   }
 
-  if (hasMultiple) {
-    document.getElementById('gallery-prev')?.addEventListener('click', () => goTo(current - 1));
-    document.getElementById('gallery-next')?.addEventListener('click', () => goTo(current + 1));
+  document.getElementById('pgal-prev').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('pgal-next').addEventListener('click', () => goTo(current + 1));
+  dots.forEach(d => d.addEventListener('click', () => goTo(parseInt(d.dataset.i))));
 
-    gallery.querySelectorAll('.product-gallery__thumb').forEach(btn => {
-      btn.addEventListener('click', () => goTo(parseInt(btn.dataset.index)));
-    });
-
-    gallery.querySelectorAll('.product-gallery__dot').forEach(dot => {
-      dot.addEventListener('click', () => goTo(parseInt(dot.dataset.index)));
-    });
-
-    // Touch swipe
-    let touchStartX = 0;
-    const stage = gallery.querySelector('.product-gallery__stage');
-    stage.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-    stage.addEventListener('touchend', e => {
-      const diff = touchStartX - e.changedTouches[0].clientX;
-      if (Math.abs(diff) > 40) goTo(current + (diff > 0 ? 1 : -1));
-    });
-  }
+  // Touch swipe
+  let tx = 0;
+  const vp = gallery.querySelector('.pgal__viewport');
+  vp.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  vp.addEventListener('touchend', e => {
+    const diff = tx - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) goTo(current + (diff > 0 ? 1 : -1));
+  });
 }
 
 function setTextById(id, text) {

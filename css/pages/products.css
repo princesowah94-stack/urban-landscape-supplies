@@ -166,16 +166,21 @@
   background: var(--color-gray-100);
 }
 
-/* ─── PRODUCT GALLERY (sliding carousel) ─────────────────────── */
+/* ─── PRODUCT GALLERY (carousel) ─────────────────────────────── */
 .product-gallery {
   position: sticky;
   top: calc(var(--utility-height) + var(--header-height) + var(--sp-6));
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
 }
 
-.product-gallery__stage {
+/* Outer wrapper */
+.pgal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* Clipping window */
+.pgal__viewport {
   position: relative;
   aspect-ratio: 1 / 1;
   background: var(--color-gray-100);
@@ -183,22 +188,25 @@
   overflow: hidden;
 }
 
-/* Sliding track — all images laid out side by side */
-.product-gallery__track {
+/* Sliding track — images sit side-by-side horizontally */
+.pgal__track {
   display: flex;
+  flex-direction: row;
   width: 100%;
   height: 100%;
-  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
 }
 
-.product-gallery__slide {
+/* Each slide takes the full width/height of the viewport */
+.pgal__slide {
   flex: 0 0 100%;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
-.product-gallery__slide img {
+.pgal__slide img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -207,93 +215,70 @@
   -webkit-user-drag: none;
 }
 
-/* Prev / next buttons */
-.product-gallery__btn {
+/* Left / right arrow buttons */
+.pgal__arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255,255,255,0.92);
-  border: none;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  background: rgba(255,255,255,0.95);
+  border: none;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.14);
-  z-index: 2;
-  transition: background 0.15s, transform 0.15s;
+  z-index: 3;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
   padding: 0;
+  color: var(--color-charcoal);
 }
 
-.product-gallery__btn:hover {
+.pgal__arrow:hover {
   background: var(--color-white);
-  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.22);
+  transform: translateY(-50%) scale(1.06);
 }
 
-.product-gallery__btn--prev { left: var(--sp-3); }
-.product-gallery__btn--next { right: var(--sp-3); }
+.pgal__arrow--prev { left: var(--sp-3); }
+.pgal__arrow--next { right: var(--sp-3); }
 
 /* Dot indicators */
-.product-gallery__dots {
+.pgal__dots {
   position: absolute;
   bottom: var(--sp-3);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: var(--sp-1);
+  gap: 6px;
   z-index: 2;
 }
 
-.product-gallery__dot {
-  width: 6px;
-  height: 6px;
+.pgal__dot {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.55);
+  border: none;
+  padding: 0;
   cursor: pointer;
   transition: background 0.2s, transform 0.2s;
-  padding: 0;
-  border: none;
 }
 
-.product-gallery__dot--active {
+.pgal__dot--on {
   background: var(--color-white);
-  transform: scale(1.3);
+  transform: scale(1.35);
 }
 
-/* Thumbnail strip */
-.product-gallery__thumbs {
-  display: flex;
-  gap: var(--sp-2);
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding-bottom: 2px;
+/* "1 / 7" counter */
+.pgal__counter {
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  letter-spacing: var(--tracking-wide);
 }
-
-.product-gallery__thumbs::-webkit-scrollbar { display: none; }
-
-.product-gallery__thumb {
-  flex: 0 0 72px;
-  height: 72px;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  border: 2px solid var(--color-border);
-  cursor: pointer;
-  background: none;
-  padding: 0;
-  transition: border-color 0.15s;
-}
-
-.product-gallery__thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.product-gallery__thumb--active { border-color: var(--color-sage); }
-.product-gallery__thumb:hover:not(.product-gallery__thumb--active) { border-color: var(--color-taupe); }
 
 /* ─── SIZE SELECTOR ───────────────────────────────────────────── */
 .size-selector {
