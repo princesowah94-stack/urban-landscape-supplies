@@ -139,15 +139,16 @@
 /* Dropdown */
 .nav-dropdown {
   position: absolute;
-  top: calc(100% + 6px);
+  top: 100%;
   left: 50%;
-  transform: translateX(-50%) translateY(-6px);
+  transform: translateX(-50%) translateY(-4px);
   background: var(--color-white);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   min-width: 220px;
   padding: var(--sp-2);
+  padding-top: calc(var(--sp-2) + 6px);
   opacity: 0;
   pointer-events: none;
   transition:
