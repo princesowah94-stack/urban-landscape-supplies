@@ -32,6 +32,19 @@ function buildProductCard(product) {
     ? `<span class="badge ${product.badge === 'Bestseller' ? 'badge--dark' : 'badge--sage'} product-card__badge">${product.badge}</span>`
     : '';
 
+  const pkgToggle = product.bulkBagPrice ? `
+    <div class="pkg-toggle" data-id="${product.id}">
+      <button class="pkg-btn pkg-btn--active" data-pkg="bag"
+        data-price="${product.price}" data-unit="${product.unit}">
+        20kg Bags
+      </button>
+      <button class="pkg-btn" data-pkg="bulk"
+        data-price="${product.bulkBagPrice}" data-unit="per tonne bulk bag">
+        1 Tonne Bulk Bag
+      </button>
+    </div>
+  ` : '';
+
   return `
     <article class="product-card" data-id="${product.id}" onclick="window.location='product-detail.html?id=${product.id}'">
       <div class="product-card__image-wrap">
@@ -49,10 +62,11 @@ function buildProductCard(product) {
         <h3 class="product-card__name">${product.name}</h3>
         <p class="product-card__desc">${product.description}</p>
         ${product.sizes && product.sizes.length > 1 ? `<div class="product-card__sizes">${product.sizes.map(s => `<span>${s}</span>`).join('')}</div>` : ''}
+        ${pkgToggle}
         <div class="product-card__footer">
           <div>
-            <span class="product-card__price">$${product.price.toFixed(2)}</span>
-            <span class="product-card__price-unit"> ${product.unit}</span>
+            <span class="product-card__price" id="price-${product.id}">$${product.price.toFixed(2)}</span>
+            <span class="product-card__price-unit" id="unit-${product.id}"> ${product.unit}</span>
           </div>
           <button
             class="product-card__add-btn"
@@ -71,12 +85,16 @@ function addToCartFromCard(productId) {
   const product = getProductById(productId);
   if (!product) return;
 
+  const toggle = document.querySelector(`.pkg-toggle[data-id="${productId}"]`);
+  const activeBtn = toggle?.querySelector('.pkg-btn--active');
+  const isBulk = activeBtn?.dataset.pkg === 'bulk';
+
   addToCart({
-    id: product.id,
-    name: product.name,
-    price: product.price,
-    unit: product.unit,
-    image: product.image,
+    id:       isBulk ? `${product.id}-bulk` : product.id,
+    name:     isBulk ? `${product.name} (1 Tonne Bulk Bag)` : product.name,
+    price:    isBulk ? product.bulkBagPrice : product.price,
+    unit:     isBulk ? 'per tonne bulk bag' : product.unit,
+    image:    product.image,
     quantity: 1
   });
 
@@ -142,6 +160,24 @@ async function renderCatalog(containerId, { category = null, search = '' } = {})
 
   container.innerHTML = filtered.map(buildProductCard).join('');
   updateResultCount(filtered.length);
+  initPackagingToggles(containerId);
+}
+
+// ─── PACKAGING TOGGLE ──────────────────────────────────────────
+function initPackagingToggles(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.addEventListener('click', e => {
+    const btn = e.target.closest('.pkg-btn');
+    if (!btn) return;
+    e.stopPropagation();
+    const toggle = btn.closest('.pkg-toggle');
+    toggle.querySelectorAll('.pkg-btn').forEach(b => b.classList.remove('pkg-btn--active'));
+    btn.classList.add('pkg-btn--active');
+    const id = toggle.dataset.id;
+    document.getElementById(`price-${id}`).textContent = `$${parseFloat(btn.dataset.price).toFixed(2)}`;
+    document.getElementById(`unit-${id}`).textContent = ` ${btn.dataset.unit}`;
+  });
 }
 
 // ─── RENDER PRODUCT DETAIL ─────────────────────────────────────

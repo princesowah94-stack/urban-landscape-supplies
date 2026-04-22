@@ -757,4 +757,33 @@
   transition: opacity var(--duration-drawer) var(--ease-out);
 }
 
+/* ─── PACKAGING TOGGLE ───────────────────────────────────────── */
+.pkg-toggle {
+  display: flex;
+  gap: 6px;
+  margin-bottom: var(--sp-3);
+}
+.pkg-btn {
+  flex: 1;
+  padding: var(--sp-2);
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-border-strong);
+  background: var(--color-white);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.pkg-btn:hover { border-color: var(--color-sage); color: var(--color-sage-dark); }
+.pkg-btn--active {
+  border-color: var(--color-sage);
+  background: rgba(103,109,75,0.08);
+  color: var(--color-sage-dark);
+}
+
 .overlay.active { opacity: 1; pointer-events: all; }
