@@ -158,7 +158,7 @@ function initBulkCalculators() {
     const recalc = () => {
       const vol = calcBulkVolume(areaInput?.value, depthInput?.value);
       if (resultEl) {
-        resultEl.querySelector('.bulk-calc-result__value').textContent = vol;
+        resultEl.textContent = vol;
       }
     };
 
