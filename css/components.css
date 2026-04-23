@@ -787,3 +787,16 @@
 }
 
 .overlay.active { opacity: 1; pointer-events: all; }
+
+/* ─── STOCK BADGE ────────────────────────────────────────────── */
+.stock-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+.stock-badge--in  { color: var(--color-success, #22c55e); }
+.stock-badge--low { color: #f59e0b; }
+.stock-badge--out { color: var(--color-text-muted); }

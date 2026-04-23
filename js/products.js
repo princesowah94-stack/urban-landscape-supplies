@@ -5,6 +5,7 @@
 let allProducts = [];
 let allBulkMaterials = [];
 let productsLoaded = false;
+let stockMap = {};
 
 // ─── DATA LOADING ──────────────────────────────────────────────
 async function loadProducts() {
@@ -24,6 +25,23 @@ async function loadProducts() {
 
 function getProductById(id) {
   return allProducts.find(p => p.id === id) || null;
+}
+
+async function loadStock() {
+  try {
+    const res = await fetch('/api/stock');
+    if (!res.ok) return;
+    const items = await res.json();
+    stockMap = Object.fromEntries(items.map(i => [i.product_id, i]));
+  } catch { /* stock display is non-critical */ }
+}
+
+function stockBadgeHtml(productId) {
+  const inv = stockMap[productId];
+  if (!inv) return '';
+  if (inv.stock === 0) return `<span class="stock-badge stock-badge--out">Out of stock</span>`;
+  if (inv.stock <= inv.low_stock_threshold) return `<span class="stock-badge stock-badge--low">Low stock</span>`;
+  return `<span class="stock-badge stock-badge--in">In stock</span>`;
 }
 
 // ─── PRODUCT CARD HTML ─────────────────────────────────────────
@@ -67,13 +85,14 @@ function buildProductCard(product) {
           <div>
             <span class="product-card__price" id="price-${product.id}">$${product.price.toFixed(2)}</span>
             <span class="product-card__price-unit" id="unit-${product.id}"> ${product.unit}</span>
+            ${stockBadgeHtml(product.id)}
           </div>
           <button
             class="product-card__add-btn"
             onclick="event.stopPropagation(); addToCartFromCard('${product.id}')"
-            ${product.inStock ? '' : 'disabled'}
+            ${(product.inStock && (stockMap[product.id]?.stock ?? 1) > 0) ? '' : 'disabled'}
             aria-label="Add ${product.name} to cart"
-          >${product.inStock ? 'Add to Cart' : 'Out of Stock'}</button>
+          >${(product.inStock && (stockMap[product.id]?.stock ?? 1) > 0) ? 'Add to Cart' : 'Out of Stock'}</button>
         </div>
       </div>
     </article>
@@ -116,8 +135,8 @@ async function renderFeaturedProducts(containerId, count = 4) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  const { products } = await loadProducts();
-  const featured = products.filter(p => p.featured).slice(0, count);
+  await Promise.all([loadProducts(), loadStock()]);
+  const featured = allProducts.filter(p => p.featured).slice(0, count);
 
   container.innerHTML = featured.map(buildProductCard).join('');
 }
@@ -129,9 +148,9 @@ async function renderCatalog(containerId, { category = null, search = '' } = {})
 
   container.innerHTML = '<div class="loading-cards">' + Array(8).fill('<div class="product-card-skeleton"></div>').join('') + '</div>';
 
-  const { products } = await loadProducts();
+  await Promise.all([loadProducts(), loadStock()]);
 
-  let filtered = products;
+  let filtered = allProducts;
 
   if (category && category !== 'all') {
     filtered = filtered.filter(p => p.category === category);

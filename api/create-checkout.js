@@ -1,6 +1,7 @@
 import { Client, Environment, ApiError } from 'square';
 import { createRequire } from 'module';
 import { corsHeaders, optionsResponse } from './_cors.js';
+import { supabase } from './_supabase.js';
 
 const require = createRequire(import.meta.url);
 
@@ -8,7 +9,11 @@ const require = createRequire(import.meta.url);
 let productPrices = {};
 try {
   const data = require('../data/products.json');
-  data.products.forEach(p => { productPrices[p.id] = p.price; });
+  data.products.forEach(p => {
+    productPrices[p.id] = p.price;
+    // Bulk bag variant (id ends in -bulk)
+    if (p.bulkBagPrice) productPrices[`${p.id}-bulk`] = p.bulkBagPrice;
+  });
 } catch (e) {
   console.warn('Could not load products.json:', e.message);
 }
@@ -106,10 +111,39 @@ export async function POST(request) {
     });
 
     const checkoutUrl = response.result?.paymentLink?.url;
+    const squareOrderId = response.result?.paymentLink?.orderId;
     if (!checkoutUrl) throw new Error('Square did not return a checkout URL');
 
+    // Save order to Supabase (non-blocking)
+    const totalCents = validatedItems.reduce((s, i) => s + Math.round(i.price * 100) * i.quantity, 0)
+      + (delivery?.method === 'express' ? 1500 : 0);
+
+    supabase.from('orders').insert({
+      customer_name:    `${customer?.firstName || ''} ${customer?.lastName || ''}`.trim(),
+      customer_email:   customer?.email || null,
+      customer_phone:   customer?.phone || null,
+      delivery_address: delivery ? [delivery.address, delivery.address2, delivery.suburb, delivery.state, delivery.postcode].filter(Boolean).join(', ') : null,
+      notes:            delivery?.notes || null,
+      status:           'pending_payment',
+      total_cents:      totalCents,
+      square_order_id:  squareOrderId || null,
+    }).select().single().then(({ data: order, error }) => {
+      if (error) { console.error('Supabase order insert error:', error.message); return; }
+      // Save line items
+      const lineItems = validatedItems.map(i => ({
+        order_id:    order.id,
+        product_id:  i.id,
+        name:        i.name,
+        quantity:    i.quantity,
+        price_cents: Math.round(i.price * 100),
+      }));
+      supabase.from('order_items').insert(lineItems).then(({ error: err }) => {
+        if (err) console.error('Supabase order_items insert error:', err.message);
+      });
+    });
+
     return Response.json(
-      { checkoutUrl, orderId: response.result?.paymentLink?.orderId },
+      { checkoutUrl, orderId: squareOrderId },
       { headers: corsHeaders(request) }
     );
 

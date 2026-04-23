@@ -7,6 +7,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2",
     "nodemailer": "^8.0.5",
     "square": "^39.0.0"
   }

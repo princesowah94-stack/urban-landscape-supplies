@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { corsHeaders, optionsResponse } from './_cors.js';
+import { supabase } from './_supabase.js';
 
 const SUBJECT_LABELS = {
   order: 'Order enquiry',
@@ -45,6 +46,16 @@ export async function POST(request) {
         ``,
         message,
       ].join('\n'),
+    });
+
+    // Save to Supabase (non-blocking — don't fail the request if DB is down)
+    supabase.from('contacts').insert({
+      name, email,
+      phone: phone || null,
+      message,
+      source: subject ? `contact-form:${subject}` : 'contact-form',
+    }).then(({ error }) => {
+      if (error) console.error('Supabase contact insert error:', error.message);
     });
 
     return Response.json({ success: true }, { headers: corsHeaders(request) });
