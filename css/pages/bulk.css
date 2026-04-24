@@ -47,9 +47,6 @@
 .bulk-cat-nav {
   background: #242618;
   border-bottom: 1px solid rgba(255,255,255,0.06);
-  position: sticky;
-  top: calc(var(--utility-height) + var(--header-height));
-  z-index: var(--z-raised);
 }
 
 .bulk-cat-nav__inner {
@@ -84,7 +81,7 @@
 .bulk-material-section {
   background: var(--color-bg-bulk);
   padding: var(--sp-16) 0;
-  scroll-margin-top: calc(var(--utility-height) + var(--header-height) + 52px);
+  scroll-margin-top: calc(var(--utility-height) + var(--header-height));
 }
 
 .bulk-material-section + .bulk-material-section {
