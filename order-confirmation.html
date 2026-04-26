@@ -50,22 +50,14 @@
 
     <div style="width:72px;height:72px;background:rgba(74,124,89,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto var(--sp-6);font-size:32px">✓</div>
 
-    <p class="eyebrow eyebrow--sage" style="margin-bottom:var(--sp-2)">Payment Successful</p>
-    <h1 style="font-size:var(--text-4xl);margin-bottom:var(--sp-4)">Order Confirmed!</h1>
-    <p style="font-size:var(--text-md);color:var(--color-text-secondary);max-width:48ch;margin:0 auto var(--sp-6);line-height:var(--leading-normal)">
+    <p class="eyebrow eyebrow--sage" style="margin-bottom:var(--sp-2)" id="order-eyebrow">Payment Successful</p>
+    <h1 style="font-size:var(--text-4xl);margin-bottom:var(--sp-4)" id="order-heading">Order Confirmed!</h1>
+    <p style="font-size:var(--text-md);color:var(--color-text-secondary);max-width:48ch;margin:0 auto var(--sp-6);line-height:var(--leading-normal)" id="order-blurb">
       Thank you — your order has been placed and payment received. We'll send a confirmation email and our team will arrange delivery.
     </p>
 
-    <div style="background:var(--color-gray-50);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--sp-6);text-align:left;margin:var(--sp-8) auto;max-width:440px">
-      <p style="font-size:var(--text-xs);font-weight:700;letter-spacing:var(--tracking-wider);text-transform:uppercase;color:var(--color-text-muted);margin-bottom:var(--sp-3)">Order Details</p>
-      <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:var(--sp-2)">
-        <span>Transaction ID</span>
-        <span id="order-txn" style="font-family:monospace;color:var(--color-text-primary)">—</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);color:var(--color-text-secondary)">
-        <span>Status</span>
-        <span style="color:var(--color-success);font-weight:700">Confirmed ✓</span>
-      </div>
+    <div id="order-summary" style="background:var(--color-gray-50);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--sp-6);text-align:left;margin:var(--sp-8) auto;max-width:520px">
+      <p style="text-align:center;color:var(--color-text-muted);font-size:var(--text-sm);margin:0">Loading order…</p>
     </div>
 
     <div style="background:var(--color-taupe-pale);border-radius:var(--radius-md);padding:var(--sp-5);margin-bottom:var(--sp-8);text-align:left">
@@ -96,15 +88,74 @@
 
 <script src="js/cart.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // Clear cart on successful payment
+  const fmtMoney = c => `$${(c / 100).toFixed(2)}`;
+  const shortId  = uuid => uuid?.split('-')[0]?.toUpperCase() || '';
+
+  function renderSummary(order, items) {
+    const summary = document.getElementById('order-summary');
+    if (!summary) return;
+
+    const itemsHtml = (items || []).map(i => `
+      <div style="display:flex;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-2) 0;border-bottom:1px solid var(--color-border);font-size:var(--text-sm)">
+        <div>
+          <div style="color:var(--color-text-primary);font-weight:600">${i.name}</div>
+          <div style="color:var(--color-text-muted);font-size:var(--text-xs)">Qty ${i.quantity}${i.unit ? ` · ${i.unit}` : ''}</div>
+        </div>
+        <div style="font-variant-numeric:tabular-nums;color:var(--color-text-primary);white-space:nowrap">${fmtMoney(i.price_cents * i.quantity)}</div>
+      </div>
+    `).join('');
+
+    summary.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:var(--sp-4)">
+        <p style="font-size:var(--text-xs);font-weight:700;letter-spacing:var(--tracking-wider);text-transform:uppercase;color:var(--color-text-muted);margin:0">Order #${shortId(order.id)}</p>
+        <p style="font-size:var(--text-xs);font-weight:700;color:${order.status === 'paid' ? 'var(--color-success)' : 'var(--color-warning, #f59e0b)'};margin:0">
+          ${order.status === 'paid' ? 'Paid ✓' : 'Processing'}
+        </p>
+      </div>
+      ${itemsHtml || '<p style="color:var(--color-text-muted);font-size:var(--text-sm);margin:0">No items found.</p>'}
+      <div style="display:flex;justify-content:space-between;padding-top:var(--sp-4);font-size:var(--text-md);font-weight:700">
+        <span>Total</span>
+        <span style="font-variant-numeric:tabular-nums">${fmtMoney(order.total_cents)}</span>
+      </div>
+      ${order.delivery_address ? `
+        <div style="margin-top:var(--sp-5);padding-top:var(--sp-4);border-top:1px solid var(--color-border)">
+          <p style="font-size:var(--text-xs);font-weight:700;letter-spacing:var(--tracking-wider);text-transform:uppercase;color:var(--color-text-muted);margin:0 0 var(--sp-2)">Deliver to</p>
+          <p style="font-size:var(--text-sm);color:var(--color-text-primary);margin:0;line-height:var(--leading-normal)">${order.delivery_address}</p>
+        </div>
+      ` : ''}
+    `;
+
+    // If the webhook hasn't fired yet, soften the heading copy.
+    if (order.status === 'pending_payment') {
+      document.getElementById('order-eyebrow').textContent = 'Payment Processing';
+      document.getElementById('order-heading').textContent = 'Almost there…';
+      document.getElementById('order-blurb').textContent =
+        "We've received your order — we're just waiting for Square to confirm payment. You'll get a confirmation email within a minute or two.";
+    }
+  }
+
+  function renderError(msg) {
+    const summary = document.getElementById('order-summary');
+    if (summary) summary.innerHTML = `<p style="color:var(--color-text-muted);font-size:var(--text-sm);margin:0;text-align:center">${msg}</p>`;
+  }
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Successful payment landed here — clear the cart immediately.
     clearCart?.();
 
-    // Show transaction ID from URL params
-    const params = new URLSearchParams(window.location.search);
-    const txnId = params.get('transactionId') || params.get('orderId') || params.get('payment_id');
-    if (txnId) {
-      document.getElementById('order-txn').textContent = txnId.slice(0, 20) + (txnId.length > 20 ? '...' : '');
+    const id = new URLSearchParams(location.search).get('order');
+    if (!id) {
+      renderError("We couldn't find your order reference. Check your email — we've sent the receipt there.");
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/order?id=${encodeURIComponent(id)}`);
+      if (!res.ok) throw new Error('not ok');
+      const { order, items } = await res.json();
+      renderSummary(order, items);
+    } catch {
+      renderError("We couldn't load your order summary right now — but your payment went through and you'll get a confirmation email shortly.");
     }
   });
 </script>

@@ -9,6 +9,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2",
     "nodemailer": "^8.0.5",
+    "resend": "^4",
     "square": "^39.0.0"
   }
 }

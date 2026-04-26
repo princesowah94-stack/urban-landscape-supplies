@@ -47,7 +47,29 @@ export async function POST(request) {
     }
 
     const validatedItems = validateAndPriceCart(items);
+    const totalCents = validatedItems.reduce((s, i) => s + Math.round(i.price * 100) * i.quantity, 0)
+      + (delivery?.method === 'express' ? 1500 : 0);
 
+    // 1. Insert order in Supabase FIRST so we can put its UUID in Square's redirect URL.
+    const { data: order, error: orderErr } = await supabase
+      .from('orders')
+      .insert({
+        customer_name:    `${customer?.firstName || ''} ${customer?.lastName || ''}`.trim(),
+        customer_email:   customer?.email || null,
+        customer_phone:   customer?.phone || null,
+        delivery_address: delivery ? [delivery.address, delivery.address2, delivery.suburb, delivery.state, delivery.postcode].filter(Boolean).join(', ') : null,
+        notes:            delivery?.notes || null,
+        status:           'pending_payment',
+        total_cents:      totalCents,
+      })
+      .select()
+      .single();
+    if (orderErr) {
+      console.error('Supabase order insert failed:', orderErr.message);
+      throw new Error('Could not create order record');
+    }
+
+    // 2. Build Square payment link with the Supabase order id in the redirect URL.
     const squareClient = new Client({
       accessToken: process.env.SQUARE_ACCESS_TOKEN,
       environment: process.env.SQUARE_ENVIRONMENT === 'production'
@@ -75,7 +97,7 @@ export async function POST(request) {
     const siteUrl = process.env.SITE_URL || 'https://urban-landscape-supplies.vercel.app';
 
     const response = await squareClient.checkoutApi.createPaymentLink({
-      idempotencyKey: `uls-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      idempotencyKey: `uls-${order.id}`,
       order: {
         locationId: process.env.SQUARE_LOCATION_ID,
         lineItems,
@@ -102,48 +124,33 @@ export async function POST(request) {
         } : {}),
       },
       checkoutOptions: {
-        redirectUrl: `${siteUrl}/order-confirmation.html`,
-        merchantSupportEmail: process.env.EMAIL_TO || 'orders@urbanlandscapesupplies.com.au',
+        redirectUrl: `${siteUrl}/order-confirmation.html?order=${order.id}`,
+        merchantSupportEmail: process.env.EMAIL_TO_STAFF || process.env.EMAIL_TO || 'orders@urbanlandscapesupplies.com.au',
         allowTipping: false,
         askForShippingAddress: !delivery?.address,
       },
       ...(customer?.email ? { prePopulatedData: { buyerEmail: customer.email } } : {}),
     });
 
-    const checkoutUrl = response.result?.paymentLink?.url;
+    const checkoutUrl   = response.result?.paymentLink?.url;
     const squareOrderId = response.result?.paymentLink?.orderId;
     if (!checkoutUrl) throw new Error('Square did not return a checkout URL');
 
-    // Save order to Supabase (non-blocking)
-    const totalCents = validatedItems.reduce((s, i) => s + Math.round(i.price * 100) * i.quantity, 0)
-      + (delivery?.method === 'express' ? 1500 : 0);
-
-    supabase.from('orders').insert({
-      customer_name:    `${customer?.firstName || ''} ${customer?.lastName || ''}`.trim(),
-      customer_email:   customer?.email || null,
-      customer_phone:   customer?.phone || null,
-      delivery_address: delivery ? [delivery.address, delivery.address2, delivery.suburb, delivery.state, delivery.postcode].filter(Boolean).join(', ') : null,
-      notes:            delivery?.notes || null,
-      status:           'pending_payment',
-      total_cents:      totalCents,
-      square_order_id:  squareOrderId || null,
-    }).select().single().then(({ data: order, error }) => {
-      if (error) { console.error('Supabase order insert error:', error.message); return; }
-      // Save line items
-      const lineItems = validatedItems.map(i => ({
+    // 3. Patch the Supabase row with Square's order id + insert line items. Fire-and-forget
+    //    so the user isn't held up — the webhook will look up by square_order_id later.
+    Promise.all([
+      supabase.from('orders').update({ square_order_id: squareOrderId }).eq('id', order.id),
+      supabase.from('order_items').insert(validatedItems.map(i => ({
         order_id:    order.id,
         product_id:  i.id,
         name:        i.name,
         quantity:    i.quantity,
         price_cents: Math.round(i.price * 100),
-      }));
-      supabase.from('order_items').insert(lineItems).then(({ error: err }) => {
-        if (err) console.error('Supabase order_items insert error:', err.message);
-      });
-    });
+      }))),
+    ]).catch(err => console.error('Post-insert sync failed:', err));
 
     return Response.json(
-      { checkoutUrl, orderId: squareOrderId },
+      { checkoutUrl, orderId: order.id, squareOrderId },
       { headers: corsHeaders(request) }
     );
 
