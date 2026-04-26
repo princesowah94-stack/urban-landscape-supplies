@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>ULS Admin — Orders</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="images/brand/favicon-32.png" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/pages/admin.css" />
+</head>
+<body>
+
+<!-- ─── LOGIN VIEW ───────────────────────────────────────── -->
+<section id="admin-login-view" class="admin-login">
+  <div class="admin-login__card">
+    <h1 class="admin-login__title">ULS Admin</h1>
+    <p class="admin-login__subtitle">Sign in to manage orders.</p>
+    <form id="admin-login-form" autocomplete="off">
+      <div class="form-group">
+        <label class="form-label" for="admin-pw">Password</label>
+        <input class="form-input" type="password" id="admin-pw" autocomplete="current-password" required />
+      </div>
+      <button type="submit" class="btn btn--primary" style="width:100%;margin-top:var(--sp-2)">
+        <span id="admin-login-btn-text">Sign in</span>
+      </button>
+      <div id="admin-login-error" class="admin-login__error">Invalid password.</div>
+    </form>
+  </div>
+</section>
+
+<!-- ─── DASHBOARD VIEW ──────────────────────────────────── -->
+<section id="admin-dashboard-view" class="admin-page" style="display:none">
+  <header class="admin-header">
+    <div class="admin-header__title">ULS Admin · Orders</div>
+    <div class="admin-header__user">
+      <button id="admin-logout" class="admin-header__logout">Logout</button>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <div class="admin-filters" id="admin-filters">
+      <button class="admin-filter admin-filter--active" data-status="">All</button>
+      <button class="admin-filter" data-status="pending_payment">Pending payment</button>
+      <button class="admin-filter" data-status="paid">Paid</button>
+      <button class="admin-filter" data-status="dispatched">Dispatched</button>
+      <button class="admin-filter" data-status="delivered">Delivered</button>
+      <button class="admin-filter" data-status="cancelled">Cancelled</button>
+      <button id="admin-refresh" class="admin-refresh" title="Refresh">↻ Refresh</button>
+    </div>
+
+    <div id="admin-orders-container">
+      <div class="admin-loading">Loading orders...</div>
+    </div>
+  </main>
+</section>
+
+<!-- Toast (reuses .toast styles from components.css + showToast() from cart.js) -->
+<div id="toast" class="toast" role="status" aria-live="polite">
+  <span id="toast-msg"></span>
+</div>
+
+<script src="js/cart.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

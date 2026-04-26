@@ -1,0 +1,5 @@
+-- Empty baseline placeholder.
+-- `supabase db pull` was attempted but requires Docker Desktop (not installed),
+-- so the existing remote schema (orders, order_items, contacts, etc.) was not
+-- snapshotted into a baseline migration. This empty file marks the point where
+-- migration tracking begins. Future migrations only contain net-new schema.

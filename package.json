@@ -8,8 +8,12 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2",
+    "@vercel/functions": "^2.0.0",
     "nodemailer": "^8.0.5",
     "resend": "^4",
     "square": "^39.0.0"
+  },
+  "devDependencies": {
+    "supabase": "^2.95.3"
   }
 }

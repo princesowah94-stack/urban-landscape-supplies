@@ -1,5 +1,10 @@
 import nodemailer from 'nodemailer';
+import { waitUntil } from '@vercel/functions';
 import { corsHeaders, optionsResponse } from './_cors.js';
+import { supabase } from './_supabase.js';
+
+// Coerce empty strings / undefined to null so DATE columns don't choke
+const orNull = (v) => (v === '' || v === undefined ? null : v);
 
 export function OPTIONS(request) {
   return optionsResponse(request);
@@ -80,6 +85,30 @@ export async function POST(request) {
         ].join('\n'),
       }),
     ]);
+
+    // Persist the quote to Supabase after the response (waitUntil keeps the
+    // function alive long enough for the insert to complete).
+    waitUntil((async () => {
+      const { error } = await supabase.from('quotes').insert({
+        reference_id:          referenceId,
+        contact_first_name:    contact.firstName || null,
+        contact_last_name:     contact.lastName || null,
+        contact_email:         contact.email,
+        contact_phone:         contact.phone || null,
+        is_trade:              !!contact.isTrade,
+        delivery_address:      delivery?.address || null,
+        delivery_suburb:       delivery?.suburb || null,
+        delivery_postcode:     delivery?.postcode || null,
+        delivery_date_from:    orNull(delivery?.dateFrom),
+        delivery_date_to:      orNull(delivery?.dateTo),
+        delivery_access:       delivery?.access || null,
+        notes:                 contact.notes || null,
+        items,
+        estimated_total_cents: Math.round(estimatedTotal * 100),
+        status:                'new',
+      });
+      if (error) console.error('Supabase quotes insert error:', error.message);
+    })());
 
     return Response.json({ success: true, referenceId }, { headers: corsHeaders(request) });
 

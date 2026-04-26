@@ -82,3 +82,21 @@ export async function sendStaffOrderEmail({ order, items }) {
     html,
   });
 }
+
+// Sent when admin moves an order from 'paid' -> 'dispatched' in the admin page.
+export async function sendCustomerDispatchEmail({ order, items }) {
+  if (!order?.customer_email) return;
+  const firstName = order.customer_name?.split(' ')[0] || 'there';
+  const html = shellHtml({
+    heading: 'Your order is on the way',
+    intro: `Hi ${firstName} — good news, your order has been dispatched and is heading your way. Standard delivery is 3-5 business days across Sydney metro. Our driver will be in touch on the day if access details are needed.`,
+    order, items,
+  });
+  return resend.emails.send({
+    from: `${FROM_NAME} <${FROM_EMAIL}>`,
+    to: order.customer_email,
+    bcc: process.env.EMAIL_TO_STAFF || process.env.EMAIL_TO || undefined,
+    subject: `Your Urban Landscape Supplies order is on the way #${shortId(order.id)}`,
+    html,
+  });
+}
