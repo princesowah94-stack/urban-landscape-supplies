@@ -154,7 +154,7 @@
     },
     {
       "id": "mulch-nls-pine-bark",
-      "name": "NLS Pine Bark",
+      "name": "Pine Bark",
       "category": "mulch",
       "categoryLabel": "Mulch & Bark",
       "price": 12.95,
@@ -170,13 +170,13 @@
     },
     {
       "id": "soil-nls-top-dressing",
-      "name": "NLS Top Dressing",
+      "name": "Top Dressing",
       "category": "soil",
       "categoryLabel": "Soil & Turf",
       "price": 14.95,
       "bulkBagPrice": 747.50,
       "unit": "per 25L bag",
-      "description": "A premium blend of finely screened organic matter and soil, NLS Organic Top Dressing is designed to revitalise lawns and garden beds. It boosts moisture retention, improves nutrient availability, and supports healthy, sustained growth. Perfect for residential and commercial use, this organic mix promotes lush lawns and long-term soil health.",
+      "description": "A premium blend of finely screened organic matter and soil, our Organic Top Dressing is designed to revitalise lawns and garden beds. It boosts moisture retention, improves nutrient availability, and supports healthy, sustained growth. Perfect for residential and commercial use, this organic mix promotes lush lawns and long-term soil health.",
       "features": ["Finely screened organic matter", "Boosts moisture retention", "Improves nutrient availability", "Revitalises lawns & garden beds"],
       "image": "images/products/soil-nls-top-dressing.jpg",
       "badge": null,
@@ -186,7 +186,7 @@
     },
     {
       "id": "sand-nls-sydney",
-      "name": "NLS Sydney Sand",
+      "name": "Sydney Sand",
       "category": "sand",
       "categoryLabel": "Sand",
       "price": 9.95,
