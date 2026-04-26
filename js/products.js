@@ -54,11 +54,11 @@ function buildProductCard(product) {
     <div class="pkg-toggle" data-id="${product.id}">
       <button class="pkg-btn pkg-btn--active" data-pkg="bag"
         data-price="${product.price}" data-unit="${product.unit}">
-        20kg Bags
+        20kg Bag
       </button>
       <button class="pkg-btn" data-pkg="bulk"
         data-price="${product.bulkBagPrice}" data-unit="per tonne bulk bag">
-        1 Tonne Bulk Bag
+        1 Tonne Bag
       </button>
     </div>
   ` : '';
@@ -139,6 +139,7 @@ async function renderFeaturedProducts(containerId, count = 4) {
   const featured = allProducts.filter(p => p.featured).slice(0, count);
 
   container.innerHTML = featured.map(buildProductCard).join('');
+  initPackagingToggles(containerId);
 }
 
 // ─── RENDER CATALOG ────────────────────────────────────────────
@@ -183,19 +184,26 @@ async function renderCatalog(containerId, { category = null, search = '' } = {})
 }
 
 // ─── PACKAGING TOGGLE ──────────────────────────────────────────
+// Listener is attached to each .pkg-toggle (not the parent container) so the
+// click is intercepted BEFORE bubbling up to the article's inline onclick,
+// which would otherwise navigate to the product detail page.
 function initPackagingToggles(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
-  container.addEventListener('click', e => {
-    const btn = e.target.closest('.pkg-btn');
-    if (!btn) return;
-    e.stopPropagation();
-    const toggle = btn.closest('.pkg-toggle');
-    toggle.querySelectorAll('.pkg-btn').forEach(b => b.classList.remove('pkg-btn--active'));
-    btn.classList.add('pkg-btn--active');
-    const id = toggle.dataset.id;
-    document.getElementById(`price-${id}`).textContent = `$${parseFloat(btn.dataset.price).toFixed(2)}`;
-    document.getElementById(`unit-${id}`).textContent = ` ${btn.dataset.unit}`;
+  container.querySelectorAll('.pkg-toggle').forEach(toggle => {
+    toggle.addEventListener('click', e => {
+      const btn = e.target.closest('.pkg-btn');
+      if (!btn) return;
+      e.stopPropagation();
+      e.preventDefault();
+      toggle.querySelectorAll('.pkg-btn').forEach(b => b.classList.remove('pkg-btn--active'));
+      btn.classList.add('pkg-btn--active');
+      const id = toggle.dataset.id;
+      const priceEl = document.getElementById(`price-${id}`);
+      const unitEl = document.getElementById(`unit-${id}`);
+      if (priceEl) priceEl.textContent = `$${parseFloat(btn.dataset.price).toFixed(2)}`;
+      if (unitEl) unitEl.textContent = ` ${btn.dataset.unit}`;
+    });
   });
 }
 
@@ -264,6 +272,37 @@ async function renderProductDetail() {
     }
   }
 
+  // Packaging selector (20kg Bag vs 1 Tonne Bulk Bag) — only if bulkBagPrice exists
+  const pkgWrap = document.getElementById('detail-pkg-selector');
+  if (pkgWrap) {
+    if (product.bulkBagPrice) {
+      let selectedPkg = 'bag';
+      pkgWrap.innerHTML = `
+        <div class="size-selector">
+          <p class="size-selector__label">Packaging</p>
+          <div class="size-selector__options">
+            <button class="size-btn size-btn--active" data-pkg="bag"
+              data-price="${product.price}" data-unit="${product.unit}">20kg Bag</button>
+            <button class="size-btn" data-pkg="bulk"
+              data-price="${product.bulkBagPrice}" data-unit="per tonne bulk bag">1 Tonne Bulk Bag</button>
+          </div>
+        </div>
+      `;
+      pkgWrap.querySelectorAll('.size-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          selectedPkg = btn.dataset.pkg;
+          pkgWrap.querySelectorAll('.size-btn').forEach(b => b.classList.remove('size-btn--active'));
+          btn.classList.add('size-btn--active');
+          setTextById('detail-price', `$${parseFloat(btn.dataset.price).toFixed(2)}`);
+          setTextById('detail-unit', btn.dataset.unit);
+        });
+      });
+      pkgWrap._getSelectedPkg = () => selectedPkg;
+    } else {
+      pkgWrap.innerHTML = '';
+    }
+  }
+
   // Features list
   const featList = document.getElementById('detail-features');
   if (featList && product.features) {
@@ -285,9 +324,17 @@ async function renderProductDetail() {
       addBtn.onclick = () => {
         const qty = parseInt(document.getElementById('detail-qty')?.value || '1', 10);
         const sizeWrap = document.getElementById('detail-size-selector');
+        const pkgWrap = document.getElementById('detail-pkg-selector');
         const selectedSize = sizeWrap?._getSelectedSize?.();
-        const cartName = selectedSize ? `${product.name} (${selectedSize})` : product.name;
-        addToCart({ id: product.id + (selectedSize ? `-${selectedSize}` : ''), name: cartName, price: product.price, unit: product.unit, image: product.image, quantity: qty });
+        const selectedPkg  = pkgWrap?._getSelectedPkg?.();
+        const isBulk = selectedPkg === 'bulk';
+
+        const baseId    = product.id + (selectedSize ? `-${selectedSize}` : '') + (isBulk ? '-bulk' : '');
+        const baseName  = product.name + (selectedSize ? ` (${selectedSize})` : '') + (isBulk ? ' (1 Tonne Bulk Bag)' : '');
+        const basePrice = isBulk ? product.bulkBagPrice : product.price;
+        const baseUnit  = isBulk ? 'per tonne bulk bag' : product.unit;
+
+        addToCart({ id: baseId, name: baseName, price: basePrice, unit: baseUnit, image: product.image, quantity: qty });
         addBtn.textContent = '✓ Added to Cart';
         addBtn.classList.add('added');
         setTimeout(() => { addBtn.textContent = 'Add to Cart'; addBtn.classList.remove('added'); }, 1600);
@@ -310,6 +357,7 @@ function renderRelatedProducts(product) {
     .slice(0, 4);
   if (related.length === 0) { container.closest('section')?.remove(); return; }
   container.innerHTML = related.map(buildProductCard).join('');
+  initPackagingToggles('related-products');
 }
 
 function injectProductSchema(product) {
