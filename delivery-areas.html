@@ -4,15 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Landscaping Supplies Delivery Areas Western Sydney | Urban Landscape Supplies</title>
-  <!-- Favicons / OG image / PWA manifest -->
-  <link rel="icon" type="image/png" sizes="32x32" href="images/brand/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="images/brand/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="images/brand/apple-touch-icon.png" />
-  <link rel="manifest" href="site.webmanifest" />
-  <meta name="theme-color" content="#4e5237" />
-  <meta property="og:image" content="https://urbanlandscapesupplies.com.au/images/brand/og-image.jpg" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="https://urbanlandscapesupplies.com.au/images/brand/og-image.jpg" />
   <meta name="description" content="Landscaping supplies delivered across Sydney from our Wetherill Park depot — Western Sydney, Parramatta, Blacktown, Campbelltown, Inner West, North Shore and more. Check your delivery fee." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://urbanlandscapesupplies.com.au/delivery-areas" />
@@ -21,6 +12,8 @@
   <meta property="og:title" content="Delivery Areas Sydney | Urban Landscape Supplies" />
   <meta property="og:description" content="Premium mulch, soil, pebbles and bulk landscape materials delivered across Sydney. Check your suburb's delivery fee and timeframe." />
   <meta property="og:url" content="https://urbanlandscapesupplies.com.au/delivery-areas" />
+  <meta property="og:image" content="https://urbanlandscapesupplies.com.au/images/brand/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
 
   <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
@@ -58,6 +51,13 @@
     ]
   }
   </script>
+  <!-- Favicons + PWA -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png" />
+  <link rel="apple-touch-icon" href="/images/brand/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#5e6e4f" />
+
 </head>
 <body>
 
@@ -82,7 +82,11 @@
 <header class="site-header" id="site-header">
   <div class="container"><div class="header-inner">
     <a href="index.html" class="site-logo" aria-label="Urban Landscape Supplies — Home">
-        <img src="images/brand/primary-logo-10.png" alt="Urban Landscape Supplies" width="160" height="40" loading="eager" fetchpriority="high" />
+        <img src="images/brand/mark-dark.png" alt="" class="site-logo__mark" width="48" height="33" loading="eager" fetchpriority="high" />
+        <div class="site-logo__wordmark">
+          Urban Landscape
+          <span class="site-logo__sub">Supplies</span>
+        </div>
       </a>
     <nav class="primary-nav" aria-label="Primary navigation">
       <div class="nav-item">
@@ -337,7 +341,7 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-col footer-col--brand">
-        <div class="footer-logo"><img src="images/brand/primary-logo-12.png" alt="Urban Landscape Supplies" width="180" height="44" loading="lazy" /></div>
+        <div class="footer-logo">Urban Landscape<span class="footer-logo__sub">Supplies</span></div>
         <p class="footer-tagline">Premium landscaping supplies delivered across Sydney NSW. Australian family owned since 2010.</p>
         <p class="footer-abn">ABN: 00 000 000 000</p>
       </div>

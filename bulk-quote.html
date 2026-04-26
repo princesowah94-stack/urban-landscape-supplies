@@ -4,15 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bulk Quote | Urban Landscape Supplies Sydney</title>
-  <!-- Favicons / OG image / PWA manifest -->
-  <link rel="icon" type="image/png" sizes="32x32" href="images/brand/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="images/brand/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="images/brand/apple-touch-icon.png" />
-  <link rel="manifest" href="site.webmanifest" />
-  <meta name="theme-color" content="#4e5237" />
-  <meta property="og:image" content="https://urbanlandscapesupplies.com.au/images/brand/og-image.jpg" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="https://urbanlandscapesupplies.com.au/images/brand/og-image.jpg" />
   <meta name="description" content="Request a bulk quote for sand, soil, mulch and gravel delivery across Sydney. Our team confirms pricing within 2 hours." />
   <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
@@ -187,6 +178,13 @@
       margin-bottom: var(--sp-4);
     }
   </style>
+  <!-- Favicons + PWA -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png" />
+  <link rel="apple-touch-icon" href="/images/brand/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#5e6e4f" />
+
 </head>
 <body>
 
@@ -209,8 +207,8 @@
 <header class="site-header" id="site-header" style="background:var(--color-bg-bulk);border-bottom-color:rgba(255,255,255,0.08)">
   <div class="container">
     <div class="header-inner">
-      <a href="index.html" class="site-logo" aria-label="Urban Landscape Supplies — Home">
-        <img src="images/brand/primary-logo-12.png" alt="Urban Landscape Supplies" width="160" height="40" loading="eager" fetchpriority="high" />
+      <a href="index.html" class="site-logo">
+        <div class="site-logo__wordmark" style="color:var(--color-white)">Urban Landscape<span class="site-logo__sub">Supplies</span></div>
       </a>
       <nav class="primary-nav">
         <a href="products.html" class="nav-link" style="color:rgba(255,255,255,0.6)">Products</a>
