@@ -81,6 +81,16 @@
   justify-self: start;
 }
 
+.site-logo img {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .site-logo img { height: 34px; }
+}
+
 .site-logo__wordmark {
   font-family: var(--font-heading);
   font-size: var(--text-xl);
@@ -526,6 +536,13 @@
   color: var(--color-white);
   margin-bottom: var(--sp-3);
   line-height: 1.1;
+}
+
+.footer-brand__logo img,
+.footer-logo img {
+  height: 44px;
+  width: auto;
+  display: block;
 }
 
 .footer-brand__logo span {

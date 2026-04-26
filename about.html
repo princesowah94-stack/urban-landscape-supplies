@@ -4,6 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About Us | Urban Landscape Supplies Sydney</title>
+  <!-- Favicons / OG image / PWA manifest -->
+  <link rel="icon" type="image/png" sizes="32x32" href="images/brand/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="images/brand/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="images/brand/apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <meta name="theme-color" content="#4e5237" />
+  <meta property="og:image" content="https://urbanlandscapesupplies.com.au/images/brand/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://urbanlandscapesupplies.com.au/images/brand/og-image.jpg" />
   <meta name="description" content="Urban Landscape Supplies — a Sydney NSW family business supplying premium landscaping materials since 2010. Sister company of Urban Pots." />
   <link rel="canonical" href="https://urbanlandscapesupplies.com.au/about.html" />
   <link rel="stylesheet" href="css/tokens.css" />
@@ -20,7 +29,9 @@
 
 <header class="site-header" id="site-header">
   <div class="container"><div class="header-inner">
-    <a href="index.html" class="site-logo"><div class="site-logo__wordmark">Urban Landscape<span class="site-logo__sub">Supplies</span></div></a>
+    <a href="index.html" class="site-logo" aria-label="Urban Landscape Supplies — Home">
+        <img src="images/brand/primary-logo-10.png" alt="Urban Landscape Supplies" width="160" height="40" loading="eager" fetchpriority="high" />
+      </a>
     <nav class="primary-nav">
       <div class="nav-item"><span class="nav-link" tabindex="0">Products <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4l4 4 4-4"/></svg></span>
         <div class="nav-dropdown"><a href="products.html?cat=pebbles">Decorative Pebbles</a><a href="products.html?cat=soil">Soil &amp; Turf</a><a href="products.html?cat=mulch">Mulch &amp; Bark</a><a href="products.html?cat=sand">Sand</a><a href="products.html">View All →</a></div>
@@ -134,7 +145,9 @@
   <div class="container">
     <div class="footer-upper">
       <div class="footer-brand">
-        <div class="footer-brand__logo">Urban Landscape<span>Supplies</span></div>
+        <div class="footer-brand__logo">
+          <img src="images/brand/primary-logo-12.png" alt="Urban Landscape Supplies" width="180" height="44" loading="lazy" />
+        </div>
         <p class="footer-brand__tagline">Sydney's premium source for landscaping supplies.</p>
         <p class="footer-brand__meta">ABN: XX XXX XXX XXX<br>Sister company of <a href="https://urbanpots.com.au" style="color:rgba(255,255,255,0.45)">Urban Pots</a></p>
       </div>
