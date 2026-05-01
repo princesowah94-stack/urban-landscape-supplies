@@ -79,6 +79,18 @@
     <priority>0.5</priority>
   </url>
 
+  <!-- Legal -->
+  <url>
+    <loc>https://urbanlandscapesupplies.com.au/privacy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://urbanlandscapesupplies.com.au/terms.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
   <!-- Delivery hub -->
   <url>
     <loc>https://urbanlandscapesupplies.com.au/delivery-areas</loc>
