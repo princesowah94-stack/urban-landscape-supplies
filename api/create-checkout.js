@@ -94,7 +94,7 @@ export async function POST(request) {
       });
     }
 
-    const siteUrl = process.env.SITE_URL || 'https://urban-landscape-supplies.vercel.app';
+    const siteUrl = process.env.SITE_URL || 'https://urbanlandscapesupplies.com.au';
 
     const response = await squareClient.checkoutApi.createPaymentLink({
       idempotencyKey: `uls-${order.id}`,
