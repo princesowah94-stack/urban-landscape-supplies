@@ -185,6 +185,38 @@
       "sku": "ULS-SOIL-001"
     },
     {
+      "id": "soil-planter-box-a",
+      "name": "Planter Box A (Horizon A)",
+      "category": "soil",
+      "categoryLabel": "Soil & Turf",
+      "price": 14.95,
+      "bulkBagPrice": 500.00,
+      "unit": "per 25L bag",
+      "description": "A premium soil blend designed for deep-rooted plants in planter boxes and raised beds. It enhances root development, nutrient retention, soil stability, and moisture management for thriving plants. Composition: a blend of organic matter, soil conditioners, and natural materials, ensuring stability and long-term nutrient availability.",
+      "features": ["Premium blend for deep-rooted plants", "Boosts root development", "Strong nutrient retention", "Reliable moisture management"],
+      "image": "images/products/soil-planter-box-a.jpg",
+      "badge": null,
+      "featured": false,
+      "inStock": true,
+      "sku": "ULS-SOIL-002"
+    },
+    {
+      "id": "soil-premium-turf-underlay",
+      "name": "Premium Turf Underlay 80/20",
+      "category": "soil",
+      "categoryLabel": "Soil & Turf",
+      "price": 14.95,
+      "bulkBagPrice": 500.00,
+      "unit": "per 25L bag",
+      "description": "A quality-assured mix of soil, sand and composted organics that gives newly laid turf the head start it needs to establish strong root growth and drainage. Suitable for Buffalo, Couch, Durban, Kikuyu and Zoysia turf varieties.",
+      "features": ["80/20 soil + sand blend with composted organics", "Boosts root establishment for new turf", "Improves drainage", "Suits Buffalo, Couch, Kikuyu, Zoysia"],
+      "image": "images/products/soil-premium-turf-underlay.jpg",
+      "badge": null,
+      "featured": false,
+      "inStock": true,
+      "sku": "ULS-SOIL-003"
+    },
+    {
       "id": "sand-nls-sydney",
       "name": "Sydney Sand",
       "category": "sand",
