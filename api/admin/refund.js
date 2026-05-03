@@ -18,13 +18,6 @@ import { sendCustomerRefundEmail } from '../_email.js';
 // (no money was taken), already-cancelled (no payment to refund), or already-refunded.
 const REFUNDABLE = new Set(['paid', 'dispatched', 'delivered']);
 
-const squareClient = new Client({
-  accessToken: process.env.SQUARE_ACCESS_TOKEN,
-  environment: process.env.SQUARE_ENVIRONMENT === 'production'
-    ? Environment.Production
-    : Environment.Sandbox,
-});
-
 export function OPTIONS(request) {
   return optionsResponse(request);
 }
@@ -32,6 +25,15 @@ export function OPTIONS(request) {
 export async function POST(request) {
   const unauthorized = requireAdmin(request);
   if (unauthorized) return unauthorized;
+
+  // Construct Square client per-request (same pattern as api/create-checkout.js).
+  // Module-level construction has been observed to crash cold starts on Vercel.
+  const squareClient = new Client({
+    accessToken: process.env.SQUARE_ACCESS_TOKEN,
+    environment: process.env.SQUARE_ENVIRONMENT === 'production'
+      ? Environment.Production
+      : Environment.Sandbox,
+  });
 
   try {
     const { orderId } = await request.json().catch(() => ({}));
