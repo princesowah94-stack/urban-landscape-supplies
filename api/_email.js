@@ -100,3 +100,23 @@ export async function sendCustomerDispatchEmail({ order, items }) {
     html,
   });
 }
+
+// Sent when admin issues a refund from the admin page (Refund button).
+export async function sendCustomerRefundEmail({ order, items, refundedCents }) {
+  if (!order?.customer_email) return;
+  const firstName = order.customer_name?.split(' ')[0] || 'there';
+  const amount = refundedCents ?? order.total_cents;
+  const html = shellHtml({
+    heading: 'Refund processed',
+    intro: `Hi ${firstName} — we've processed a refund of ${fmtMoney(amount)} for your order. Refunds typically appear in your account within 5–10 business days, depending on your bank. If anything looks off, just reply to this email and we'll sort it out.`,
+    order: { ...order, total_cents: amount },
+    items,
+  });
+  return resend.emails.send({
+    from: `${FROM_NAME} <${FROM_EMAIL}>`,
+    to: order.customer_email,
+    bcc: process.env.EMAIL_TO_STAFF || process.env.EMAIL_TO || undefined,
+    subject: `Refund processed — Urban Landscape Supplies #${shortId(order.id)}`,
+    html,
+  });
+}

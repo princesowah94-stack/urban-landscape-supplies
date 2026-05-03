@@ -18,9 +18,10 @@ import { sendCustomerDispatchEmail } from '../_email.js';
 const ALLOWED_TRANSITIONS = {
   paid:       new Set(['dispatched', 'cancelled']),
   dispatched: new Set(['delivered', 'cancelled']),
+  cancelled:  new Set(['paid']), // Reopen — flip a cancelled order back to paid
 };
 
-const VALID_FILTERS = new Set(['pending_payment', 'paid', 'dispatched', 'delivered', 'cancelled']);
+const VALID_FILTERS = new Set(['pending_payment', 'paid', 'dispatched', 'delivered', 'cancelled', 'refunded']);
 
 export function OPTIONS(request) {
   return optionsResponse(request);

@@ -3,16 +3,36 @@
  * Token lives in sessionStorage so closing the tab logs out.
  */
 const TOKEN_KEY = 'uls_admin_token';
+const AUTO_REFRESH_MS = 60_000;
+
 const STATUS_LABELS = {
   pending_payment: 'Pending payment',
   paid:            'Paid',
   dispatched:      'Dispatched',
   delivered:       'Delivered',
   cancelled:       'Cancelled',
+  refunded:        'Refunded',
 };
+// Each entry is either a status transition ({to, label}) or a special action ({action, label}).
+// Refund hits /api/admin/refund and lives on paid/dispatched/delivered.
+// Reopen flips a cancelled order back to paid (cancelled -> paid).
 const TRANSITIONS = {
-  paid:       [{ to: 'dispatched', label: 'Dispatch',       primary: true  }, { to: 'cancelled', label: 'Cancel', danger: true }],
-  dispatched: [{ to: 'delivered',  label: 'Mark delivered', primary: true  }, { to: 'cancelled', label: 'Cancel', danger: true }],
+  paid: [
+    { to: 'dispatched', label: 'Dispatch',       primary: true },
+    { action: 'refund', label: 'Refund',         danger: true },
+    { to: 'cancelled',  label: 'Cancel',         danger: true },
+  ],
+  dispatched: [
+    { to: 'delivered',  label: 'Mark delivered', primary: true },
+    { action: 'refund', label: 'Refund',         danger: true },
+    { to: 'cancelled',  label: 'Cancel',         danger: true },
+  ],
+  delivered: [
+    { action: 'refund', label: 'Refund',         danger: true },
+  ],
+  cancelled: [
+    { to: 'paid',       label: 'Reopen',         primary: true },
+  ],
 };
 
 let currentFilter = '';
@@ -55,6 +75,7 @@ async function login(password) {
 
 function logout() {
   clearToken();
+  stopAutoRefresh();
   showLogin();
 }
 
@@ -129,6 +150,42 @@ async function transitionOrder(orderId, nextStatus) {
   }
 }
 
+async function refundOrder(orderId) {
+  const order = allOrders.find(o => o.id === orderId);
+  if (!order) return;
+
+  const previousStatus = order.status;
+  // Optimistic update
+  order.status = 'refunded';
+  renderOrders();
+
+  try {
+    const res = await fetch('/api/admin/refund', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ orderId }),
+    });
+
+    if (res.status === 401) { logout(); return; }
+
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(body.message || body.error || `HTTP ${res.status}`);
+    }
+
+    if (body.alreadyRefunded) {
+      showToast('Already refunded');
+    } else {
+      showToast('Refund issued · customer notified');
+    }
+  } catch (err) {
+    console.error('Refund failed:', err);
+    order.status = previousStatus;
+    renderOrders();
+    showToast(`Refund failed: ${err.message}`);
+  }
+}
+
 // ─── RENDER ────────────────────────────────────────────────────
 function renderOrders() {
   const container = $('#admin-orders-container');
@@ -160,14 +217,19 @@ function renderRow(order) {
   const isExpanded = expandedOrderId === order.id;
   const transitions = TRANSITIONS[order.status] || [];
 
-  const actionsHtml = transitions.map(t => `
+  const actionsHtml = transitions.map(t => {
+    const isRefund = t.action === 'refund';
+    const dataAction = isRefund ? 'refund' : 'transition';
+    const dataNext = isRefund ? '' : `data-next="${escapeHTML(t.to)}"`;
+    return `
     <button
       class="admin-action-btn ${t.primary ? 'admin-action-btn--primary' : ''} ${t.danger ? 'admin-action-btn--danger' : ''}"
-      data-action="transition"
+      data-action="${dataAction}"
       data-order-id="${escapeHTML(order.id)}"
-      data-next="${t.to}"
+      ${dataNext}
     >${escapeHTML(t.label)}</button>
-  `).join('');
+  `;
+  }).join('');
 
   return `
     <tr class="admin-table__row ${isExpanded ? 'admin-table__row--expanded' : ''}" data-action="expand" data-order-id="${escapeHTML(order.id)}">
@@ -238,6 +300,7 @@ $('#admin-login-form')?.addEventListener('submit', async (e) => {
   try {
     await login(pw);
     showDashboard();
+    startAutoRefresh();
   } catch (err) {
     errEl.textContent = err.message || 'Invalid password.';
     errEl.classList.add('admin-login__error--visible');
@@ -260,14 +323,26 @@ $('#admin-filters')?.addEventListener('click', (e) => {
   loadOrders();
 });
 
-// Delegated handler for row expand + status transition buttons
+// Delegated handler for row expand + status transition + refund buttons
 document.addEventListener('click', (e) => {
+  const refundBtn = e.target.closest('[data-action="refund"]');
+  if (refundBtn) {
+    e.stopPropagation();
+    const orderId = refundBtn.dataset.orderId;
+    const order = allOrders.find(o => o.id === orderId);
+    const total = order ? aud(order.total_cents || 0) : '';
+    if (!confirm(`Refund ${total} to the customer via Square? They'll get an email confirmation.`)) return;
+    refundOrder(orderId);
+    return;
+  }
+
   const transitionBtn = e.target.closest('[data-action="transition"]');
   if (transitionBtn) {
     e.stopPropagation();
     const orderId = transitionBtn.dataset.orderId;
     const next = transitionBtn.dataset.next;
-    if (next === 'cancelled' && !confirm('Cancel this order? You should also process the refund in Square.')) return;
+    if (next === 'cancelled' && !confirm("Cancel this order? This won't issue a refund — use the Refund button for that.")) return;
+    if (next === 'paid' && !confirm('Reopen this cancelled order back to paid?')) return;
     transitionOrder(orderId, next);
     return;
   }
@@ -280,10 +355,29 @@ document.addEventListener('click', (e) => {
   }
 });
 
+// ─── AUTO-REFRESH ──────────────────────────────────────────────
+let autoRefreshTimer = null;
+function startAutoRefresh() {
+  stopAutoRefresh();
+  autoRefreshTimer = setInterval(() => {
+    // Skip the silent reload while a row is expanded so it doesn't collapse mid-read.
+    if (!getToken() || document.hidden || expandedOrderId) return;
+    loadOrders();
+  }, AUTO_REFRESH_MS);
+}
+function stopAutoRefresh() {
+  if (autoRefreshTimer) {
+    clearInterval(autoRefreshTimer);
+    autoRefreshTimer = null;
+  }
+}
+window.addEventListener('beforeunload', stopAutoRefresh);
+
 // ─── INIT ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   if (getToken()) {
     showDashboard();
+    startAutoRefresh();
   } else {
     showLogin();
   }
