@@ -1,6 +1,18 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy-init: Resend v4's constructor throws when the API key is missing,
+// which would crash every endpoint that imports this module at LOAD time
+// (orders, refund, webhook etc.) — even just to render an unauthorized 401.
+// Defer construction so module loading is always safe.
+let _resend;
+function getResend() {
+  if (_resend) return _resend;
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error('RESEND_API_KEY is not set — cannot send email.');
+  }
+  _resend = new Resend(process.env.RESEND_API_KEY);
+  return _resend;
+}
 
 const FROM_NAME = 'Urban Landscape Supplies';
 const FROM_EMAIL = process.env.EMAIL_FROM || 'orders@urbanlandscapesupplies.com.au';
@@ -58,7 +70,7 @@ export async function sendCustomerOrderEmail({ order, items }) {
     intro: `Hi ${order.customer_name?.split(' ')[0] || 'there'} — we've received your payment and the yard team is preparing your order. We'll be in touch with delivery details shortly.`,
     order, items,
   });
-  return resend.emails.send({
+  return getResend().emails.send({
     from: `${FROM_NAME} <${FROM_EMAIL}>`,
     to: order.customer_email,
     subject: `Your Urban Landscape Supplies order #${shortId(order.id)}`,
@@ -74,7 +86,7 @@ export async function sendStaffOrderEmail({ order, items }) {
     intro: `Payment confirmed via Square. Customer: ${order.customer_email || '—'}${order.customer_phone ? ` · ${order.customer_phone}` : ''}.`,
     order, items,
   });
-  return resend.emails.send({
+  return getResend().emails.send({
     from: `${FROM_NAME} <${FROM_EMAIL}>`,
     to,
     replyTo: order.customer_email || undefined,
@@ -92,7 +104,7 @@ export async function sendCustomerDispatchEmail({ order, items }) {
     intro: `Hi ${firstName} — good news, your order has been dispatched and is heading your way. Standard delivery is 3-5 business days across Sydney metro. Our driver will be in touch on the day if access details are needed.`,
     order, items,
   });
-  return resend.emails.send({
+  return getResend().emails.send({
     from: `${FROM_NAME} <${FROM_EMAIL}>`,
     to: order.customer_email,
     bcc: process.env.EMAIL_TO_STAFF || process.env.EMAIL_TO || undefined,
@@ -112,7 +124,7 @@ export async function sendCustomerRefundEmail({ order, items, refundedCents }) {
     order: { ...order, total_cents: amount },
     items,
   });
-  return resend.emails.send({
+  return getResend().emails.send({
     from: `${FROM_NAME} <${FROM_EMAIL}>`,
     to: order.customer_email,
     bcc: process.env.EMAIL_TO_STAFF || process.env.EMAIL_TO || undefined,
