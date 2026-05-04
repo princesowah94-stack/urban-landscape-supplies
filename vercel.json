@@ -4,6 +4,10 @@
   "rewrites": [
     { "source": "/delivery/:suburb", "destination": "/delivery-suburb.html?suburb=:suburb" }
   ],
+  "redirects": [
+    { "source": "/bulk-materials", "destination": "/products", "permanent": true },
+    { "source": "/bulk-materials.html", "destination": "/products", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/api/(.*)",

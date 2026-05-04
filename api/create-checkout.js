@@ -5,14 +5,13 @@ import { supabase } from './_supabase.js';
 
 const require = createRequire(import.meta.url);
 
-// Load product prices server-side to prevent client-side price manipulation
+// Load product prices server-side to prevent client-side price manipulation.
+// Single SKU per product now — every product is sold as a 1-tonne bulk bag.
 let productPrices = {};
 try {
   const data = require('../data/products.json');
   data.products.forEach(p => {
     productPrices[p.id] = p.price;
-    // Bulk bag variant (id ends in -bulk)
-    if (p.bulkBagPrice) productPrices[`${p.id}-bulk`] = p.bulkBagPrice;
   });
 } catch (e) {
   console.warn('Could not load products.json:', e.message);

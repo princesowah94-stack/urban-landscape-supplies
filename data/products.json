@@ -5,12 +5,20 @@
       "name": "Regular Snow White Pebbles",
       "category": "pebbles",
       "categoryLabel": "Decorative Pebbles",
-      "price": 18.95,
-      "bulkBagPrice": 947.50,
-      "unit": "per 20kg bag",
-      "description": "Classic rounded snow white pebbles — the most popular decorative pebble in Sydney gardens. Clean, bright and timeless for any garden style.",
-      "features": ["Rounded smooth finish", "Brilliant white colour", "Multiple size options", "Pool area safe"],
-      "sizes": ["20-30mm", "30-50mm", "50-80mm"],
+      "price": 947.5,
+      "unit": "per 1 tonne bulk bag",
+      "description": "Classic rounded snow white pebbles \u2014 the most popular decorative pebble in Sydney gardens. Clean, bright and timeless for any garden style.",
+      "features": [
+        "Rounded smooth finish",
+        "Brilliant white colour",
+        "Multiple size options",
+        "Pool area safe"
+      ],
+      "sizes": [
+        "20-30mm",
+        "30-50mm",
+        "50-80mm"
+      ],
       "image": "images/products/pebbles-snow-white-1.jpg",
       "images": [
         "images/products/pebbles-snow-white-1.jpg",
@@ -31,11 +39,15 @@
       "name": "Crushed Snow White Pebbles",
       "category": "pebbles",
       "categoryLabel": "Decorative Pebbles",
-      "price": 21.95,
-      "bulkBagPrice": 1097.50,
-      "unit": "per 20kg bag",
+      "price": 1097.5,
+      "unit": "per 1 tonne bulk bag",
       "description": "Angular crushed white stone with a bright, clean appearance. Ideal for contemporary pathways, drainage applications and under-downpipe areas.",
-      "features": ["Angular crushed stone", "Bright white finish", "Drainage friendly", "10–20mm size"],
+      "features": [
+        "Angular crushed stone",
+        "Bright white finish",
+        "Drainage friendly",
+        "10\u201320mm size"
+      ],
       "image": "images/products/pebbles-crushed-snow-white-1.jpg",
       "badge": null,
       "featured": false,
@@ -47,11 +59,15 @@
       "name": "Charcoal Grey Pebbles",
       "category": "pebbles",
       "categoryLabel": "Decorative Pebbles",
-      "price": 19.95,
-      "bulkBagPrice": 997.50,
-      "unit": "per 20kg bag",
+      "price": 997.5,
+      "unit": "per 1 tonne bulk bag",
       "description": "Smooth charcoal grey pebbles with subtle earthy variation. A versatile, contemporary choice for garden beds, pathways and water features.",
-      "features": ["Smooth finish", "10–25mm size", "Weather resistant", "Versatile application"],
+      "features": [
+        "Smooth finish",
+        "10\u201325mm size",
+        "Weather resistant",
+        "Versatile application"
+      ],
       "image": "images/products/pebbles-charcoal-grey-1.jpg",
       "badge": null,
       "featured": false,
@@ -63,12 +79,20 @@
       "name": "Charcoal Lava Pebbles",
       "category": "pebbles",
       "categoryLabel": "Decorative Pebbles",
-      "price": 22.95,
-      "bulkBagPrice": 1147.50,
-      "unit": "per 10kg bag",
-      "description": "Lightweight volcanic lava pebbles in dark charcoal tones. Highly porous — ideal as a planting medium, pot topper and feature garden accent.",
-      "features": ["Lightweight volcanic rock", "Multiple size options", "Excellent drainage", "Suits potted arrangements"],
-      "sizes": ["20-30mm", "30-50mm", "50-70mm"],
+      "price": 1147.5,
+      "unit": "per 1 tonne bulk bag",
+      "description": "Lightweight volcanic lava pebbles in dark charcoal tones. Highly porous \u2014 ideal as a planting medium, pot topper and feature garden accent.",
+      "features": [
+        "Lightweight volcanic rock",
+        "Multiple size options",
+        "Excellent drainage",
+        "Suits potted arrangements"
+      ],
+      "sizes": [
+        "20-30mm",
+        "30-50mm",
+        "50-70mm"
+      ],
       "image": "images/products/pebbles-charcoal-lava-1.jpg",
       "images": [
         "images/products/pebbles-charcoal-lava-1.jpg",
@@ -89,12 +113,18 @@
       "name": "Red Lava Pebbles",
       "category": "pebbles",
       "categoryLabel": "Decorative Pebbles",
-      "price": 22.95,
-      "bulkBagPrice": 1147.50,
-      "unit": "per 10kg bag",
-      "description": "Striking volcanic red lava pebbles — warm, bold tones that add drama to garden beds, potted plants and feature areas. Lightweight and highly porous.",
-      "features": ["Lightweight volcanic rock", "Warm red tones", "30–50mm size", "Excellent aeration"],
-      "sizes": ["30-50mm"],
+      "price": 1147.5,
+      "unit": "per 1 tonne bulk bag",
+      "description": "Striking volcanic red lava pebbles \u2014 warm, bold tones that add drama to garden beds, potted plants and feature areas. Lightweight and highly porous.",
+      "features": [
+        "Lightweight volcanic rock",
+        "Warm red tones",
+        "30\u201350mm size",
+        "Excellent aeration"
+      ],
+      "sizes": [
+        "30-50mm"
+      ],
       "supplier": "Waratah Supplies",
       "image": "images/products/pebbles-red-lava-1.jpg",
       "badge": null,
@@ -107,12 +137,18 @@
       "name": "Premium Hardwood Chip",
       "category": "mulch",
       "categoryLabel": "Mulch & Bark",
-      "price": 13.95,
-      "bulkBagPrice": 697.50,
-      "unit": "per 30L bag",
+      "price": 697.5,
+      "unit": "per 1 tonne bulk bag",
       "description": "A great balance between appearance, durability, and economy. Made from mixed sustainable hardwoods. A good choice for busy play areas. Long lasting natural timber chip ideal for moisture retention and weed suppression. Used in both domestic and commercial applications. For domestic usage 75-100mm is suggested.",
-      "features": ["Mixed sustainable hardwoods", "25-40mm grade", "Weed suppression", "Moisture retention"],
-      "sizes": ["25-40mm"],
+      "features": [
+        "Mixed sustainable hardwoods",
+        "25-40mm grade",
+        "Weed suppression",
+        "Moisture retention"
+      ],
+      "sizes": [
+        "25-40mm"
+      ],
       "image": "images/products/mulch-hardwood-chip.jpg",
       "badge": null,
       "featured": false,
@@ -124,12 +160,18 @@
       "name": "Woodlands Blend Mulch",
       "category": "mulch",
       "categoryLabel": "Mulch & Bark",
-      "price": 12.95,
-      "bulkBagPrice": 647.50,
-      "unit": "per 30L bag",
+      "price": 647.5,
+      "unit": "per 1 tonne bulk bag",
       "description": "A great balance between appearance, durability and economy. Made from a mixture of soft/hard natural shredded timbers. Ideal for moisture retention and weed suppression.",
-      "features": ["Soft/hard shredded timbers", "10-40mm grade", "Weed suppression", "Moisture retention"],
-      "sizes": ["10-40mm"],
+      "features": [
+        "Soft/hard shredded timbers",
+        "10-40mm grade",
+        "Weed suppression",
+        "Moisture retention"
+      ],
+      "sizes": [
+        "10-40mm"
+      ],
       "image": "images/products/mulch-woodlands-blend.jpg",
       "badge": null,
       "featured": false,
@@ -141,11 +183,15 @@
       "name": "Woodlands Natural Mulch",
       "category": "mulch",
       "categoryLabel": "Mulch & Bark",
-      "price": 11.95,
-      "bulkBagPrice": 597.50,
-      "unit": "per 30L bag",
+      "price": 597.5,
+      "unit": "per 1 tonne bulk bag",
       "description": "A great balance between appearance, durability and economy. Made from a mixture of soft/hard natural shredded timbers. Ideal for moisture retention and weed suppression. Used in both domestic and commercial applications.",
-      "features": ["Natural shredded timbers", "Weed suppression", "Moisture retention", "Domestic & commercial use"],
+      "features": [
+        "Natural shredded timbers",
+        "Weed suppression",
+        "Moisture retention",
+        "Domestic & commercial use"
+      ],
       "image": "images/products/mulch-woodlands-natural.jpg",
       "badge": null,
       "featured": false,
@@ -157,11 +203,15 @@
       "name": "Pine Bark",
       "category": "mulch",
       "categoryLabel": "Mulch & Bark",
-      "price": 12.95,
-      "bulkBagPrice": 647.50,
-      "unit": "per 30L bag",
+      "price": 647.5,
+      "unit": "per 1 tonne bulk bag",
       "description": "A great balance between appearance, durability, and economy. Made from mixed sustainable hardwoods. A good choice for busy play areas. Long lasting natural timber chip ideal for moisture retention and weed suppression. Used in both domestic and commercial applications. For domestic usage 75-100mm is suggested.",
-      "features": ["Mixed sustainable hardwoods", "Long-lasting", "Weed suppression", "Moisture retention"],
+      "features": [
+        "Mixed sustainable hardwoods",
+        "Long-lasting",
+        "Weed suppression",
+        "Moisture retention"
+      ],
       "image": "images/products/mulch-nls-pine-bark.jpg",
       "badge": null,
       "featured": false,
@@ -173,11 +223,15 @@
       "name": "Top Dressing",
       "category": "soil",
       "categoryLabel": "Soil & Turf",
-      "price": 14.95,
-      "bulkBagPrice": 747.50,
-      "unit": "per 25L bag",
+      "price": 747.5,
+      "unit": "per 1 tonne bulk bag",
       "description": "A premium blend of finely screened organic matter and soil, our Organic Top Dressing is designed to revitalise lawns and garden beds. It boosts moisture retention, improves nutrient availability, and supports healthy, sustained growth. Perfect for residential and commercial use, this organic mix promotes lush lawns and long-term soil health.",
-      "features": ["Finely screened organic matter", "Boosts moisture retention", "Improves nutrient availability", "Revitalises lawns & garden beds"],
+      "features": [
+        "Finely screened organic matter",
+        "Boosts moisture retention",
+        "Improves nutrient availability",
+        "Revitalises lawns & garden beds"
+      ],
       "image": "images/products/soil-nls-top-dressing.jpg",
       "badge": null,
       "featured": true,
@@ -189,11 +243,15 @@
       "name": "Planter Box A (Horizon A)",
       "category": "soil",
       "categoryLabel": "Soil & Turf",
-      "price": 14.95,
-      "bulkBagPrice": 500.00,
-      "unit": "per 25L bag",
+      "price": 500.0,
+      "unit": "per 1 tonne bulk bag",
       "description": "A premium soil blend designed for deep-rooted plants in planter boxes and raised beds. It enhances root development, nutrient retention, soil stability, and moisture management for thriving plants. Composition: a blend of organic matter, soil conditioners, and natural materials, ensuring stability and long-term nutrient availability.",
-      "features": ["Premium blend for deep-rooted plants", "Boosts root development", "Strong nutrient retention", "Reliable moisture management"],
+      "features": [
+        "Premium blend for deep-rooted plants",
+        "Boosts root development",
+        "Strong nutrient retention",
+        "Reliable moisture management"
+      ],
       "image": "images/products/soil-planter-box-a.jpg",
       "badge": null,
       "featured": false,
@@ -205,11 +263,15 @@
       "name": "Premium Turf Underlay 80/20",
       "category": "soil",
       "categoryLabel": "Soil & Turf",
-      "price": 14.95,
-      "bulkBagPrice": 500.00,
-      "unit": "per 25L bag",
+      "price": 500.0,
+      "unit": "per 1 tonne bulk bag",
       "description": "A quality-assured mix of soil, sand and composted organics that gives newly laid turf the head start it needs to establish strong root growth and drainage. Suitable for Buffalo, Couch, Durban, Kikuyu and Zoysia turf varieties.",
-      "features": ["80/20 soil + sand blend with composted organics", "Boosts root establishment for new turf", "Improves drainage", "Suits Buffalo, Couch, Kikuyu, Zoysia"],
+      "features": [
+        "80/20 soil + sand blend with composted organics",
+        "Boosts root establishment for new turf",
+        "Improves drainage",
+        "Suits Buffalo, Couch, Kikuyu, Zoysia"
+      ],
       "image": "images/products/soil-premium-turf-underlay.jpg",
       "badge": null,
       "featured": false,
@@ -221,11 +283,15 @@
       "name": "Sydney Sand",
       "category": "sand",
       "categoryLabel": "Sand",
-      "price": 9.95,
-      "bulkBagPrice": 497.50,
-      "unit": "per 20kg bag",
+      "price": 497.5,
+      "unit": "per 1 tonne bulk bag",
       "description": "Sydney Sand, also known as washed sand, tiling sand, or rendering sand, is a fine sand commonly used for floor tiling, rendering, and as bedding sand for paving and paver grouting. Sourced from Sydney beaches, this sand is free of clay content, making it safe for children's sandpits. Ideal for plastering, rendering, tiling, and grouting, Sydney Sand also works well for filling joints between pavers.",
-      "features": ["Washed and graded", "Clay-free", "Tiling, rendering & paving", "Sandpit safe"],
+      "features": [
+        "Washed and graded",
+        "Clay-free",
+        "Tiling, rendering & paving",
+        "Sandpit safe"
+      ],
       "image": "images/products/sand-sydney-1.jpg",
       "badge": null,
       "featured": true,
@@ -239,9 +305,14 @@
       "name": "Bulk Garden Soil",
       "category": "soil",
       "price": 65,
-      "unit": "m³",
-      "description": "Premium garden soil blend — rich in organic matter, suitable for garden beds, lawn preparation and landscaping fill.",
-      "uses": ["Garden beds", "Lawn preparation", "Raised beds", "General fill"],
+      "unit": "m\u00b3",
+      "description": "Premium garden soil blend \u2014 rich in organic matter, suitable for garden beds, lawn preparation and landscaping fill.",
+      "uses": [
+        "Garden beds",
+        "Lawn preparation",
+        "Raised beds",
+        "General fill"
+      ],
       "image": "images/bulk/bulk-garden-soil.jpg",
       "minOrder": 1
     },
@@ -250,9 +321,14 @@
       "name": "Bulk Turf Blend",
       "category": "soil",
       "price": 75,
-      "unit": "m³",
+      "unit": "m\u00b3",
       "description": "Premium turf underlay blend with added sand and fertiliser. Ideal for laying new lawns and top dressing established turf.",
-      "uses": ["New lawn installation", "Lawn top dressing", "Turf underlay", "Sports fields"],
+      "uses": [
+        "New lawn installation",
+        "Lawn top dressing",
+        "Turf underlay",
+        "Sports fields"
+      ],
       "image": "images/bulk/bulk-turf-blend.jpg",
       "minOrder": 1
     },
@@ -261,9 +337,14 @@
       "name": "Washed Sand",
       "category": "sand",
       "price": 85,
-      "unit": "m³",
+      "unit": "m\u00b3",
       "description": "Clean washed concrete sand, free of clay and impurities. Suitable for concrete mixing, plastering and general construction.",
-      "uses": ["Concrete mixing", "Plastering", "Under pavers", "Sandpits"],
+      "uses": [
+        "Concrete mixing",
+        "Plastering",
+        "Under pavers",
+        "Sandpits"
+      ],
       "image": "images/bulk/bulk-washed-sand.jpg",
       "minOrder": 1
     },
@@ -272,9 +353,14 @@
       "name": "Coarse Sand",
       "category": "sand",
       "price": 80,
-      "unit": "m³",
+      "unit": "m\u00b3",
       "description": "Coarse-grade washed sand for drainage applications, garden soil improvement and general landscaping use.",
-      "uses": ["Soil improvement", "Drainage layers", "Turf dressing", "Levelling"],
+      "uses": [
+        "Soil improvement",
+        "Drainage layers",
+        "Turf dressing",
+        "Levelling"
+      ],
       "image": "images/bulk/bulk-coarse-sand.jpg",
       "minOrder": 1
     },
@@ -283,9 +369,14 @@
       "name": "Brickie's Sand",
       "category": "sand",
       "price": 90,
-      "unit": "m³",
+      "unit": "m\u00b3",
       "description": "Fine plasticity sand for bricklaying, block laying and mortar applications. Consistent particle size for reliable mixes.",
-      "uses": ["Bricklaying mortar", "Block laying", "Paver bedding", "Rendering"],
+      "uses": [
+        "Bricklaying mortar",
+        "Block laying",
+        "Paver bedding",
+        "Rendering"
+      ],
       "image": "images/bulk/bulk-brickies-sand.jpg",
       "minOrder": 1
     },
@@ -296,7 +387,12 @@
       "price": 75,
       "unit": "tonne",
       "description": "Clean 10mm blue metal aggregate for concrete mixing, drainage, under-slab applications and driveway construction.",
-      "uses": ["Concrete aggregate", "Sub-base drainage", "Under slab", "Driveways"],
+      "uses": [
+        "Concrete aggregate",
+        "Sub-base drainage",
+        "Under slab",
+        "Driveways"
+      ],
       "image": "images/bulk/bulk-blue-metal.jpg",
       "minOrder": 1
     },
@@ -307,7 +403,12 @@
       "price": 72,
       "unit": "tonne",
       "description": "20mm blue metal aggregate for road base, drainage and concrete applications where larger aggregate is specified.",
-      "uses": ["Road base", "Drainage fill", "Large concrete pours", "Sub-base"],
+      "uses": [
+        "Road base",
+        "Drainage fill",
+        "Large concrete pours",
+        "Sub-base"
+      ],
       "image": "images/bulk/bulk-blue-metal.jpg",
       "minOrder": 1
     },
@@ -317,8 +418,13 @@
       "category": "gravel",
       "price": 68,
       "unit": "tonne",
-      "description": "Fine crushed aggregate — ideal for compacting under pavers, paths and as a levelling base. Binds firmly when compacted and dampened.",
-      "uses": ["Paver bedding", "Path levelling", "Compaction base", "Court surfaces"],
+      "description": "Fine crushed aggregate \u2014 ideal for compacting under pavers, paths and as a levelling base. Binds firmly when compacted and dampened.",
+      "uses": [
+        "Paver bedding",
+        "Path levelling",
+        "Compaction base",
+        "Court surfaces"
+      ],
       "image": "images/bulk/bulk-crusher-dust.jpg",
       "minOrder": 1
     },
@@ -329,7 +435,12 @@
       "price": 95,
       "unit": "tonne",
       "description": "Rounded river gravel in warm natural tones. Beautiful for feature gardens, water features, dry creek beds and large decorative areas.",
-      "uses": ["Feature gardens", "Water features", "Dry creek beds", "Decorative fill"],
+      "uses": [
+        "Feature gardens",
+        "Water features",
+        "Dry creek beds",
+        "Decorative fill"
+      ],
       "image": "images/bulk/bulk-river-gravel.jpg",
       "minOrder": 1
     }
