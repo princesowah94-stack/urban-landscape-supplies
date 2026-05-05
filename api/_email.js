@@ -42,6 +42,44 @@ function lineItemsTable(items) {
   `;
 }
 
+function supplierItemsTable(items) {
+  const rows = items.map(i => `
+    <tr>
+      <td style="padding:10px 0;border-bottom:1px solid #eee">${i.name}${i.unit ? ` <span style="color:#888;font-size:13px">(${i.unit})</span>` : ''}</td>
+      <td style="padding:10px 0;border-bottom:1px solid #eee;text-align:right;font-weight:700;font-variant-numeric:tabular-nums">${i.quantity}</td>
+    </tr>
+  `).join('');
+  return `
+    <table style="width:100%;border-collapse:collapse;font-size:14px;margin:16px 0">
+      <thead>
+        <tr style="text-align:left;color:#666;font-size:12px;text-transform:uppercase;letter-spacing:0.05em">
+          <th style="padding:8px 0;border-bottom:1px solid #ddd;font-weight:700">Item</th>
+          <th style="padding:8px 0;border-bottom:1px solid #ddd;font-weight:700;text-align:right">Qty</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function fmtSydneyDateTime(value) {
+  if (!value) return '';
+  try {
+    return new Intl.DateTimeFormat('en-AU', {
+      timeZone: 'Australia/Sydney',
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }).format(new Date(value));
+  } catch {
+    return '';
+  }
+}
+
 function shellHtml({ heading, intro, order, items }) {
   return `
     <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;color:#222">
@@ -129,6 +167,70 @@ export async function sendCustomerRefundEmail({ order, items, refundedCents }) {
     to: order.customer_email,
     bcc: process.env.EMAIL_TO_STAFF || process.env.EMAIL_TO || undefined,
     subject: `Refund processed — Urban Landscape Supplies #${shortId(order.id)}`,
+    html,
+  });
+}
+
+// Sent on the 'paid' webhook to the third-party fulfilment supplier so they
+// can pick & dispatch. Branded as ULS, no pricing visible. Silently no-ops
+// when SUPPLIER_NOTIFICATION_EMAIL is unset (safe to deploy without configuring).
+// Comma-separated env value fans out to multiple recipients.
+export async function sendSupplierOrderEmail({ order, items }) {
+  const recipients = (process.env.SUPPLIER_NOTIFICATION_EMAIL || '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+  if (recipients.length === 0) {
+    console.warn('SUPPLIER_NOTIFICATION_EMAIL not configured — skipping supplier email.');
+    return;
+  }
+
+  const placedAt = fmtSydneyDateTime(order.created_at);
+  const customerName = order.customer_name || 'Customer';
+  const phone = order.customer_phone;
+  const address = order.delivery_address;
+  const notes = order.notes;
+
+  const html = `
+    <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;color:#222">
+      <h1 style="font-size:22px;margin:0 0 4px">New order to fulfil</h1>
+      <p style="color:#888;font-size:13px;margin:0 0 24px">Order #${shortId(order.id)}${placedAt ? ` · placed ${placedAt}` : ''}</p>
+
+      <div style="background:#f6f6f4;border-radius:8px;padding:16px;margin:0 0 20px">
+        <p style="font-size:12px;color:#666;margin:0 0 6px;text-transform:uppercase;letter-spacing:0.05em">Deliver to</p>
+        <p style="font-size:16px;font-weight:700;margin:0 0 8px;line-height:1.4;white-space:pre-wrap">${address || '<span style="color:#b00">No address provided</span>'}</p>
+        <p style="font-size:14px;margin:0;color:#444">
+          ${customerName}${phone ? ` · <a href="tel:${phone}" style="color:#222;text-decoration:none;font-weight:600">${phone}</a>` : ''}
+        </p>
+      </div>
+
+      <p style="font-size:12px;color:#888;margin:0 0 4px;text-transform:uppercase;letter-spacing:0.05em">Items to load</p>
+      ${supplierItemsTable(items)}
+
+      ${notes ? `
+        <div style="background:#fff8e1;border-left:4px solid #ffb300;padding:12px 16px;margin:20px 0;border-radius:4px">
+          <p style="font-size:12px;color:#8a6300;margin:0 0 6px;text-transform:uppercase;letter-spacing:0.05em;font-weight:700">Customer note</p>
+          <p style="font-size:14px;margin:0;color:#5a3f00;line-height:1.5;white-space:pre-wrap">${notes}</p>
+        </div>
+      ` : ''}
+
+      <p style="font-size:14px;color:#444;margin:24px 0 0;line-height:1.5">
+        <strong>Please contact the customer 1 hour before delivery.</strong>
+      </p>
+
+      <hr style="border:none;border-top:1px solid #eee;margin:24px 0">
+      <p style="font-size:12px;color:#999;line-height:1.5;margin:0">
+        Urban Landscape Supplies · Wetherill Park NSW · 1300 872 267<br>
+        Automated dispatch notification — reply to reach the ULS office.
+      </p>
+    </div>
+  `;
+
+  return getResend().emails.send({
+    from: `${FROM_NAME} <${FROM_EMAIL}>`,
+    to: recipients,
+    replyTo: process.env.EMAIL_TO_STAFF || process.env.EMAIL_TO || undefined,
+    subject: `New order to fulfil — #${shortId(order.id)} — ${customerName}`,
     html,
   });
 }

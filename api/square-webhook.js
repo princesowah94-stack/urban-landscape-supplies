@@ -8,7 +8,7 @@
  */
 import crypto from 'node:crypto';
 import { supabase } from './_supabase.js';
-import { sendCustomerOrderEmail, sendStaffOrderEmail } from './_email.js';
+import { sendCustomerOrderEmail, sendStaffOrderEmail, sendSupplierOrderEmail } from './_email.js';
 
 // Verify the HMAC signature Square sends in `x-square-hmacsha256-signature`.
 // Signed payload = notification URL + raw request body, hashed with
@@ -97,6 +97,7 @@ export async function POST(request) {
     await Promise.allSettled([
       sendCustomerOrderEmail({ order: updatedOrder, items: items || [] }),
       sendStaffOrderEmail({ order: updatedOrder, items: items || [] }),
+      sendSupplierOrderEmail({ order: updatedOrder, items: items || [] }),
     ]);
   } catch (err) {
     console.error('Webhook: email send failed (order is still marked paid):', err);
