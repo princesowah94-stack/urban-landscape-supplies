@@ -240,5 +240,36 @@
     <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://urbanlandscapesupplies.com.au/delivery/liverpool</loc>
     <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://urbanlandscapesupplies.com.au/delivery/wetherill-park</loc>
+    <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- BEGIN:products -->
+  <url><loc>https://urbanlandscapesupplies.com.au/product/pebbles-snow-white</loc>
+    <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://urbanlandscapesupplies.com.au/product/pebbles-crushed-snow-white</loc>
+    <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://urbanlandscapesupplies.com.au/product/pebbles-charcoal-grey</loc>
+    <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://urbanlandscapesupplies.com.au/product/pebbles-charcoal-lava</loc>
+    <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://urbanlandscapesupplies.com.au/product/pebbles-red-lava</loc>
+    <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://urbanlandscapesupplies.com.au/product/mulch-hardwood-chip</loc>
+    <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://urbanlandscapesupplies.com.au/product/mulch-woodlands-blend</loc>
+    <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://urbanlandscapesupplies.com.au/product/mulch-woodlands-natural</loc>
+    <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://urbanlandscapesupplies.com.au/product/mulch-nls-pine-bark</loc>
+    <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://urbanlandscapesupplies.com.au/product/soil-nls-top-dressing</loc>
+    <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://urbanlandscapesupplies.com.au/product/soil-planter-box-a</loc>
+    <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://urbanlandscapesupplies.com.au/product/soil-premium-turf-underlay</loc>
+    <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://urbanlandscapesupplies.com.au/product/sand-nls-sydney</loc>
+    <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <!-- END:products -->
 
 </urlset>

@@ -22,12 +22,16 @@ function renderCheckoutSummary(cart) {
   container.innerHTML = cart.map(item => `
     <div class="checkout-line-item">
       <div class="checkout-line-item__img-wrap">
-        <img
-          src="${item.image}"
-          alt="${item.name}"
-          class="checkout-line-item__img"
-          onerror="this.src='images/products/placeholder.jpg'"
-        />
+        <picture>
+          <source type="image/webp" srcset="${(item.image || '').replace(/\.jpe?g$/i, '.webp')}" />
+          <img
+            src="${item.image}"
+            alt="${item.name}"
+            class="checkout-line-item__img"
+            loading="lazy"
+            onerror="this.src='images/products/placeholder.jpg'"
+          />
+        </picture>
         <span class="checkout-line-item__qty">${item.quantity}</span>
       </div>
       <div style="flex:1">

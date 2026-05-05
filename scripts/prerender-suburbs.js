@@ -24,11 +24,11 @@ const SITE_URL = 'https://urbanlandscapesupplies.com.au';
 const STATIC_TITLE_RE  = /<title>[^<]*<\/title>/;
 const META_DESC_RE     = /<meta name="description" content="[^"]*"\s*\/?>/;
 const TITLE_COMMENT_RE = /<!--\s*Title and meta description are set dynamically by delivery\.js\s*-->\s*\n?/;
-const VIEWPORT_LINE    = '<meta name="viewport" content="width=device-width, initial-scale=1.0" />';
-const LOCALE_LINE      = '<meta property="og:locale" content="en_AU" />';
 const HEAD_END_RE      = /(\s*)<\/head>/;
-const H1_RE            = /<h1 class="page-hero__title">\s*Landscaping Supplies <span data-suburb-name><\/span> NSW\s*<\/h1>/;
+const H1_RE            = /<h1 class="page-hero__title">\s*Landscap(?:e|ing) Supplies(?: Delivery to)? <span data-suburb-name>[^<]*<\/span> NSW\s*<\/h1>/;
 const PRERENDER_BLOCK_RE = /\n\s*<!-- BEGIN:prerender -->[\s\S]*?<!-- END:prerender -->\n/;
+// Boilerplate paragraph that needs unique local content folded in.
+const ABOUT_PARA_RE    = /<p style="color:var\(--color-text-secondary\);line-height:var\(--leading-loose\);margin-bottom:var\(--sp-4\)">\s*Urban Landscape Supplies delivers premium landscaping products to[\s\S]*?<\/p>/;
 
 function buildTitle(suburb)   { return `Landscape Supplies Delivery to ${suburb.name} NSW ${suburb.postcode} | Urban Landscape Supplies`; }
 function buildMeta(suburb, zone) {
@@ -131,6 +131,18 @@ function processFile(suburb) {
   html = html.replace(STATIC_TITLE_RE, `<title>${title}</title>`);
   html = html.replace(META_DESC_RE, `<meta name="description" content="${meta}" />`);
   html = html.replace(H1_RE, `<h1 class="page-hero__title">\n        Landscape Supplies Delivery to <span data-suburb-name>${suburb.name}</span> NSW\n      </h1>`);
+
+  // Inject council + localNote into the about-delivery paragraph for unique
+  // per-suburb body content. Falls back gracefully if those fields are absent.
+  if (suburb.localNote || suburb.council) {
+    const localBits = [];
+    if (suburb.council)   localBits.push(`Within the ${suburb.council} area.`);
+    if (suburb.localNote) localBits.push(suburb.localNote);
+    const localSentence = localBits.join(' ');
+    html = html.replace(ABOUT_PARA_RE,
+      `<p style="color:var(--color-text-secondary);line-height:var(--leading-loose);margin-bottom:var(--sp-4)">\n        Urban Landscape Supplies delivers premium landscaping products to <span data-suburb-name>${suburb.name}</span> NSW <span data-suburb-postcode>${suburb.postcode}</span> and the broader <span data-region-name>${region.name}</span> region. ${localSentence} Whether you're refreshing a garden bed near <span data-suburb-landmark>${suburb.landmark}</span>, building a new patio, or tackling a full backyard renovation, we deliver everything you need straight to your door.\n      </p>`
+    );
+  }
 
   // Strip any prior prerender block so re-runs are clean
   html = html.replace(PRERENDER_BLOCK_RE, '\n');

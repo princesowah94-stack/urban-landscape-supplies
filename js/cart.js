@@ -128,12 +128,16 @@ function renderDrawerItems(cart) {
 
   container.innerHTML = cart.map(item => `
     <div class="cart-item" data-id="${item.id}">
-      <img
-        src="${item.image}"
-        alt="${item.name}"
-        class="cart-item__img"
-        onerror="this.src='images/products/placeholder.jpg'"
-      />
+      <picture>
+        <source type="image/webp" srcset="${(item.image || '').replace(/\.jpe?g$/i, '.webp')}" />
+        <img
+          src="${item.image}"
+          alt="${item.name}"
+          class="cart-item__img"
+          loading="lazy"
+          onerror="this.src='images/products/placeholder.jpg'"
+        />
+      </picture>
       <div>
         <p class="cart-item__name">${item.name}</p>
         <p class="cart-item__meta">${item.unit}</p>

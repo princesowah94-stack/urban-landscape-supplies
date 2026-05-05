@@ -44,6 +44,12 @@ function stockBadgeHtml(productId) {
   return `<span class="stock-badge stock-badge--in">In stock</span>`;
 }
 
+// Returns the .webp sibling of an /images/products/*.jpg path; falls through
+// for anything that doesn't match (e.g. external URLs, png placeholders).
+function webpFor(jpgPath) {
+  return jpgPath && jpgPath.replace(/\.jpe?g$/i, '.webp');
+}
+
 // ─── PRODUCT CARD HTML ─────────────────────────────────────────
 function buildProductCard(product) {
   const badgeHtml = product.badge
@@ -51,15 +57,18 @@ function buildProductCard(product) {
     : '';
 
   return `
-    <article class="product-card" data-id="${product.id}" onclick="window.location='product-detail.html?id=${product.id}'">
+    <article class="product-card" data-id="${product.id}" onclick="window.location='/product/${product.id}'">
       <div class="product-card__image-wrap">
-        <img
-          src="${product.image}"
-          alt="${product.name}"
-          class="product-card__image"
-          loading="lazy"
-          onerror="this.src='images/products/placeholder.jpg'"
-        />
+        <picture>
+          <source type="image/webp" srcset="${webpFor(product.image)}" />
+          <img
+            src="${product.image}"
+            alt="${product.name}"
+            class="product-card__image"
+            loading="lazy"
+            onerror="this.src='images/products/placeholder.jpg'"
+          />
+        </picture>
         ${badgeHtml}
       </div>
       <div class="product-card__body">
@@ -165,10 +174,13 @@ async function renderCatalog(containerId, { category = null, search = '' } = {})
 
 // ─── RENDER PRODUCT DETAIL ─────────────────────────────────────
 async function renderProductDetail() {
+  // Prefer window.PRODUCT_ID (set by pre-rendered /product/{slug}.html), fall
+  // back to the legacy ?id= query (kept for the original product-detail.html
+  // SPA URL so old shared links still resolve).
   const params = new URLSearchParams(window.location.search);
-  const id = params.get('id');
+  const id = window.PRODUCT_ID || params.get('id');
 
-  if (!id) { window.location.href = 'products.html'; return; }
+  if (!id) { window.location.href = '/products'; return; }
 
   await loadProducts();
   const product = getProductById(id);
@@ -323,7 +335,10 @@ function initProductGallery(product) {
         <div class="pgal__track" id="pgal-track">
           ${images.map((src, i) => `
             <div class="pgal__slide">
-              <img src="${src}" alt="${product.name}" loading="${i === 0 ? 'eager' : 'lazy'}" onerror="this.style.background='var(--color-gray-200)'" />
+              <picture>
+                <source type="image/webp" srcset="${webpFor(src)}" />
+                <img src="${src}" alt="${product.name}" loading="${i === 0 ? 'eager' : 'lazy'}" ${i === 0 ? 'fetchpriority="high"' : ''} onerror="this.style.background='var(--color-gray-200)'" />
+              </picture>
             </div>
           `).join('')}
         </div>
