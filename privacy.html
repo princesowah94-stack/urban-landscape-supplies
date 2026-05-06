@@ -17,6 +17,8 @@
   <link rel="apple-touch-icon" href="/images/brand/apple-touch-icon.png" />
   <link rel="manifest" href="/manifest.webmanifest" />
   <meta name="theme-color" content="#5e6e4f" />
+  <!-- GA4 (gtag.js) -->
+  <script defer src="/js/analytics.js"></script>
 </head>
 <body>
 
@@ -57,7 +59,7 @@
     <p class="eyebrow eyebrow--sage" style="margin-bottom:var(--sp-3)">Legal</p>
     <h1 style="font-size:var(--text-4xl);line-height:var(--leading-tight);margin-bottom:var(--sp-4)">Privacy Policy</h1>
     <p style="font-size:var(--text-md);color:var(--color-text-secondary);max-width:60ch;line-height:var(--leading-normal)">How Urban Landscape Supplies Pty Ltd collects, uses, stores and protects your personal information.</p>
-    <p style="margin-top:var(--sp-4);font-size:var(--text-sm);color:var(--color-text-muted)">Last updated: 1 May 2026</p>
+    <p style="margin-top:var(--sp-4);font-size:var(--text-sm);color:var(--color-text-muted)">Last updated: 6 May 2026</p>
   </div>
 </div>
 
@@ -98,12 +100,18 @@
       <li><strong>Supabase</strong> (database hosting) — stores your order details, contact-form submissions and quote requests in encrypted form.</li>
       <li><strong>Resend</strong> and our SMTP email provider — deliver the transactional emails we send to you (order confirmations, quote acknowledgements, dispatch notices).</li>
       <li><strong>Vercel</strong> — hosts the website itself.</li>
+      <li><strong>Google Analytics 4</strong> (Google LLC) — provides anonymised, aggregated traffic statistics so we can understand which pages and products people are interested in. See section 5 for more on how this works and how to opt out.</li>
       <li><strong>Our delivery partners</strong> — receive only the name, phone number and delivery address needed to deliver your order.</li>
     </ul>
     <p style="margin-bottom:var(--sp-6)">Some of these providers store data outside Australia (typically in the United States or European Union). They are contractually required to handle your information in line with the Australian Privacy Principles.</p>
 
     <h2 style="font-size:var(--text-2xl);margin:var(--sp-8) 0 var(--sp-3)">5. Cookies and tracking</h2>
-    <p style="margin-bottom:var(--sp-6)">This website does <strong>not</strong> use third-party advertising or analytics cookies. We use only the technical browser storage required to keep your shopping cart working between pages (saved locally on your own device).</p>
+    <p style="margin-bottom:var(--sp-3)">We use two kinds of browser storage:</p>
+    <ul style="margin:0 0 var(--sp-6) var(--sp-6);display:flex;flex-direction:column;gap:var(--sp-2)">
+      <li><strong>Local storage on your device</strong> — keeps your shopping cart working between pages. This data never leaves your browser.</li>
+      <li><strong>Google Analytics 4 cookies</strong> (<code>_ga</code>, <code>_ga_STY5N2Z7NB</code>) — set by our analytics provider so we can see anonymised, aggregated information about how visitors find and use the site (which pages they visit, how long they stay, which suburbs they're in, etc.). IP addresses are anonymised before being processed, and we do not use Google Analytics for advertising or remarketing.</li>
+    </ul>
+    <p style="margin-bottom:var(--sp-6)">If you prefer not to be measured, you can install <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" style="color:var(--color-sage)">Google's official opt-out browser add-on</a>, or block analytics cookies in your browser settings. The website will work normally either way.</p>
 
     <h2 style="font-size:var(--text-2xl);margin:var(--sp-8) 0 var(--sp-3)">6. How we keep your information secure</h2>
     <p style="margin-bottom:var(--sp-6)">All connections between your browser and our website are encrypted with HTTPS. Order and customer records in our database are accessible only to authorised staff using individual credentials. Payment card data never touches our servers — it goes directly to Square.</p>
