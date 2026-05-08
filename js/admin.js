@@ -378,6 +378,9 @@ function renderDetail(order) {
         </div>
         <div class="admin-detail__items">${itemsHtml}</div>
         ${order.notes ? `<div class="admin-detail__notes"><strong>Notes:</strong> ${escapeHTML(order.notes)}</div>` : ''}
+        <div style="margin-top:var(--sp-3)">
+          <button class="admin-action-btn" data-action="edit" data-order-id="${escapeHTML(order.id)}">Edit details…</button>
+        </div>
         <div class="admin-detail__label" style="margin-top:var(--sp-4)">Audit trail</div>
         <div class="admin-detail__audit" data-audit-for="${escapeHTML(order.id)}">${auditHtml}</div>
       </div>
@@ -422,8 +425,100 @@ $('#admin-filters')?.addEventListener('click', (e) => {
   loadOrders();
 });
 
-// Delegated handler for row expand + status transition + refund buttons
+// ─── EDIT-ORDER MODAL ──────────────────────────────────────────
+function openEditModal(orderId) {
+  const order = allOrders.find(o => o.id === orderId);
+  if (!order) return;
+  $('#edit-order-id').value = order.id;
+  $('#edit-name').value    = order.customer_name    || '';
+  $('#edit-email').value   = order.customer_email   || '';
+  $('#edit-phone').value   = order.customer_phone   || '';
+  $('#edit-address').value = order.delivery_address || '';
+  $('#edit-notes').value   = order.notes            || '';
+  $('#edit-modal').style.display = '';
+  $('#edit-name').focus();
+}
+function closeEditModal() {
+  $('#edit-modal').style.display = 'none';
+}
+
+$('#edit-form')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const orderId = $('#edit-order-id').value;
+  const btn = $('#edit-save-btn');
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  const payload = {
+    orderId,
+    customer_name:    $('#edit-name').value.trim(),
+    customer_email:   $('#edit-email').value.trim(),
+    customer_phone:   $('#edit-phone').value.trim(),
+    delivery_address: $('#edit-address').value.trim(),
+    notes:            $('#edit-notes').value.trim(),
+  };
+
+  try {
+    const res = await fetch('/api/admin/edit-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify(payload),
+    });
+
+    if (res.status === 401) { logout(); return; }
+
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(body.message || body.error || `HTTP ${res.status}`);
+
+    if (body.changed === 0) {
+      showToast('No changes to save');
+    } else {
+      // Update local state so the table reflects the edits without a full refetch.
+      const order = allOrders.find(o => o.id === orderId);
+      if (order) {
+        order.customer_name    = payload.customer_name    || null;
+        order.customer_email   = payload.customer_email   || null;
+        order.customer_phone   = payload.customer_phone   || null;
+        order.delivery_address = payload.delivery_address || null;
+        order.notes            = payload.notes            || null;
+      }
+      delete auditCache[orderId]; // invalidate so the new edit entry shows up on re-expand
+      renderOrders();
+      showToast(`Saved · ${body.changed} field${body.changed !== 1 ? 's' : ''} updated`);
+    }
+    closeEditModal();
+  } catch (err) {
+    console.error('Edit failed:', err);
+    showToast(`Save failed: ${err.message}`);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = original;
+  }
+});
+
+// Close modal on backdrop / cancel / × clicks
+document.addEventListener('click', (e) => {
+  if (e.target.closest('[data-action="close-edit"]')) {
+    closeEditModal();
+  }
+});
+// Esc to close
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && $('#edit-modal').style.display !== 'none') {
+    closeEditModal();
+  }
+});
+
+// Delegated handler for row expand + status transition + refund + edit buttons
 document.addEventListener('click', async (e) => {
+  const editBtn = e.target.closest('[data-action="edit"]');
+  if (editBtn) {
+    e.stopPropagation();
+    openEditModal(editBtn.dataset.orderId);
+    return;
+  }
+
   const refundBtn = e.target.closest('[data-action="refund"]');
   if (refundBtn) {
     e.stopPropagation();

@@ -273,6 +273,68 @@
   border-top: 1px dashed var(--color-border);
 }
 
+/* Edit-order modal */
+.edit-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+}
+.edit-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  cursor: pointer;
+}
+.edit-modal__panel {
+  position: relative;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.edit-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--sp-2);
+}
+.edit-modal__header h2 {
+  font-size: var(--text-lg);
+  margin: 0;
+}
+.edit-modal__close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  padding: 0 var(--sp-2);
+}
+.edit-modal__hint {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  background: var(--color-gray-50);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-xs);
+  margin-bottom: var(--sp-4);
+  line-height: 1.4;
+}
+.edit-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+  margin-top: var(--sp-4);
+}
+
 /* Empty / loading states */
 .admin-empty {
   padding: var(--sp-8);
