@@ -188,13 +188,20 @@
   border-radius: var(--radius-md);
   overflow: hidden;
   background-color: var(--color-gray-200);
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  /* background-image is set per-card inline (see index.html) */
   text-decoration: none;
   cursor: pointer;
+  display: block;
+  isolation: isolate; /* establish stacking context so z-index below works without leaking out */
   transition: transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out);
+}
+
+.category-card__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
 }
 
 .category-card::before {
@@ -203,6 +210,7 @@
   inset: 0;
   background: linear-gradient(to top, rgba(34,34,26,0.80) 0%, rgba(34,34,26,0.15) 60%, transparent 100%);
   transition: opacity var(--duration-base) var(--ease-out);
+  z-index: 1;
 }
 
 .category-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-xl); }
@@ -214,7 +222,7 @@
   left: 0;
   right: 0;
   padding: var(--sp-4);
-  z-index: 1;
+  z-index: 2;
 }
 
 .category-card__title {
