@@ -1,8 +1,16 @@
 /**
- * admin.js — login, fetch orders, render table, transition status.
- * Token lives in sessionStorage so closing the tab logs out.
+ * admin.js — magic-link login (Supabase Auth), fetch orders, render table,
+ * transition status, refund, audit log.
+ *
+ * Auth: Supabase JS client handles the session in localStorage. JWT access
+ * token is sent as Bearer on every /api/admin/* call. The server
+ * (_admin-auth.js) verifies it and checks admin_profiles allowlist.
+ *
+ * Loaded as ES module (see admin.html). Pulls @supabase/supabase-js v2 from
+ * esm.sh — no build step.
  */
-const TOKEN_KEY = 'uls_admin_token';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
 const AUTO_REFRESH_MS = 60_000;
 
 const STATUS_LABELS = {
@@ -13,9 +21,6 @@ const STATUS_LABELS = {
   cancelled:       'Cancelled',
   refunded:        'Refunded',
 };
-// Each entry is either a status transition ({to, label}) or a special action ({action, label}).
-// Refund hits /api/admin/refund and lives on paid/dispatched/delivered.
-// Reopen flips a cancelled order back to paid (cancelled -> paid).
 const TRANSITIONS = {
   paid: [
     { to: 'dispatched', label: 'Dispatch',       primary: true },
@@ -38,6 +43,9 @@ const TRANSITIONS = {
 let currentFilter = '';
 let allOrders = [];
 let expandedOrderId = null;
+let auditCache = {};      // orderId -> array of audit entries
+let supabase = null;       // Supabase client (initialised after fetching config)
+let currentSession = null; // Current Supabase session
 
 const $  = (s, root = document) => root.querySelector(s);
 const $$ = (s, root = document) => Array.from(root.querySelectorAll(s));
@@ -49,47 +57,102 @@ const escapeHTML = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({
 
 const formatDate = (iso) => {
   if (!iso) return '—';
-  const d = new Date(iso);
-  return d.toLocaleDateString('en-AU', { day: '2-digit', month: 'short' });
+  return new Date(iso).toLocaleDateString('en-AU', { day: '2-digit', month: 'short' });
+};
+const formatDateTime = (iso) => {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleString('en-AU', {
+    day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit',
+  });
 };
 
-// ─── AUTH ──────────────────────────────────────────────────────
-function getToken() { return sessionStorage.getItem(TOKEN_KEY); }
-function setToken(t) { sessionStorage.setItem(TOKEN_KEY, t); }
-function clearToken() { sessionStorage.removeItem(TOKEN_KEY); }
-
-function authHeaders() {
-  return { 'Authorization': `Bearer ${getToken()}` };
+let toastTimer = null;
+function showToast(message) {
+  const toast = $('#toast');
+  const msg = $('#toast-msg');
+  if (!toast || !msg) return;
+  msg.textContent = message;
+  toast.classList.add('toast--visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('toast--visible'), 2800);
 }
 
-async function login(password) {
-  const res = await fetch('/api/admin/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ password }),
+// ─── BOOTSTRAP ─────────────────────────────────────────────────
+async function bootstrap() {
+  // Pull supabase config from server (URL + anon key)
+  const cfg = await fetch('/api/public-config').then(r => r.json()).catch(() => null);
+  if (!cfg?.supabaseUrl || !cfg?.supabaseAnonKey) {
+    document.body.innerHTML = '<p style="padding:2rem;font-family:system-ui">Admin temporarily unavailable. Server is missing Supabase config.</p>';
+    return;
+  }
+
+  supabase = createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,   // needed so the magic-link callback can pick up the session
+      flowType: 'pkce',
+    },
   });
-  if (!res.ok) throw new Error('Invalid password');
-  const { token } = await res.json();
-  setToken(token);
+
+  // 1. Check existing session (or pick up the magic-link redirect)
+  const { data: { session } } = await supabase.auth.getSession();
+  currentSession = session;
+
+  if (currentSession) {
+    showDashboard();
+    startAutoRefresh();
+  } else {
+    showLogin();
+  }
+
+  // 2. Listen for sign-in / sign-out events (e.g. after magic link redirect)
+  supabase.auth.onAuthStateChange((event, session) => {
+    currentSession = session;
+    if (event === 'SIGNED_IN' && session) {
+      showDashboard();
+      startAutoRefresh();
+    } else if (event === 'SIGNED_OUT') {
+      stopAutoRefresh();
+      showLogin();
+    }
+  });
 }
 
-function logout() {
-  clearToken();
-  stopAutoRefresh();
-  showLogin();
+// ─── AUTH ──────────────────────────────────────────────────────
+function authHeaders() {
+  return { 'Authorization': `Bearer ${currentSession?.access_token || ''}` };
+}
+
+async function sendMagicLink(email) {
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: `${window.location.origin}/admin`,
+    },
+  });
+  if (error) throw error;
+}
+
+async function logout() {
+  await supabase.auth.signOut();
+  // onAuthStateChange will call showLogin()
 }
 
 // ─── VIEW SWAP ─────────────────────────────────────────────────
 function showLogin() {
   $('#admin-login-view').style.display = '';
   $('#admin-dashboard-view').style.display = 'none';
-  $('#admin-pw').value = '';
-  $('#admin-pw').focus();
+  $('#admin-email').value = '';
+  $('#admin-email').focus();
 }
 
 function showDashboard() {
   $('#admin-login-view').style.display = 'none';
   $('#admin-dashboard-view').style.display = '';
+  // Show user identity
+  const userName = currentSession?.user?.email || '';
+  $('#admin-user-name').textContent = userName;
   loadOrders();
 }
 
@@ -103,6 +166,10 @@ async function loadOrders() {
     const res = await fetch(url, { headers: authHeaders() });
 
     if (res.status === 401) { logout(); return; }
+    if (res.status === 403) {
+      container.innerHTML = '<div class="admin-empty">Your account is signed in but not on the admin allowlist. Contact Prince to be added.</div>';
+      return;
+    }
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
     const { orders } = await res.json();
@@ -114,12 +181,24 @@ async function loadOrders() {
   }
 }
 
+async function loadAuditLog(orderId) {
+  if (auditCache[orderId]) return auditCache[orderId];
+  try {
+    const res = await fetch(`/api/admin/audit-log?orderId=${encodeURIComponent(orderId)}`, { headers: authHeaders() });
+    if (!res.ok) return [];
+    const { entries } = await res.json();
+    auditCache[orderId] = entries || [];
+    return auditCache[orderId];
+  } catch {
+    return [];
+  }
+}
+
 async function transitionOrder(orderId, nextStatus) {
   const order = allOrders.find(o => o.id === orderId);
   if (!order) return;
 
   const previousStatus = order.status;
-  // Optimistic update
   order.status = nextStatus;
   renderOrders();
 
@@ -137,13 +216,13 @@ async function transitionOrder(orderId, nextStatus) {
       throw new Error(err.message || `HTTP ${res.status}`);
     }
 
+    delete auditCache[orderId]; // invalidate so next expand fetches fresh
     const msg = nextStatus === 'dispatched'
       ? 'Marked dispatched · customer notified'
       : `Marked ${STATUS_LABELS[nextStatus].toLowerCase()}`;
     showToast(msg);
   } catch (err) {
     console.error('Transition failed:', err);
-    // Roll back
     order.status = previousStatus;
     renderOrders();
     showToast(`Update failed: ${err.message}`);
@@ -155,7 +234,6 @@ async function refundOrder(orderId) {
   if (!order) return;
 
   const previousStatus = order.status;
-  // Optimistic update
   order.status = 'refunded';
   renderOrders();
 
@@ -173,6 +251,7 @@ async function refundOrder(orderId) {
       throw new Error(body.message || body.error || `HTTP ${res.status}`);
     }
 
+    delete auditCache[orderId];
     if (body.alreadyRefunded) {
       showToast('Already refunded');
     } else {
@@ -253,6 +332,21 @@ function renderDetail(order) {
     </div>
   `).join('') || '<em style="color:var(--color-text-muted)">No line items recorded.</em>';
 
+  const auditEntries = auditCache[order.id] || [];
+  const auditHtml = auditEntries.length
+    ? auditEntries.map(e => {
+        const summary = e.action === 'transition'
+          ? `${e.details?.status_from || '—'} → ${e.details?.status_to || '—'}`
+          : e.action === 'refund'
+            ? `Refunded ${aud(e.details?.amount_cents || 0)}`
+            : escapeHTML(e.action);
+        return `<div class="admin-detail__audit-row">
+          <span>${escapeHTML(summary)}</span>
+          <span style="color:var(--color-text-muted)">${escapeHTML(e.actor_display_name || '—')} · ${formatDateTime(e.created_at)}</span>
+        </div>`;
+      }).join('')
+    : '<em style="color:var(--color-text-muted);font-size:13px">No admin actions recorded yet.</em>';
+
   return `
     <tr><td colspan="6" style="padding:0">
       <div class="admin-detail">
@@ -284,6 +378,8 @@ function renderDetail(order) {
         </div>
         <div class="admin-detail__items">${itemsHtml}</div>
         ${order.notes ? `<div class="admin-detail__notes"><strong>Notes:</strong> ${escapeHTML(order.notes)}</div>` : ''}
+        <div class="admin-detail__label" style="margin-top:var(--sp-4)">Audit trail</div>
+        <div class="admin-detail__audit" data-audit-for="${escapeHTML(order.id)}">${auditHtml}</div>
       </div>
     </td></tr>
   `;
@@ -292,25 +388,28 @@ function renderDetail(order) {
 // ─── EVENTS ────────────────────────────────────────────────────
 $('#admin-login-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const pw = $('#admin-pw').value;
+  const email = $('#admin-email').value.trim();
   const errEl = $('#admin-login-error');
+  const okEl = $('#admin-login-success');
   const btnText = $('#admin-login-btn-text');
+  const btn = $('#admin-login-btn');
   errEl.classList.remove('admin-login__error--visible');
-  btnText.textContent = 'Signing in...';
+  okEl.style.display = 'none';
+  btnText.textContent = 'Sending link...';
+  btn.disabled = true;
   try {
-    await login(pw);
-    showDashboard();
-    startAutoRefresh();
+    await sendMagicLink(email);
+    okEl.style.display = '';
   } catch (err) {
-    errEl.textContent = err.message || 'Invalid password.';
+    errEl.textContent = err.message || 'Could not send sign-in link.';
     errEl.classList.add('admin-login__error--visible');
   } finally {
-    btnText.textContent = 'Sign in';
+    btnText.textContent = 'Email me a sign-in link';
+    btn.disabled = false;
   }
 });
 
 $('#admin-logout')?.addEventListener('click', logout);
-
 $('#admin-refresh')?.addEventListener('click', loadOrders);
 
 $('#admin-filters')?.addEventListener('click', (e) => {
@@ -324,7 +423,7 @@ $('#admin-filters')?.addEventListener('click', (e) => {
 });
 
 // Delegated handler for row expand + status transition + refund buttons
-document.addEventListener('click', (e) => {
+document.addEventListener('click', async (e) => {
   const refundBtn = e.target.closest('[data-action="refund"]');
   if (refundBtn) {
     e.stopPropagation();
@@ -350,8 +449,14 @@ document.addEventListener('click', (e) => {
   const row = e.target.closest('[data-action="expand"]');
   if (row) {
     const id = row.dataset.orderId;
-    expandedOrderId = expandedOrderId === id ? null : id;
+    const wasExpanded = expandedOrderId === id;
+    expandedOrderId = wasExpanded ? null : id;
     renderOrders();
+    if (!wasExpanded) {
+      // Lazy-fetch audit trail when first expanded
+      await loadAuditLog(id);
+      if (expandedOrderId === id) renderOrders();
+    }
   }
 });
 
@@ -360,8 +465,7 @@ let autoRefreshTimer = null;
 function startAutoRefresh() {
   stopAutoRefresh();
   autoRefreshTimer = setInterval(() => {
-    // Skip the silent reload while a row is expanded so it doesn't collapse mid-read.
-    if (!getToken() || document.hidden || expandedOrderId) return;
+    if (!currentSession || document.hidden || expandedOrderId) return;
     loadOrders();
   }, AUTO_REFRESH_MS);
 }
@@ -374,11 +478,4 @@ function stopAutoRefresh() {
 window.addEventListener('beforeunload', stopAutoRefresh);
 
 // ─── INIT ──────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  if (getToken()) {
-    showDashboard();
-    startAutoRefresh();
-  } else {
-    showLogin();
-  }
-});
+bootstrap();

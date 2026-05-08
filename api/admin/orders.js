@@ -12,7 +12,8 @@
 import { waitUntil } from '@vercel/functions';
 import { corsHeaders, optionsResponse } from '../_cors.js';
 import { supabase } from '../_supabase.js';
-import { requireAdmin } from '../_admin-auth.js';
+import { authenticateAdmin } from '../_admin-auth.js';
+import { logOrderAction } from '../_audit-log.js';
 import { sendCustomerDispatchEmail } from '../_email.js';
 
 const ALLOWED_TRANSITIONS = {
@@ -28,8 +29,8 @@ export function OPTIONS(request) {
 }
 
 export async function GET(request) {
-  const unauthorized = requireAdmin(request);
-  if (unauthorized) return unauthorized;
+  const auth = await authenticateAdmin(request);
+  if (!auth.ok) return auth.response;
 
   try {
     const url = new URL(request.url);
@@ -60,8 +61,8 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-  const unauthorized = requireAdmin(request);
-  if (unauthorized) return unauthorized;
+  const auth = await authenticateAdmin(request);
+  if (!auth.ok) return auth.response;
 
   try {
     const { orderId, status: nextStatus } = await request.json();
@@ -97,9 +98,17 @@ export async function POST(request) {
       .eq('id', orderId);
 
     if (updateErr) {
-      console.error('Status update failed:', updateErr.message);
+      console.error('[admin-fail]', JSON.stringify({ stage: 'status-update', orderId, error: updateErr.message }));
       return Response.json({ error: 'Update failed' }, { status: 500, headers: corsHeaders(request) });
     }
+
+    // Audit log — fire-and-forget but logged loudly on failure (in helper).
+    waitUntil(logOrderAction({
+      orderId,
+      profile: auth.profile,
+      action: 'transition',
+      details: { status_from: order.status, status_to: nextStatus },
+    }));
 
     // Customer email only fires on paid -> dispatched
     if (order.status === 'paid' && nextStatus === 'dispatched' && order.customer_email) {
@@ -112,18 +121,18 @@ export async function POST(request) {
         try {
           await sendCustomerDispatchEmail({ order: { ...order, status: 'dispatched' }, items });
         } catch (mailErr) {
-          console.error('Dispatch email failed:', mailErr.message);
+          console.error('[admin-fail]', JSON.stringify({ stage: 'dispatch-email', orderId, error: mailErr.message }));
         }
       })());
     }
 
     return Response.json(
-      { ok: true, status: nextStatus },
+      { ok: true, status: nextStatus, actor: auth.profile.display_name },
       { headers: corsHeaders(request) }
     );
 
   } catch (err) {
-    console.error('Admin orders POST error:', err);
+    console.error('[admin-fail]', JSON.stringify({ stage: 'orders-post', error: err?.message || String(err) }));
     return Response.json({ error: 'Server error' }, { status: 500, headers: corsHeaders(request) });
   }
 }

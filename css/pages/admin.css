@@ -254,6 +254,25 @@
 }
 .admin-detail a { color: var(--color-sage); }
 
+/* Audit trail rows */
+.admin-detail__audit {
+  background: var(--color-gray-50);
+  border-radius: var(--radius-xs);
+  padding: var(--sp-2) var(--sp-3);
+  margin-top: var(--sp-2);
+  font-size: var(--text-sm);
+}
+.admin-detail__audit-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 4px 0;
+  gap: var(--sp-3);
+}
+.admin-detail__audit-row + .admin-detail__audit-row {
+  border-top: 1px dashed var(--color-border);
+}
+
 /* Empty / loading states */
 .admin-empty {
   padding: var(--sp-8);

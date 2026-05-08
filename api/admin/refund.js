@@ -11,7 +11,8 @@ import { Client, Environment, ApiError } from 'square';
 import { waitUntil } from '@vercel/functions';
 import { corsHeaders, optionsResponse } from '../_cors.js';
 import { supabase } from '../_supabase.js';
-import { requireAdmin } from '../_admin-auth.js';
+import { authenticateAdmin } from '../_admin-auth.js';
+import { logOrderAction } from '../_audit-log.js';
 import { sendCustomerRefundEmail } from '../_email.js';
 
 // Statuses for which "issue a refund" makes sense. We don't refund pending_payment
@@ -23,8 +24,8 @@ export function OPTIONS(request) {
 }
 
 export async function POST(request) {
-  const unauthorized = requireAdmin(request);
-  if (unauthorized) return unauthorized;
+  const auth = await authenticateAdmin(request);
+  if (!auth.ok) return auth.response;
 
   // Construct Square client per-request (same pattern as api/create-checkout.js).
   // Module-level construction has been observed to crash cold starts on Vercel.
@@ -134,7 +135,7 @@ export async function POST(request) {
       .eq('id', order.id);
 
     if (updateErr) {
-      console.error('Refund DB update failed:', updateErr.message);
+      console.error('[admin-fail]', JSON.stringify({ stage: 'refund-db-update', orderId: order.id, refundId, error: updateErr.message }));
       // The refund itself succeeded — don't roll it back. Surface the error so
       // staff knows to check the row, but the refund will eventually reconcile.
       return Response.json(
@@ -147,6 +148,19 @@ export async function POST(request) {
         { headers: corsHeaders(request) }
       );
     }
+
+    // Audit log entry — fire-and-forget.
+    waitUntil(logOrderAction({
+      orderId: order.id,
+      profile: auth.profile,
+      action: 'refund',
+      details: {
+        refund_id: refundId,
+        amount_cents: order.total_cents,
+        status_from: order.status,
+        status_to: 'refunded',
+      },
+    }));
 
     // Fire the customer email after responding so we don't block on Resend.
     if (order.customer_email) {
@@ -164,7 +178,7 @@ export async function POST(request) {
             refundedCents: order.total_cents,
           });
         } catch (mailErr) {
-          console.error('Refund email failed:', mailErr.message);
+          console.error('[admin-fail]', JSON.stringify({ stage: 'refund-email', orderId: order.id, error: mailErr.message }));
         }
       })());
     }
@@ -181,7 +195,7 @@ export async function POST(request) {
     );
 
   } catch (err) {
-    console.error('Refund error:', err instanceof ApiError ? err.errors : err);
+    console.error('[admin-fail]', JSON.stringify({ stage: 'refund-error', error: err instanceof ApiError ? err.errors : (err?.message || String(err)) }));
 
     if (err instanceof ApiError) {
       const detail = err.errors?.[0]?.detail || 'Square API error';

@@ -18,17 +18,23 @@
 <section id="admin-login-view" class="admin-login">
   <div class="admin-login__card">
     <h1 class="admin-login__title">ULS Admin</h1>
-    <p class="admin-login__subtitle">Sign in to manage orders.</p>
+    <p class="admin-login__subtitle">Sign in with a magic link.</p>
     <form id="admin-login-form" autocomplete="off">
       <div class="form-group">
-        <label class="form-label" for="admin-pw">Password</label>
-        <input class="form-input" type="password" id="admin-pw" autocomplete="current-password" required />
+        <label class="form-label" for="admin-email">Email</label>
+        <input class="form-input" type="email" id="admin-email" autocomplete="email" placeholder="you@example.com" required />
       </div>
-      <button type="submit" class="btn btn--primary" style="width:100%;margin-top:var(--sp-2)">
-        <span id="admin-login-btn-text">Sign in</span>
+      <button type="submit" class="btn btn--primary" id="admin-login-btn" style="width:100%;margin-top:var(--sp-2)">
+        <span id="admin-login-btn-text">Email me a sign-in link</span>
       </button>
-      <div id="admin-login-error" class="admin-login__error">Invalid password.</div>
+      <div id="admin-login-success" class="admin-login__success" style="display:none;margin-top:var(--sp-3);padding:var(--sp-3);background:rgba(74,124,89,0.08);border:1px solid rgba(74,124,89,0.3);border-radius:6px;color:var(--color-success);font-size:14px">
+        ✓ Check your inbox — we just sent a sign-in link. Click it to come back here logged in.
+      </div>
+      <div id="admin-login-error" class="admin-login__error">Could not send sign-in link.</div>
     </form>
+    <p style="margin-top:var(--sp-5);font-size:12px;color:var(--color-text-muted);line-height:1.5">
+      Only emails on the admin allowlist can use the dashboard. If you can't access after clicking the link, ask Prince to add you.
+    </p>
   </div>
 </section>
 
@@ -37,7 +43,8 @@
   <header class="admin-header">
     <div class="admin-header__title">ULS Admin · Orders</div>
     <div class="admin-header__user">
-      <button id="admin-logout" class="admin-header__logout">Logout</button>
+      <span id="admin-user-name" style="margin-right:var(--sp-3);font-size:14px;color:var(--color-text-muted)"></span>
+      <button id="admin-logout" class="admin-header__logout">Sign out</button>
     </div>
   </header>
 
@@ -64,7 +71,7 @@
   <span id="toast-msg"></span>
 </div>
 
-<script src="js/cart.js"></script>
-<script src="js/admin.js"></script>
+<!-- Supabase JS client (browser ESM build via esm.sh — no build step needed) -->
+<script type="module" src="js/admin.js"></script>
 </body>
 </html>
