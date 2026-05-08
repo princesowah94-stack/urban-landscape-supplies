@@ -187,7 +187,11 @@
   aspect-ratio: 3/4;
   border-radius: var(--radius-md);
   overflow: hidden;
-  background: var(--color-gray-200) var(--card-img) center/cover no-repeat;
+  background-color: var(--color-gray-200);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* background-image is set per-card inline (see index.html) */
   text-decoration: none;
   cursor: pointer;
   transition: transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out);
