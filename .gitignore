@@ -6,3 +6,6 @@ node_modules/
 
 # Raw project assets (large source files)
 Project Assets/
+
+# Local backups created by scripts/regen-site-images.sh
+*.before-regen
