@@ -64,8 +64,27 @@ export async function POST(request) {
       .select()
       .single();
     if (orderErr) {
-      console.error('Supabase order insert failed:', orderErr.message);
+      console.error('[checkout-fail]', JSON.stringify({ stage: 'order-insert', error: orderErr.message }));
       throw new Error('Could not create order record');
+    }
+
+    // 2. Insert line items BEFORE calling Square. If this fails the customer hasn't
+    //    paid yet — better to surface the error here than end up with a paid order
+    //    that admin sees as "$0 with no items". Best-effort cleanup of the orphan
+    //    order row before throwing so it doesn't sit in the table.
+    const { error: itemsErr } = await supabase
+      .from('order_items')
+      .insert(validatedItems.map(i => ({
+        order_id:    order.id,
+        product_id:  i.id,
+        name:        i.name,
+        quantity:    i.quantity,
+        price_cents: Math.round(i.price * 100),
+      })));
+    if (itemsErr) {
+      console.error('[checkout-fail]', JSON.stringify({ stage: 'items-insert', orderId: order.id, error: itemsErr.message }));
+      await supabase.from('orders').delete().eq('id', order.id); // best-effort
+      throw new Error('Could not record order line items');
     }
 
     // 2. Build Square payment link with the Supabase order id in the redirect URL.
@@ -133,20 +152,22 @@ export async function POST(request) {
 
     const checkoutUrl   = response.result?.paymentLink?.url;
     const squareOrderId = response.result?.paymentLink?.orderId;
-    if (!checkoutUrl) throw new Error('Square did not return a checkout URL');
+    if (!checkoutUrl) {
+      console.error('[checkout-fail]', JSON.stringify({ stage: 'square-no-url', orderId: order.id }));
+      throw new Error('Square did not return a checkout URL');
+    }
 
-    // 3. Patch the Supabase row with Square's order id + insert line items. Fire-and-forget
-    //    so the user isn't held up — the webhook will look up by square_order_id later.
-    Promise.all([
-      supabase.from('orders').update({ square_order_id: squareOrderId }).eq('id', order.id),
-      supabase.from('order_items').insert(validatedItems.map(i => ({
-        order_id:    order.id,
-        product_id:  i.id,
-        name:        i.name,
-        quantity:    i.quantity,
-        price_cents: Math.round(i.price * 100),
-      }))),
-    ]).catch(err => console.error('Post-insert sync failed:', err));
+    // 4. Patch the order with Square's order id. The webhook looks orders up by
+    //    square_order_id, so this MUST succeed — otherwise a paid order can't be
+    //    matched back. Awaited (no longer fire-and-forget).
+    const { error: patchErr } = await supabase
+      .from('orders')
+      .update({ square_order_id: squareOrderId })
+      .eq('id', order.id);
+    if (patchErr) {
+      console.error('[checkout-fail]', JSON.stringify({ stage: 'order-patch', orderId: order.id, squareOrderId, error: patchErr.message }));
+      throw new Error('Could not link Square order to record');
+    }
 
     return Response.json(
       { checkoutUrl, orderId: order.id, squareOrderId },

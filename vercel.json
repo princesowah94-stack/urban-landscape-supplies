@@ -8,6 +8,9 @@
     { "source": "/bulk-materials", "destination": "/products", "permanent": true },
     { "source": "/bulk-materials.html", "destination": "/products", "permanent": true }
   ],
+  "crons": [
+    { "path": "/api/cron/cleanup-orphans", "schedule": "0 17 * * *" }
+  ],
   "headers": [
     {
       "source": "/(.*)",

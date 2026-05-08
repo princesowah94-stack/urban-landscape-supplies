@@ -41,13 +41,16 @@ export async function POST(request) {
     `${process.env.SITE_URL || 'https://urbanlandscapesupplies.com.au'}/api/square-webhook`;
 
   if (!verifySignature(rawBody, signatureHeader, notificationUrl)) {
-    console.warn('Square webhook signature mismatch — rejecting');
+    console.warn('[webhook-fail]', JSON.stringify({ stage: 'signature', reason: 'mismatch' }));
     return new Response('Invalid signature', { status: 401 });
   }
 
   let event;
   try { event = JSON.parse(rawBody); }
-  catch { return new Response('Bad JSON', { status: 400 }); }
+  catch {
+    console.warn('[webhook-fail]', JSON.stringify({ stage: 'parse', reason: 'bad-json' }));
+    return new Response('Bad JSON', { status: 400 });
+  }
 
   // We only care about completed payments. Anything else: ack and move on.
   if (event?.type !== 'payment.updated') return new Response('OK', { status: 200 });
@@ -67,7 +70,7 @@ export async function POST(request) {
     .single();
 
   if (lookupErr || !order) {
-    console.warn(`Webhook: no Supabase order for Square order ${squareOrderId}`);
+    console.warn('[webhook-fail]', JSON.stringify({ stage: 'order-lookup', squareOrderId, error: lookupErr?.message || 'not-found' }));
     return new Response('OK', { status: 200 });
   }
 
@@ -81,12 +84,15 @@ export async function POST(request) {
     .eq('id', order.id);
 
   if (updateErr) {
-    console.error('Webhook: failed to mark order paid:', updateErr.message);
+    console.error('[webhook-fail]', JSON.stringify({ stage: 'mark-paid', orderId: order.id, error: updateErr.message }));
     // Return 500 so Square retries the webhook once Supabase is back.
     return new Response('DB error', { status: 500 });
   }
 
-  // Pull line items + send the two emails. Email errors must NOT fail the webhook.
+  // Pull line items + send the three emails. Email errors must NOT fail the
+  // webhook (would cause Square retries → duplicate emails).
+  // Promise.allSettled gives us per-recipient outcomes so a failed supplier
+  // email doesn't hide a customer-email failure.
   try {
     const { data: items } = await supabase
       .from('order_items')
@@ -94,14 +100,29 @@ export async function POST(request) {
       .eq('order_id', order.id);
 
     const updatedOrder = { ...order, status: 'paid', square_payment_id: squarePaymentId };
-    await Promise.allSettled([
+    const emailResults = await Promise.allSettled([
       sendCustomerOrderEmail({ order: updatedOrder, items: items || [] }),
       sendStaffOrderEmail({ order: updatedOrder, items: items || [] }),
       sendSupplierOrderEmail({ order: updatedOrder, items: items || [] }),
     ]);
+    const recipients = ['customer', 'staff', 'supplier'];
+    emailResults.forEach((res, i) => {
+      if (res.status === 'rejected') {
+        console.error('[webhook-fail]', JSON.stringify({
+          stage: 'email-send',
+          recipient: recipients[i],
+          orderId: order.id,
+          error: res.reason?.message || String(res.reason),
+        }));
+      }
+    });
+    if ((items || []).length === 0) {
+      console.warn('[webhook-fail]', JSON.stringify({ stage: 'empty-items', orderId: order.id, reason: 'paid order has no line items — emails will show $0' }));
+    }
   } catch (err) {
-    console.error('Webhook: email send failed (order is still marked paid):', err);
+    console.error('[webhook-fail]', JSON.stringify({ stage: 'email-block', orderId: order.id, error: err?.message || String(err) }));
   }
 
+  console.log('[webhook-ok]', JSON.stringify({ orderId: order.id, squareOrderId, squarePaymentId }));
   return new Response('OK', { status: 200 });
 }
