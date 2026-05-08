@@ -51,7 +51,7 @@ function buildPrerenderBlock(suburb, region, zone, slug) {
     "image": `${SITE_URL}/images/brand/og-image.jpg`,
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Wetherill Park",
+      "streetAddress": "21/130 Hassall Street",
       "addressLocality": "Wetherill Park",
       "addressRegion": "NSW",
       "postalCode": "2164",
@@ -59,8 +59,10 @@ function buildPrerenderBlock(suburb, region, zone, slug) {
     },
     "geo": { "@type": "GeoCoordinates", "latitude": -33.8315, "longitude": 150.9054 },
     "openingHoursSpecification": [
-      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "07:00", "closes": "17:00" },
-      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "08:00", "closes": "13:00" }
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Tuesday","Wednesday","Thursday"], "opens": "10:00", "closes": "17:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Friday",   "opens": "10:00", "closes": "16:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "10:00", "closes": "15:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday",   "opens": "11:00", "closes": "15:00" }
     ],
     "areaServed": {
       "@type": "City",
@@ -147,9 +149,10 @@ function processFile(suburb) {
   // Strip any prior prerender block so re-runs are clean
   html = html.replace(PRERENDER_BLOCK_RE, '\n');
 
-  // Inject prerender block right before </head>
+  // Inject prerender block right before </head>. Callback replace avoids
+  // String.replace back-reference interpretation of $-sequences in the block.
   const block = buildPrerenderBlock(suburb, region, zone, slug);
-  html = html.replace(HEAD_END_RE, `${block}$1</head>`);
+  html = html.replace(HEAD_END_RE, (_, ws) => block + ws + '</head>');
 
   fs.writeFileSync(file, html, 'utf8');
   return slug;

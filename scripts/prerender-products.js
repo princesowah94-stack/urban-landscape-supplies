@@ -113,7 +113,9 @@ function bake(p) {
     '  <!-- END:prerender -->',
     ''
   ].join('\n');
-  html = html.replace(/(\s*)<\/head>/, `${block}$1</head>`);
+  // Callback replace avoids back-reference interpretation of $-sequences
+  // in the block (Product LD descriptions can legitimately contain "$X" price strings).
+  html = html.replace(/(\s*)<\/head>/, (_, ws) => block + ws + '</head>');
 
   // Bake static body content so crawlers see real text, not "Loading..."
   // (JS will overwrite with the same values when it runs)
