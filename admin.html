@@ -41,28 +41,82 @@
 <!-- ─── DASHBOARD VIEW ──────────────────────────────────── -->
 <section id="admin-dashboard-view" class="admin-page" style="display:none">
   <header class="admin-header">
-    <div class="admin-header__title">ULS Admin · Orders</div>
+    <div class="admin-header__title">ULS Admin</div>
     <div class="admin-header__user">
       <span id="admin-user-name" style="margin-right:var(--sp-3);font-size:14px;color:var(--color-text-muted)"></span>
       <button id="admin-logout" class="admin-header__logout">Sign out</button>
     </div>
   </header>
 
-  <main class="admin-main">
-    <div class="admin-filters" id="admin-filters">
-      <button class="admin-filter admin-filter--active" data-status="">All</button>
-      <button class="admin-filter" data-status="pending_payment">Pending payment</button>
-      <button class="admin-filter" data-status="paid">Paid</button>
-      <button class="admin-filter" data-status="dispatched">Dispatched</button>
-      <button class="admin-filter" data-status="delivered">Delivered</button>
-      <button class="admin-filter" data-status="cancelled">Cancelled</button>
-      <button class="admin-filter" data-status="refunded">Refunded</button>
-      <button id="admin-refresh" class="admin-refresh" title="Refresh">↻ Refresh</button>
-    </div>
+  <!-- Tabs nav -->
+  <nav class="admin-tabs" id="admin-tabs" role="tablist" aria-label="Admin sections">
+    <a class="admin-tab" href="#dashboard" data-tab="dashboard" role="tab">Dashboard</a>
+    <a class="admin-tab" href="#orders"    data-tab="orders"    role="tab">Orders</a>
+    <a class="admin-tab" href="#quotes"    data-tab="quotes"    role="tab">Quotes</a>
+    <a class="admin-tab" href="#contacts"  data-tab="contacts"  role="tab">Contacts</a>
+  </nav>
 
-    <div id="admin-orders-container">
-      <div class="admin-loading">Loading orders...</div>
-    </div>
+  <main class="admin-main">
+
+    <!-- ─── DASHBOARD TAB ───────────────────────────────── -->
+    <section class="admin-tab-panel" data-panel="dashboard">
+      <div class="admin-kpi-grid" id="admin-kpi-grid">
+        <div class="admin-loading">Loading stats…</div>
+      </div>
+      <div class="admin-section-header">
+        <h2 class="admin-section-header__title">Action queue</h2>
+        <button class="admin-refresh" id="admin-stats-refresh" title="Refresh">↻ Refresh</button>
+      </div>
+      <div class="admin-action-queue" id="admin-action-queue">
+        <!-- populated by JS -->
+      </div>
+    </section>
+
+    <!-- ─── ORDERS TAB ──────────────────────────────────── -->
+    <section class="admin-tab-panel" data-panel="orders" style="display:none">
+      <div class="admin-filters" id="admin-filters">
+        <button class="admin-filter admin-filter--active" data-status="">All</button>
+        <button class="admin-filter" data-status="pending_payment">Pending payment</button>
+        <button class="admin-filter" data-status="paid">Paid</button>
+        <button class="admin-filter" data-status="dispatched">Dispatched</button>
+        <button class="admin-filter" data-status="delivered">Delivered</button>
+        <button class="admin-filter" data-status="cancelled">Cancelled</button>
+        <button class="admin-filter" data-status="refunded">Refunded</button>
+        <button id="admin-refresh" class="admin-refresh" title="Refresh">↻ Refresh</button>
+      </div>
+      <div id="admin-orders-container">
+        <div class="admin-loading">Loading orders…</div>
+      </div>
+    </section>
+
+    <!-- ─── QUOTES TAB ──────────────────────────────────── -->
+    <section class="admin-tab-panel" data-panel="quotes" style="display:none">
+      <div class="admin-filters" id="admin-quotes-filters">
+        <button class="admin-filter admin-filter--active" data-quote-status="">All</button>
+        <button class="admin-filter" data-quote-status="new">New</button>
+        <button class="admin-filter" data-quote-status="quoted">Quoted</button>
+        <button class="admin-filter" data-quote-status="won">Won</button>
+        <button class="admin-filter" data-quote-status="lost">Lost</button>
+        <button id="admin-quotes-refresh" class="admin-refresh" title="Refresh">↻ Refresh</button>
+      </div>
+      <div id="admin-quotes-container">
+        <div class="admin-loading">Loading quotes…</div>
+      </div>
+    </section>
+
+    <!-- ─── CONTACTS TAB ────────────────────────────────── -->
+    <section class="admin-tab-panel" data-panel="contacts" style="display:none">
+      <div class="admin-filters" id="admin-contacts-filters">
+        <button class="admin-filter admin-filter--active" data-contact-filter="">All</button>
+        <button class="admin-filter" data-contact-filter="unreplied">Unreplied</button>
+        <button class="admin-filter" data-contact-filter="replied">Replied</button>
+        <button id="admin-contacts-refresh" class="admin-refresh" title="Refresh">↻ Refresh</button>
+      </div>
+      <div id="admin-contacts-container">
+        <div class="admin-loading">Loading contacts…</div>
+      </div>
+    </section>
+
   </main>
 </section>
 

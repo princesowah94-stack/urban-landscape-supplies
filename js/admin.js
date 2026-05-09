@@ -41,8 +41,15 @@ const TRANSITIONS = {
 };
 
 let currentFilter = '';
+let currentQuoteFilter = '';
+let currentContactFilter = '';
 let allOrders = [];
+let allQuotes = [];
+let allContacts = [];
+let currentStats = null;
 let expandedOrderId = null;
+let expandedQuoteId = null;
+let expandedContactId = null;
 let auditCache = {};      // orderId -> array of audit entries
 let supabase = null;       // Supabase client (initialised after fetching config)
 let currentSession = null; // Current Supabase session
@@ -153,8 +160,73 @@ function showDashboard() {
   // Show user identity
   const userName = currentSession?.user?.email || '';
   $('#admin-user-name').textContent = userName;
-  loadOrders();
+  // Activate tab from URL hash (or default to dashboard)
+  goToTab(parseHash().tab || 'dashboard');
 }
+
+// ─── TAB ROUTING ───────────────────────────────────────────────
+//
+// URL hash drives which panel is active and which filter is applied.
+// Examples:
+//   #dashboard
+//   #orders
+//   #orders?status=paid           ← landed here from action-queue link
+//   #quotes?status=new
+//   #contacts?unreplied=true
+//
+// parseHash() returns { tab, params } where params is a URLSearchParams.
+function parseHash() {
+  const raw = window.location.hash.replace(/^#/, '');
+  const [tab, qs] = raw.split('?');
+  return { tab: tab || '', params: new URLSearchParams(qs || '') };
+}
+
+const VALID_TABS = new Set(['dashboard', 'orders', 'quotes', 'contacts']);
+
+function goToTab(tabName) {
+  if (!VALID_TABS.has(tabName)) tabName = 'dashboard';
+
+  // Update tab nav active state
+  $$('.admin-tab').forEach(t => {
+    t.classList.toggle('admin-tab--active', t.dataset.tab === tabName);
+  });
+  // Show only the matching panel
+  $$('.admin-tab-panel').forEach(p => {
+    p.style.display = p.dataset.panel === tabName ? '' : 'none';
+  });
+
+  // Apply hash query params + load the tab's data
+  const { params } = parseHash();
+  if (tabName === 'dashboard') {
+    loadStats();
+  } else if (tabName === 'orders') {
+    const status = params.get('status') || '';
+    currentFilter = status;
+    $$('.admin-filter[data-status]').forEach(b => {
+      b.classList.toggle('admin-filter--active', (b.dataset.status || '') === status);
+    });
+    loadOrders();
+  } else if (tabName === 'quotes') {
+    const status = params.get('status') || '';
+    currentQuoteFilter = status;
+    $$('.admin-filter[data-quote-status]').forEach(b => {
+      b.classList.toggle('admin-filter--active', (b.dataset.quoteStatus || '') === status);
+    });
+    loadQuotes();
+  } else if (tabName === 'contacts') {
+    const unreplied = params.get('unreplied') === 'true';
+    const replied   = params.get('replied') === 'true';
+    currentContactFilter = unreplied ? 'unreplied' : (replied ? 'replied' : '');
+    $$('.admin-filter[data-contact-filter]').forEach(b => {
+      b.classList.toggle('admin-filter--active', (b.dataset.contactFilter || '') === currentContactFilter);
+    });
+    loadContacts();
+  }
+}
+
+window.addEventListener('hashchange', () => {
+  if (currentSession) goToTab(parseHash().tab || 'dashboard');
+});
 
 // ─── DATA ──────────────────────────────────────────────────────
 async function loadOrders() {
@@ -388,6 +460,338 @@ function renderDetail(order) {
   `;
 }
 
+// ─── DASHBOARD (stats + action queue) ─────────────────────────
+async function loadStats() {
+  const grid = $('#admin-kpi-grid');
+  const queue = $('#admin-action-queue');
+  grid.innerHTML = '<div class="admin-loading">Loading stats…</div>';
+  queue.innerHTML = '';
+
+  try {
+    const res = await fetch('/api/admin/stats', { headers: authHeaders() });
+    if (res.status === 401) { logout(); return; }
+    if (res.status === 403) {
+      grid.innerHTML = '<div class="admin-empty">Your account is signed in but not on the admin allowlist. Contact Prince to be added.</div>';
+      return;
+    }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    currentStats = await res.json();
+    renderDashboard();
+  } catch (err) {
+    console.error('Load stats failed:', err);
+    grid.innerHTML = '<div class="admin-empty">Could not load stats. Try refresh.</div>';
+  }
+}
+
+function renderDashboard() {
+  if (!currentStats) return;
+  const s = currentStats;
+  const grid = $('#admin-kpi-grid');
+  grid.innerHTML = `
+    <div class="admin-kpi">
+      <div class="admin-kpi__label">Today</div>
+      <div class="admin-kpi__value">${s.orders.today.count}<span class="admin-kpi__unit"> orders</span></div>
+      <div class="admin-kpi__sub">${aud(s.orders.today.revenue_cents)}</div>
+    </div>
+    <div class="admin-kpi">
+      <div class="admin-kpi__label">This week</div>
+      <div class="admin-kpi__value">${s.orders.week.count}<span class="admin-kpi__unit"> orders</span></div>
+      <div class="admin-kpi__sub">${aud(s.orders.week.revenue_cents)}</div>
+    </div>
+    <div class="admin-kpi">
+      <div class="admin-kpi__label">Open quotes</div>
+      <div class="admin-kpi__value">${s.quotes.total_open}</div>
+      <div class="admin-kpi__sub">${s.quotes.new_count} new · ${s.quotes.quoted_count} quoted</div>
+    </div>
+    <div class="admin-kpi">
+      <div class="admin-kpi__label">Unreplied contacts</div>
+      <div class="admin-kpi__value">${s.contacts.unreplied_count}</div>
+      <div class="admin-kpi__sub">${s.contacts.unreplied_over_24h_count} older than 24h</div>
+    </div>
+  `;
+
+  const queueEl = $('#admin-action-queue');
+  if (!s.action_queue?.length) {
+    queueEl.innerHTML = `<div class="admin-action-queue__empty">✓ All caught up — nothing urgent right now.</div>`;
+    return;
+  }
+  queueEl.innerHTML = s.action_queue.map(item => `
+    <a class="admin-action-queue__item admin-action-queue__item--${escapeHTML(item.kind)}" href="${escapeHTML(item.target)}">
+      <span class="admin-action-queue__count">${item.count}</span>
+      <span class="admin-action-queue__label">${escapeHTML(item.label)}</span>
+      <span class="admin-action-queue__arrow">→</span>
+    </a>
+  `).join('');
+}
+
+// ─── QUOTES ────────────────────────────────────────────────────
+const QUOTE_STATUS_LABELS = {
+  new: 'New',
+  quoted: 'Quoted',
+  won: 'Won',
+  lost: 'Lost',
+};
+const QUOTE_TRANSITIONS = {
+  new:    [{ to: 'quoted', label: 'Mark quoted', primary: true }, { to: 'lost', label: 'Mark lost', danger: true }],
+  quoted: [{ to: 'won',    label: 'Mark won',    primary: true }, { to: 'lost', label: 'Mark lost', danger: true }],
+  won:    [{ to: 'quoted', label: 'Reopen' }],
+  lost:   [{ to: 'new',    label: 'Reopen' }],
+};
+
+async function loadQuotes() {
+  const container = $('#admin-quotes-container');
+  container.innerHTML = '<div class="admin-loading">Loading quotes…</div>';
+  try {
+    const url = currentQuoteFilter ? `/api/admin/quotes?status=${currentQuoteFilter}` : '/api/admin/quotes';
+    const res = await fetch(url, { headers: authHeaders() });
+    if (res.status === 401) { logout(); return; }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const { quotes } = await res.json();
+    allQuotes = quotes || [];
+    renderQuotes();
+  } catch (err) {
+    console.error('Load quotes failed:', err);
+    container.innerHTML = '<div class="admin-empty">Could not load quotes. Try refresh.</div>';
+  }
+}
+
+function renderQuotes() {
+  const container = $('#admin-quotes-container');
+  if (!allQuotes.length) {
+    container.innerHTML = '<div class="admin-empty">No quotes match this filter. New ones land here when customers submit /bulk-quote.</div>';
+    return;
+  }
+  const rows = allQuotes.map(renderQuoteRow).join('');
+  container.innerHTML = `
+    <table class="admin-table">
+      <thead class="admin-table__head">
+        <tr>
+          <th>Date</th><th>Reference</th><th>Customer</th><th>Items</th><th>Est. total</th><th>Status</th><th></th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function renderQuoteRow(q) {
+  const itemCount = Array.isArray(q.items) ? q.items.reduce((s, i) => s + (Number(i.quantity) || 1), 0) : (q.items?.length || 0);
+  const customer = `${q.contact_first_name || ''} ${q.contact_last_name || ''}`.trim() || q.contact_email || '—';
+  const isExpanded = expandedQuoteId === q.id;
+  const transitions = QUOTE_TRANSITIONS[q.status] || [];
+  const actionsHtml = transitions.map(t => `
+    <button class="admin-action-btn ${t.primary ? 'admin-action-btn--primary' : ''} ${t.danger ? 'admin-action-btn--danger' : ''}"
+      data-action="quote-transition" data-quote-id="${escapeHTML(q.id)}" data-next="${escapeHTML(t.to)}"
+    >${escapeHTML(t.label)}</button>
+  `).join('');
+
+  return `
+    <tr class="admin-table__row ${isExpanded ? 'admin-table__row--expanded' : ''}" data-action="expand-quote" data-quote-id="${escapeHTML(q.id)}">
+      <td class="admin-table__date">${formatDate(q.created_at)}</td>
+      <td class="admin-table__customer" style="font-family:monospace;font-size:13px">${escapeHTML(q.reference_id || '—')}</td>
+      <td class="admin-table__customer">${escapeHTML(customer)}</td>
+      <td class="admin-table__items">${itemCount} item${itemCount !== 1 ? 's' : ''}</td>
+      <td class="admin-table__total">${aud(q.estimated_total_cents || 0)}</td>
+      <td><span class="status-pill status-pill--${q.status || 'new'}">${QUOTE_STATUS_LABELS[q.status] || q.status || 'new'}</span></td>
+      <td class="admin-table__actions">${actionsHtml}</td>
+    </tr>
+    ${isExpanded ? renderQuoteDetail(q) : ''}
+  `;
+}
+
+function renderQuoteDetail(q) {
+  const items = Array.isArray(q.items) ? q.items : [];
+  const itemsHtml = items.length
+    ? items.map(i => `
+        <div class="admin-detail__items-row">
+          <span>${escapeHTML(i.quantity || 1)} × ${escapeHTML(i.name || i.product_name || 'item')}</span>
+          <span style="color:var(--color-text-muted)">${i.notes ? escapeHTML(i.notes) : ''}</span>
+        </div>`).join('')
+    : '<em style="color:var(--color-text-muted)">No items recorded.</em>';
+
+  const lastChange = q.status_changed_at
+    ? `<div class="admin-detail__label" style="margin-top:var(--sp-3)">Last status change</div>
+       <div class="admin-detail__value">${escapeHTML(QUOTE_STATUS_LABELS[q.status] || q.status)} by ${escapeHTML(q.status_changed_by_name || 'unknown')} · ${formatDateTime(q.status_changed_at)}</div>`
+    : '';
+
+  return `
+    <tr><td colspan="7" style="padding:0">
+      <div class="admin-detail">
+        <div class="admin-detail__grid">
+          <div>
+            <div class="admin-detail__label">Customer</div>
+            <div class="admin-detail__value">
+              ${escapeHTML(`${q.contact_first_name || ''} ${q.contact_last_name || ''}`.trim() || '—')}<br>
+              ${q.contact_email ? `<a href="mailto:${escapeHTML(q.contact_email)}">${escapeHTML(q.contact_email)}</a><br>` : ''}
+              ${q.contact_phone ? `<a href="tel:${escapeHTML(q.contact_phone)}">${escapeHTML(q.contact_phone)}</a>` : '<em style="color:var(--color-text-muted)">no phone</em>'}
+              ${q.is_trade ? '<br><span class="status-pill" style="margin-top:6px;display:inline-block">Trade</span>' : ''}
+            </div>
+          </div>
+          <div>
+            <div class="admin-detail__label">Delivery</div>
+            <div class="admin-detail__value">
+              ${escapeHTML([q.delivery_address, q.delivery_suburb, q.delivery_postcode].filter(Boolean).join(', ') || '—')}<br>
+              ${q.delivery_date_from || q.delivery_date_to
+                ? `<span style="color:var(--color-text-muted);font-size:13px">Window: ${escapeHTML(q.delivery_date_from || '?')} – ${escapeHTML(q.delivery_date_to || '?')}</span>`
+                : ''}
+              ${q.delivery_access ? `<br><span style="color:var(--color-text-muted);font-size:13px">Access: ${escapeHTML(q.delivery_access)}</span>` : ''}
+            </div>
+          </div>
+        </div>
+        <div class="admin-detail__items">${itemsHtml}</div>
+        ${q.notes ? `<div class="admin-detail__notes"><strong>Notes:</strong> ${escapeHTML(q.notes)}</div>` : ''}
+        ${lastChange}
+      </div>
+    </td></tr>
+  `;
+}
+
+async function transitionQuote(quoteId, nextStatus) {
+  const quote = allQuotes.find(q => q.id === quoteId);
+  if (!quote) return;
+  const previousStatus = quote.status;
+  quote.status = nextStatus;
+  renderQuotes();
+  try {
+    const res = await fetch('/api/admin/quotes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ quoteId, status: nextStatus }),
+    });
+    if (res.status === 401) { logout(); return; }
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || `HTTP ${res.status}`);
+    }
+    quote.status_changed_at = new Date().toISOString();
+    quote.status_changed_by_name = currentSession?.user?.email || 'you';
+    renderQuotes();
+    showToast(`Quote marked ${QUOTE_STATUS_LABELS[nextStatus].toLowerCase()}`);
+  } catch (err) {
+    quote.status = previousStatus;
+    renderQuotes();
+    showToast(`Update failed: ${err.message}`);
+  }
+}
+
+// ─── CONTACTS ──────────────────────────────────────────────────
+async function loadContacts() {
+  const container = $('#admin-contacts-container');
+  container.innerHTML = '<div class="admin-loading">Loading contacts…</div>';
+  try {
+    let url = '/api/admin/contacts';
+    if (currentContactFilter === 'unreplied') url += '?unreplied=true';
+    if (currentContactFilter === 'replied')   url += '?replied=true';
+    const res = await fetch(url, { headers: authHeaders() });
+    if (res.status === 401) { logout(); return; }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const { contacts } = await res.json();
+    allContacts = contacts || [];
+    renderContacts();
+  } catch (err) {
+    console.error('Load contacts failed:', err);
+    container.innerHTML = '<div class="admin-empty">Could not load contacts. Try refresh.</div>';
+  }
+}
+
+function renderContacts() {
+  const container = $('#admin-contacts-container');
+  if (!allContacts.length) {
+    container.innerHTML = '<div class="admin-empty">No contacts match this filter. Submissions from /contact land here.</div>';
+    return;
+  }
+  const rows = allContacts.map(renderContactRow).join('');
+  container.innerHTML = `
+    <table class="admin-table">
+      <thead class="admin-table__head">
+        <tr>
+          <th>Date</th><th>Name</th><th>Source</th><th>Message</th><th>Replied?</th><th></th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function renderContactRow(c) {
+  const isExpanded = expandedContactId === c.id;
+  const isReplied = !!c.replied_at;
+  const snippet = (c.message || '').slice(0, 80) + ((c.message || '').length > 80 ? '…' : '');
+  const sourceLabel = (c.source || 'contact-form').replace('contact-form:', '');
+  const action = isReplied
+    ? `<button class="admin-action-btn" data-action="contact-mark" data-contact-id="${escapeHTML(c.id)}" data-mark="mark-unreplied">Mark unreplied</button>`
+    : `<button class="admin-action-btn admin-action-btn--primary" data-action="contact-mark" data-contact-id="${escapeHTML(c.id)}" data-mark="mark-replied">Mark replied</button>`;
+  return `
+    <tr class="admin-table__row ${isExpanded ? 'admin-table__row--expanded' : ''}" data-action="expand-contact" data-contact-id="${escapeHTML(c.id)}">
+      <td class="admin-table__date">${formatDate(c.created_at)}</td>
+      <td class="admin-table__customer">${escapeHTML(c.name || '—')}</td>
+      <td class="admin-table__items" style="font-size:13px;color:var(--color-text-muted)">${escapeHTML(sourceLabel)}</td>
+      <td class="admin-table__items" style="font-size:13px">${escapeHTML(snippet)}</td>
+      <td><span class="status-pill ${isReplied ? 'status-pill--delivered' : 'status-pill--paid'}">${isReplied ? 'Replied' : 'Pending'}</span></td>
+      <td class="admin-table__actions">${action}</td>
+    </tr>
+    ${isExpanded ? renderContactDetail(c) : ''}
+  `;
+}
+
+function renderContactDetail(c) {
+  return `
+    <tr><td colspan="6" style="padding:0">
+      <div class="admin-detail">
+        <div class="admin-detail__grid">
+          <div>
+            <div class="admin-detail__label">Contact</div>
+            <div class="admin-detail__value">
+              ${escapeHTML(c.name || '—')}<br>
+              ${c.email ? `<a href="mailto:${escapeHTML(c.email)}">${escapeHTML(c.email)}</a><br>` : ''}
+              ${c.phone ? `<a href="tel:${escapeHTML(c.phone)}">${escapeHTML(c.phone)}</a>` : '<em style="color:var(--color-text-muted)">no phone</em>'}
+            </div>
+          </div>
+          <div>
+            <div class="admin-detail__label">Source</div>
+            <div class="admin-detail__value">${escapeHTML(c.source || 'contact-form')}</div>
+          </div>
+        </div>
+        <div class="admin-detail__notes" style="background:var(--color-gray-50);border-left-color:var(--color-sage);color:var(--color-text-primary)">
+          <strong>Message:</strong><br>${escapeHTML(c.message || '')}
+        </div>
+        ${c.replied_at
+          ? `<div class="admin-detail__label" style="margin-top:var(--sp-3)">Replied</div>
+             <div class="admin-detail__value">by ${escapeHTML(c.replied_by_name || 'unknown')} · ${formatDateTime(c.replied_at)}</div>`
+          : ''}
+      </div>
+    </td></tr>
+  `;
+}
+
+async function markContact(contactId, action) {
+  const c = allContacts.find(x => x.id === contactId);
+  if (!c) return;
+  const wasReplied = !!c.replied_at;
+  // Optimistic update
+  c.replied_at = action === 'mark-replied' ? new Date().toISOString() : null;
+  c.replied_by_name = action === 'mark-replied' ? (currentSession?.user?.email || 'you') : null;
+  renderContacts();
+  try {
+    const res = await fetch('/api/admin/contacts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ contactId, action }),
+    });
+    if (res.status === 401) { logout(); return; }
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || `HTTP ${res.status}`);
+    }
+    showToast(action === 'mark-replied' ? 'Marked replied' : 'Marked unreplied');
+  } catch (err) {
+    // Roll back
+    c.replied_at = wasReplied ? c.replied_at : null;
+    renderContacts();
+    showToast(`Update failed: ${err.message}`);
+  }
+}
+
 // ─── EVENTS ────────────────────────────────────────────────────
 $('#admin-login-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -414,15 +818,38 @@ $('#admin-login-form')?.addEventListener('submit', async (e) => {
 
 $('#admin-logout')?.addEventListener('click', logout);
 $('#admin-refresh')?.addEventListener('click', loadOrders);
+$('#admin-stats-refresh')?.addEventListener('click', loadStats);
+$('#admin-quotes-refresh')?.addEventListener('click', loadQuotes);
+$('#admin-contacts-refresh')?.addEventListener('click', loadContacts);
 
+// Orders filter pills — preserve hash so the URL reflects filter state
 $('#admin-filters')?.addEventListener('click', (e) => {
-  const btn = e.target.closest('.admin-filter');
+  const btn = e.target.closest('.admin-filter[data-status]');
   if (!btn) return;
-  $$('.admin-filter').forEach(b => b.classList.remove('admin-filter--active'));
-  btn.classList.add('admin-filter--active');
-  currentFilter = btn.dataset.status || '';
+  const status = btn.dataset.status || '';
   expandedOrderId = null;
-  loadOrders();
+  // Drive via URL hash so back/forward + bookmarks work
+  window.location.hash = status ? `#orders?status=${status}` : '#orders';
+});
+
+// Quotes filter pills
+$('#admin-quotes-filters')?.addEventListener('click', (e) => {
+  const btn = e.target.closest('.admin-filter[data-quote-status]');
+  if (!btn) return;
+  const status = btn.dataset.quoteStatus || '';
+  expandedQuoteId = null;
+  window.location.hash = status ? `#quotes?status=${status}` : '#quotes';
+});
+
+// Contacts filter pills
+$('#admin-contacts-filters')?.addEventListener('click', (e) => {
+  const btn = e.target.closest('.admin-filter[data-contact-filter]');
+  if (!btn) return;
+  const f = btn.dataset.contactFilter || '';
+  expandedContactId = null;
+  if (f === 'unreplied') window.location.hash = '#contacts?unreplied=true';
+  else if (f === 'replied') window.location.hash = '#contacts?replied=true';
+  else window.location.hash = '#contacts';
 });
 
 // ─── EDIT-ORDER MODAL ──────────────────────────────────────────
@@ -510,8 +937,45 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Delegated handler for row expand + status transition + refund + edit buttons
+// Delegated handler for all row/button actions across tabs
 document.addEventListener('click', async (e) => {
+  // Quote status transition
+  const quoteTBtn = e.target.closest('[data-action="quote-transition"]');
+  if (quoteTBtn) {
+    e.stopPropagation();
+    const quoteId = quoteTBtn.dataset.quoteId;
+    const next = quoteTBtn.dataset.next;
+    if ((next === 'lost' || next === 'won') && !confirm(`Mark this quote as ${next}?`)) return;
+    transitionQuote(quoteId, next);
+    return;
+  }
+
+  // Quote row expand
+  const quoteRow = e.target.closest('[data-action="expand-quote"]');
+  if (quoteRow) {
+    const id = quoteRow.dataset.quoteId;
+    expandedQuoteId = expandedQuoteId === id ? null : id;
+    renderQuotes();
+    return;
+  }
+
+  // Contact mark replied / unreplied
+  const contactMarkBtn = e.target.closest('[data-action="contact-mark"]');
+  if (contactMarkBtn) {
+    e.stopPropagation();
+    markContact(contactMarkBtn.dataset.contactId, contactMarkBtn.dataset.mark);
+    return;
+  }
+
+  // Contact row expand
+  const contactRow = e.target.closest('[data-action="expand-contact"]');
+  if (contactRow) {
+    const id = contactRow.dataset.contactId;
+    expandedContactId = expandedContactId === id ? null : id;
+    renderContacts();
+    return;
+  }
+
   const editBtn = e.target.closest('[data-action="edit"]');
   if (editBtn) {
     e.stopPropagation();
@@ -556,12 +1020,21 @@ document.addEventListener('click', async (e) => {
 });
 
 // ─── AUTO-REFRESH ──────────────────────────────────────────────
+//
+// Refreshes the active tab every 60s. Skipped when:
+//   - tab is hidden (no point)
+//   - any row is expanded (avoid collapsing it under the user)
 let autoRefreshTimer = null;
 function startAutoRefresh() {
   stopAutoRefresh();
   autoRefreshTimer = setInterval(() => {
-    if (!currentSession || document.hidden || expandedOrderId) return;
-    loadOrders();
+    if (!currentSession || document.hidden) return;
+    if (expandedOrderId || expandedQuoteId || expandedContactId) return;
+    const tab = parseHash().tab || 'dashboard';
+    if (tab === 'dashboard') loadStats();
+    else if (tab === 'orders') loadOrders();
+    else if (tab === 'quotes') loadQuotes();
+    else if (tab === 'contacts') loadContacts();
   }, AUTO_REFRESH_MS);
 }
 function stopAutoRefresh() {
