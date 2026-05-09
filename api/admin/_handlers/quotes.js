@@ -9,9 +9,9 @@
  *
  * Auth: Authorization: Bearer <Supabase JWT> (same pattern as orders.js).
  */
-import { corsHeaders, optionsResponse } from '../_cors.js';
-import { supabase } from '../_supabase.js';
-import { authenticateAdmin } from '../_admin-auth.js';
+import { corsHeaders, optionsResponse } from '../../_cors.js';
+import { supabase } from '../../_supabase.js';
+import { authenticateAdmin } from '../../_admin-auth.js';
 
 const ALLOWED_STATUSES = new Set(['new', 'quoted', 'won', 'lost']);
 

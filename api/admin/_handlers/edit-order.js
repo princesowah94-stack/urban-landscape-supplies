@@ -13,10 +13,10 @@
  *
  * Audit-logs every successful edit with a before/after diff.
  */
-import { corsHeaders, optionsResponse } from '../_cors.js';
-import { supabase } from '../_supabase.js';
-import { authenticateAdmin } from '../_admin-auth.js';
-import { logOrderAction } from '../_audit-log.js';
+import { corsHeaders, optionsResponse } from '../../_cors.js';
+import { supabase } from '../../_supabase.js';
+import { authenticateAdmin } from '../../_admin-auth.js';
+import { logOrderAction } from '../../_audit-log.js';
 
 // Whitelisted fields. Any other key in the body is ignored.
 const EDITABLE_FIELDS = [

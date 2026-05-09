@@ -9,11 +9,11 @@
  */
 import { Client, Environment, ApiError } from 'square';
 import { waitUntil } from '@vercel/functions';
-import { corsHeaders, optionsResponse } from '../_cors.js';
-import { supabase } from '../_supabase.js';
-import { authenticateAdmin } from '../_admin-auth.js';
-import { logOrderAction } from '../_audit-log.js';
-import { sendCustomerRefundEmail } from '../_email.js';
+import { corsHeaders, optionsResponse } from '../../_cors.js';
+import { supabase } from '../../_supabase.js';
+import { authenticateAdmin } from '../../_admin-auth.js';
+import { logOrderAction } from '../../_audit-log.js';
+import { sendCustomerRefundEmail } from '../../_email.js';
 
 // Statuses for which "issue a refund" makes sense. We don't refund pending_payment
 // (no money was taken), already-cancelled (no payment to refund), or already-refunded.

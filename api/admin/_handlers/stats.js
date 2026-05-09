@@ -15,9 +15,9 @@
  *
  * Auth: Authorization: Bearer <Supabase JWT>.
  */
-import { corsHeaders, optionsResponse } from '../_cors.js';
-import { supabase } from '../_supabase.js';
-import { authenticateAdmin } from '../_admin-auth.js';
+import { corsHeaders, optionsResponse } from '../../_cors.js';
+import { supabase } from '../../_supabase.js';
+import { authenticateAdmin } from '../../_admin-auth.js';
 
 export function OPTIONS(request) {
   return optionsResponse(request);

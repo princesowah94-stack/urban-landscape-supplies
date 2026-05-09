@@ -10,11 +10,11 @@
  * All requests require: Authorization: Bearer <token>
  */
 import { waitUntil } from '@vercel/functions';
-import { corsHeaders, optionsResponse } from '../_cors.js';
-import { supabase } from '../_supabase.js';
-import { authenticateAdmin } from '../_admin-auth.js';
-import { logOrderAction } from '../_audit-log.js';
-import { sendCustomerDispatchEmail } from '../_email.js';
+import { corsHeaders, optionsResponse } from '../../_cors.js';
+import { supabase } from '../../_supabase.js';
+import { authenticateAdmin } from '../../_admin-auth.js';
+import { logOrderAction } from '../../_audit-log.js';
+import { sendCustomerDispatchEmail } from '../../_email.js';
 
 const ALLOWED_TRANSITIONS = {
   paid:       new Set(['dispatched', 'cancelled']),
