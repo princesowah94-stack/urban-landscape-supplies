@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta property="og:locale" content="en_AU" />
+  <title>Landscape Material Coverage Calculator | Urban Landscape Supplies</title>
+  <meta name="description" content="Free coverage calculator for mulch, soil, sand and pebbles. Enter your area and depth — we calculate exactly how many 1-tonne bulk bags you need, with the maths explained step by step." />
+  <link rel="canonical" href="https://urbanlandscapesupplies.com.au/coverage-calculator" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Landscape Coverage Calculator | Urban Landscape Supplies" />
+  <meta property="og:description" content="Calculate exactly how many bags of mulch, soil, sand or pebbles you need. Instant, accurate, with the maths shown." />
+  <meta property="og:url" content="https://urbanlandscapesupplies.com.au/coverage-calculator" />
+  <meta property="og:image" content="https://urbanlandscapesupplies.com.au/images/brand/og-image.jpg" />
+
+  <!-- Schema: FAQ-style HowTo for Google rich results -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to calculate how much landscape material you need",
+    "description": "Calculate the volume and weight of soil, mulch, sand or pebbles required to cover a given area to a specific depth, then convert to 1-tonne bulk bags.",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "name": "Calculate volume",
+        "text": "Multiply the area in square metres by the desired depth in metres. For example: 24 m² × 0.075 m = 1.80 m³"
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Convert volume to weight",
+        "text": "Multiply the volume by the material's bulk density. Mulch is about 0.25 t/m³, soil about 0.85 t/m³, sand about 1.5 t/m³."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Round up to bags",
+        "text": "Each bag is 1 tonne, so divide weight in tonnes by 1 and round up. Add a 10% buffer for spillage and settling."
+      }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/pages/coverage-calculator.css" />
+  <!-- Favicons + PWA -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png" />
+  <link rel="apple-touch-icon" href="/images/brand/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#5e6e4f" />
+
+  <!-- GA4 (gtag.js) -->
+  <script defer src="/js/analytics.js"></script>
+</head>
+<body>
+
+<div class="utility-bar"><div class="container"><div class="utility-bar__inner">
+  <div class="utility-bar__msg"><span>🚚 Free delivery Sydney metro over $150</span></div>
+  <a class="utility-bar__contact" href="tel:1300872267">1300 872 267</a>
+</div></div></div>
+
+<header class="site-header" id="site-header">
+  <div class="container"><div class="header-inner">
+    <a href="index.html" class="site-logo" aria-label="Urban Landscape Supplies — Home">
+      <img src="images/brand/mark-dark.png" alt="" class="site-logo__mark" width="48" height="33" loading="eager" fetchpriority="high" />
+      <div class="site-logo__wordmark">
+        Urban Landscape
+        <span class="site-logo__sub">Supplies</span>
+      </div>
+    </a>
+    <nav class="primary-nav">
+      <div class="nav-item"><span class="nav-link" tabindex="0">Products <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4l4 4 4-4"/></svg></span>
+        <div class="nav-dropdown"><a href="products.html?cat=pebbles">Decorative Pebbles</a><a href="products.html?cat=soil">Soil &amp; Turf</a><a href="products.html?cat=mulch">Mulch &amp; Bark</a><a href="products.html?cat=sand">Sand</a><a href="products.html">View All →</a></div>
+      </div>
+      <a href="delivery-areas.html" class="nav-link">Delivery</a>
+      <a href="trade.html" class="nav-link">Trade</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <button class="header-cart-btn" id="cart-toggle"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.4 7M17 13l1.4 7M9 20a1 1 0 100 2 1 1 0 000-2zm8 0a1 1 0 100 2 1 1 0 000-2z"/></svg><span class="cart-count" id="cart-count">0</span></button>
+      <button class="mobile-menu-btn" id="mobile-menu-btn"><span></span><span></span><span></span></button>
+    </div>
+  </div></div>
+</header>
+<nav class="mobile-nav" id="mobile-nav">
+  <div class="mobile-nav__section">
+    <p class="mobile-nav__heading">Products</p>
+    <a href="products.html?cat=pebbles" class="mobile-nav__sub-link">Decorative Pebbles</a>
+    <a href="products.html?cat=soil" class="mobile-nav__sub-link">Soil &amp; Turf</a>
+    <a href="products.html?cat=mulch" class="mobile-nav__sub-link">Mulch &amp; Bark</a>
+    <a href="products.html?cat=sand" class="mobile-nav__sub-link">Sand</a>
+    <a href="products.html" class="mobile-nav__link">View All Products</a>
+  </div>
+  <a href="delivery-areas.html" class="mobile-nav__link">Delivery</a>
+  <a href="trade.html" class="mobile-nav__link">Trade</a>
+  <a href="about.html" class="mobile-nav__link">About</a>
+  <a href="contact.html" class="mobile-nav__link">Contact</a>
+</nav>
+<div class="overlay" id="overlay"></div>
+
+<!-- HERO -->
+<div class="page-hero" style="background:var(--color-gray-100);border-bottom:1px solid var(--color-border)">
+  <div class="container">
+    <p class="eyebrow eyebrow--sage">Free tool</p>
+    <h1 class="page-hero__title" style="color:var(--color-charcoal)">Coverage Calculator</h1>
+    <p class="page-hero__desc" style="color:var(--color-text-secondary)">Enter your area and depth — we'll calculate exactly how many 1-tonne bulk bags you need, with the maths shown step by step.</p>
+  </div>
+</div>
+
+<!-- CALCULATOR -->
+<section class="section">
+  <div class="container">
+    <div class="calc-layout">
+
+      <!-- ── Left: Inputs ─────────────────────────────────────── -->
+      <div class="calc-inputs">
+
+        <!-- 1. Material -->
+        <div class="calc-section">
+          <h2 class="calc-section__title">1. What material?</h2>
+          <div id="material-pills"><!-- rendered by JS --></div>
+        </div>
+
+        <!-- 2. Area -->
+        <div class="calc-section">
+          <h2 class="calc-section__title">2. Area to cover</h2>
+          <div id="zones-container"><!-- rendered by JS --></div>
+          <button class="calc-add-zone" id="add-zone-btn" type="button">
+            + Add another area
+          </button>
+        </div>
+
+        <!-- 3. Depth -->
+        <div class="calc-section">
+          <h2 class="calc-section__title">3. Depth</h2>
+          <div class="calc-depth-control">
+            <div id="depth-presets" class="calc-depth-presets"><!-- rendered by JS --></div>
+            <div class="calc-depth-row">
+              <input id="depth-slider" type="range" min="25" max="300" step="5"
+                aria-label="Application depth in millimetres" />
+              <input id="depth-number" class="form-input calc-depth-number" type="number"
+                min="1" max="500" aria-label="Depth in mm" />
+              <span class="calc-depth-unit">mm</span>
+            </div>
+            <p id="depth-hint" class="calc-depth-hint"></p>
+          </div>
+        </div>
+
+        <!-- 4. Product + buffer -->
+        <div class="calc-section">
+          <h2 class="calc-section__title">4. Options</h2>
+
+          <div id="product-picker"><!-- rendered by JS --></div>
+
+          <div class="calc-buffer-row" style="margin-top:var(--sp-4)">
+            <input type="checkbox" id="buffer-check" checked />
+            <label class="calc-buffer-label" for="buffer-check">
+              <strong>Add 10% waste buffer</strong> — recommended.
+              Materials compress during delivery and spreading; a small buffer stops you running short mid-project.
+            </label>
+          </div>
+        </div>
+
+        <!-- 5. Coverage reference table -->
+        <div class="calc-section calc-coverage-table">
+          <details>
+            <summary>How much does 1 bag cover? — quick reference</summary>
+            <table>
+              <thead>
+                <tr>
+                  <th>Depth</th>
+                  <th>Volume / bag</th>
+                  <th>Area covered</th>
+                </tr>
+              </thead>
+              <tbody id="coverage-table-body"><!-- rendered by JS --></tbody>
+            </table>
+          </details>
+        </div>
+
+        <!-- Share -->
+        <div class="calc-share-row">
+          <p>Share this calculation:</p>
+          <button id="copy-link-btn" class="btn btn--outline" type="button" style="padding:var(--sp-2) var(--sp-4);font-size:var(--text-sm)">Copy link</button>
+        </div>
+
+      </div><!-- /calc-inputs -->
+
+      <!-- ── Right: Results ────────────────────────────────────── -->
+      <div class="calc-results-wrap">
+        <div class="calc-results" id="calc-results" aria-live="polite">
+          <!-- rendered by JS -->
+        </div>
+      </div>
+
+    </div><!-- /calc-layout -->
+
+    <!-- Educational section below the calculator -->
+    <div style="max-width:720px;margin:var(--sp-16) auto 0">
+      <h2 style="font-family:var(--font-heading);font-size:var(--text-2xl);margin-bottom:var(--sp-6)">How the calculation works</h2>
+
+      <div style="display:flex;flex-direction:column;gap:var(--sp-6)">
+        <div>
+          <h3 style="font-size:var(--text-lg);margin-bottom:var(--sp-2)">Step 1 — Volume</h3>
+          <p style="color:var(--color-text-secondary);line-height:var(--leading-loose)">
+            To find how much material you need, multiply the area you want to cover by the depth of application. This gives you <strong>volume in cubic metres (m³)</strong>.
+          </p>
+          <p style="font-family:ui-monospace,monospace;background:var(--color-gray-100);border-radius:var(--radius-sm);padding:var(--sp-3) var(--sp-4);font-size:var(--text-sm);color:var(--color-charcoal);margin:var(--sp-3) 0 0">
+            Volume (m³) = Area (m²) × Depth (m)
+          </p>
+        </div>
+
+        <div>
+          <h3 style="font-size:var(--text-lg);margin-bottom:var(--sp-2)">Step 2 — Weight</h3>
+          <p style="color:var(--color-text-secondary);line-height:var(--leading-loose)">
+            Different materials have different <strong>bulk densities</strong> — how much a cubic metre of that material weighs. Mulch is mostly wood fibre and air, so it's very light (~0.25 t/m³). Sand and pebbles are solid mineral, making them much heavier (~1.5 t/m³). We multiply volume by density to get weight in tonnes.
+          </p>
+          <p style="font-family:ui-monospace,monospace;background:var(--color-gray-100);border-radius:var(--radius-sm);padding:var(--sp-3) var(--sp-4);font-size:var(--text-sm);color:var(--color-charcoal);margin:var(--sp-3) 0 0">
+            Weight (t) = Volume (m³) × Bulk density (t/m³)
+          </p>
+        </div>
+
+        <div>
+          <h3 style="font-size:var(--text-lg);margin-bottom:var(--sp-2)">Step 3 — Bags</h3>
+          <p style="color:var(--color-text-secondary);line-height:var(--leading-loose)">
+            Each bag we sell is exactly <strong>1 tonne</strong>, so the number of bags equals the weight in tonnes — rounded up to the next whole number (you can't buy half a bag). We also add a 10% buffer by default, because landscape materials compress slightly during delivery and lose a small amount during spreading.
+          </p>
+          <p style="font-family:ui-monospace,monospace;background:var(--color-gray-100);border-radius:var(--radius-sm);padding:var(--sp-3) var(--sp-4);font-size:var(--text-sm);color:var(--color-charcoal);margin:var(--sp-3) 0 0">
+            Bags = ⌈ Weight × 1.10 ⌉
+          </p>
+        </div>
+      </div>
+
+      <!-- Density reference table -->
+      <div style="margin-top:var(--sp-10)">
+        <h3 style="font-size:var(--text-xl);margin-bottom:var(--sp-4)">Bulk density reference</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:var(--text-sm)">
+          <thead>
+            <tr style="background:var(--color-gray-100)">
+              <th style="padding:var(--sp-3) var(--sp-4);text-align:left;color:var(--color-text-muted);text-transform:uppercase;font-size:var(--text-xs);letter-spacing:0.06em">Material</th>
+              <th style="padding:var(--sp-3) var(--sp-4);text-align:right;color:var(--color-text-muted);text-transform:uppercase;font-size:var(--text-xs);letter-spacing:0.06em">Density (t/m³)</th>
+              <th style="padding:var(--sp-3) var(--sp-4);text-align:left;color:var(--color-text-muted);text-transform:uppercase;font-size:var(--text-xs);letter-spacing:0.06em">Why?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-top:1px solid var(--color-border)">
+              <td style="padding:var(--sp-3) var(--sp-4)">Mulch &amp; Bark</td>
+              <td style="padding:var(--sp-3) var(--sp-4);text-align:right;font-family:monospace;font-weight:700">0.25</td>
+              <td style="padding:var(--sp-3) var(--sp-4);color:var(--color-text-secondary)">Wood fibre + air pockets — very light</td>
+            </tr>
+            <tr style="border-top:1px solid var(--color-border)">
+              <td style="padding:var(--sp-3) var(--sp-4)">Garden Soil</td>
+              <td style="padding:var(--sp-3) var(--sp-4);text-align:right;font-family:monospace;font-weight:700">0.85</td>
+              <td style="padding:var(--sp-3) var(--sp-4);color:var(--color-text-secondary)">Loose blended mix of organics and minerals</td>
+            </tr>
+            <tr style="border-top:1px solid var(--color-border)">
+              <td style="padding:var(--sp-3) var(--sp-4)">Turf Underlay</td>
+              <td style="padding:var(--sp-3) var(--sp-4);text-align:right;font-family:monospace;font-weight:700">1.00</td>
+              <td style="padding:var(--sp-3) var(--sp-4);color:var(--color-text-secondary)">Denser soil–sand blend</td>
+            </tr>
+            <tr style="border-top:1px solid var(--color-border)">
+              <td style="padding:var(--sp-3) var(--sp-4)">Sand</td>
+              <td style="padding:var(--sp-3) var(--sp-4);text-align:right;font-family:monospace;font-weight:700">1.50</td>
+              <td style="padding:var(--sp-3) var(--sp-4);color:var(--color-text-secondary)">Compacted mineral — very dense</td>
+            </tr>
+            <tr style="border-top:1px solid var(--color-border)">
+              <td style="padding:var(--sp-3) var(--sp-4)">Decorative Pebbles</td>
+              <td style="padding:var(--sp-3) var(--sp-4);text-align:right;font-family:monospace;font-weight:700">1.45</td>
+              <td style="padding:var(--sp-3) var(--sp-4);color:var(--color-text-secondary)">Solid stone aggregate</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:var(--text-sm);color:var(--color-text-muted);margin-top:var(--sp-3)">
+          These are typical industry values for the types of material we stock. Actual bulk density can vary slightly depending on moisture content and particle size.
+        </p>
+      </div>
+
+      <!-- FAQ quick links -->
+      <div style="margin-top:var(--sp-10);padding:var(--sp-6);background:var(--color-taupe-pale);border-radius:var(--radius-lg)">
+        <h3 style="font-size:var(--text-lg);margin-bottom:var(--sp-3)">Still have questions?</h3>
+        <p style="color:var(--color-text-secondary);margin-bottom:var(--sp-4)">
+          Not sure which material is right for your project? Check our <a href="faq.html" style="color:var(--color-sage)">FAQ</a> for coverage guides, or call us on <a href="tel:1300872267" style="color:var(--color-sage)">1300 872 267</a> and we'll help you work it out.
+        </p>
+        <div style="display:flex;gap:var(--sp-3);flex-wrap:wrap">
+          <a href="products.html" class="btn btn--primary">Browse products →</a>
+          <a href="bulk-quote.html" class="btn btn--outline">Get a bulk quote</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-upper">
+      <div class="footer-brand">
+        <div class="footer-brand__logo">
+          <img src="images/brand/primary-logo-18.png" alt="Urban Landscape Supplies" width="200" height="200" loading="lazy" />
+        </div>
+        <p class="footer-brand__tagline">Sydney's premium source for landscaping supplies.</p>
+        <p class="footer-brand__meta">ABN: 89 667 657 785<br>Sister company of <a href="https://urbanpots.com.au" style="color:rgba(255,255,255,0.45)">Urban Pots</a></p>
+      </div>
+      <div class="footer-col"><p class="footer-col__heading">Products</p><div class="footer-col__links"><a href="products.html">All Products</a></div></div>
+      <div class="footer-col"><p class="footer-col__heading">Company</p><div class="footer-col__links"><a href="about.html">About Us</a><a href="trade.html">Trade Accounts</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a></div></div>
+      <div class="footer-col"><p class="footer-col__heading">Contact</p><div class="footer-contact-item"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg><a href="tel:1300872267">1300 872 267</a></div></div>
+    </div>
+    <div class="footer-lower"><p class="footer-lower__copy">© 2025 Urban Landscape Supplies Pty Ltd.</p><div class="footer-lower__links"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div>
+  </div>
+</footer>
+
+<aside class="cart-drawer" id="cart-drawer">
+  <div class="cart-drawer__header"><h2 class="cart-drawer__title">Your Cart <span class="cart-drawer__count" id="drawer-item-count"></span></h2><button class="cart-drawer__close" id="cart-close"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button></div>
+  <div class="cart-drawer__body" id="cart-drawer-items"></div>
+  <div class="cart-drawer__footer"><div class="cart-subtotal"><span class="cart-subtotal__label">Subtotal</span><span class="cart-subtotal__amount" id="cart-subtotal">$0.00</span></div><a href="checkout.html" class="btn btn--primary btn--full" id="drawer-checkout-btn">Checkout</a></div>
+</aside>
+<div class="toast" id="toast"><span class="toast__icon">✓</span><span id="toast-msg"></span></div>
+
+<script src="js/cart.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/coverage-calc.js"></script>
+</body>
+</html>
