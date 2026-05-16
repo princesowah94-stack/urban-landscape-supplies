@@ -5,7 +5,7 @@
       "name": "Regular Snow White Pebbles",
       "category": "pebbles",
       "categoryLabel": "Decorative Pebbles",
-      "price": 947.5,
+      "price": 800,
       "unit": "per 1 tonne bulk bag",
       "description": "Classic rounded snow white pebbles \u2014 the most popular decorative pebble in Sydney gardens. Clean, bright and timeless for any garden style.",
       "features": [
@@ -59,7 +59,7 @@
       "name": "Charcoal Grey Pebbles",
       "category": "pebbles",
       "categoryLabel": "Decorative Pebbles",
-      "price": 997.5,
+      "price": 1000,
       "unit": "per 1 tonne bulk bag",
       "description": "Smooth charcoal grey pebbles with subtle earthy variation. A versatile, contemporary choice for garden beds, pathways and water features.",
       "features": [
@@ -79,7 +79,7 @@
       "name": "Charcoal Lava Pebbles",
       "category": "pebbles",
       "categoryLabel": "Decorative Pebbles",
-      "price": 1147.5,
+      "price": 1000,
       "unit": "per 1 tonne bulk bag",
       "description": "Lightweight volcanic lava pebbles in dark charcoal tones. Highly porous \u2014 ideal as a planting medium, pot topper and feature garden accent.",
       "features": [
@@ -113,7 +113,7 @@
       "name": "Red Lava Pebbles",
       "category": "pebbles",
       "categoryLabel": "Decorative Pebbles",
-      "price": 1147.5,
+      "price": 1000,
       "unit": "per 1 tonne bulk bag",
       "description": "Striking volcanic red lava pebbles \u2014 warm, bold tones that add drama to garden beds, potted plants and feature areas. Lightweight and highly porous.",
       "features": [
@@ -137,7 +137,7 @@
       "name": "Premium Hardwood Chip",
       "category": "mulch",
       "categoryLabel": "Mulch & Bark",
-      "price": 697.5,
+      "price": 178,
       "unit": "per 1 tonne bulk bag",
       "description": "A great balance between appearance, durability, and economy. Made from mixed sustainable hardwoods. A good choice for busy play areas. Long lasting natural timber chip ideal for moisture retention and weed suppression. Used in both domestic and commercial applications. For domestic usage 75-100mm is suggested.",
       "features": [
@@ -160,7 +160,7 @@
       "name": "Woodlands Blend Mulch",
       "category": "mulch",
       "categoryLabel": "Mulch & Bark",
-      "price": 647.5,
+      "price": 139,
       "unit": "per 1 tonne bulk bag",
       "description": "A great balance between appearance, durability and economy. Made from a mixture of soft/hard natural shredded timbers. Ideal for moisture retention and weed suppression.",
       "features": [
@@ -183,7 +183,7 @@
       "name": "Woodlands Natural Mulch",
       "category": "mulch",
       "categoryLabel": "Mulch & Bark",
-      "price": 597.5,
+      "price": 149,
       "unit": "per 1 tonne bulk bag",
       "description": "A great balance between appearance, durability and economy. Made from a mixture of soft/hard natural shredded timbers. Ideal for moisture retention and weed suppression. Used in both domestic and commercial applications.",
       "features": [
@@ -203,7 +203,7 @@
       "name": "Pine Bark",
       "category": "mulch",
       "categoryLabel": "Mulch & Bark",
-      "price": 647.5,
+      "price": 152,
       "unit": "per 1 tonne bulk bag",
       "description": "A great balance between appearance, durability, and economy. Made from mixed sustainable hardwoods. A good choice for busy play areas. Long lasting natural timber chip ideal for moisture retention and weed suppression. Used in both domestic and commercial applications. For domestic usage 75-100mm is suggested.",
       "features": [
@@ -223,7 +223,7 @@
       "name": "Top Dressing",
       "category": "soil",
       "categoryLabel": "Soil & Turf",
-      "price": 747.5,
+      "price": 128,
       "unit": "per 1 tonne bulk bag",
       "description": "A premium blend of finely screened organic matter and soil, our Organic Top Dressing is designed to revitalise lawns and garden beds. It boosts moisture retention, improves nutrient availability, and supports healthy, sustained growth. Perfect for residential and commercial use, this organic mix promotes lush lawns and long-term soil health.",
       "features": [
@@ -243,7 +243,7 @@
       "name": "Planter Box A (Horizon A)",
       "category": "soil",
       "categoryLabel": "Soil & Turf",
-      "price": 500.0,
+      "price": 139,
       "unit": "per 1 tonne bulk bag",
       "description": "A premium soil blend designed for deep-rooted plants in planter boxes and raised beds. It enhances root development, nutrient retention, soil stability, and moisture management for thriving plants. Composition: a blend of organic matter, soil conditioners, and natural materials, ensuring stability and long-term nutrient availability.",
       "features": [
@@ -263,7 +263,7 @@
       "name": "Premium Turf Underlay 80/20",
       "category": "soil",
       "categoryLabel": "Soil & Turf",
-      "price": 500.0,
+      "price": 128,
       "unit": "per 1 tonne bulk bag",
       "description": "A quality-assured mix of soil, sand and composted organics that gives newly laid turf the head start it needs to establish strong root growth and drainage. Suitable for Buffalo, Couch, Durban, Kikuyu and Zoysia turf varieties.",
       "features": [
@@ -283,7 +283,7 @@
       "name": "Sydney Sand",
       "category": "sand",
       "categoryLabel": "Sand",
-      "price": 497.5,
+      "price": 143,
       "unit": "per 1 tonne bulk bag",
       "description": "Sydney Sand, also known as washed sand, tiling sand, or rendering sand, is a fine sand commonly used for floor tiling, rendering, and as bedding sand for paving and paver grouting. Sourced from Sydney beaches, this sand is free of clay content, making it safe for children's sandpits. Ideal for plastering, rendering, tiling, and grouting, Sydney Sand also works well for filling joints between pavers.",
       "features": [

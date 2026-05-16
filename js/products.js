@@ -11,7 +11,7 @@ let stockMap = {};
 async function loadProducts() {
   if (productsLoaded) return { products: allProducts, bulkMaterials: allBulkMaterials };
   try {
-    const res = await fetch('data/products.json');
+    const res = await fetch('/data/products.json');
     const data = await res.json();
     allProducts = data.products;
     allBulkMaterials = data.bulkMaterials;
