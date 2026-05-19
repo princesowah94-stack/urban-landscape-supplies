@@ -1,19 +1,21 @@
 /**
  * checkout.js — Renders order summary, collects delivery info,
- * calls backend /api/create-checkout → redirects to Square hosted checkout
+ * calls /api/create-checkout → redirects to Square hosted checkout
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   const cart = getCart?.() || [];
-
-  if (cart.length === 0) {
-    window.location.href = 'cart.html';
-    return;
-  }
+  if (cart.length === 0) { window.location.href = 'cart.html'; return; }
 
   renderCheckoutSummary(cart);
   updateTotals(cart);
+
+  document.querySelectorAll('input[name="delivery"]').forEach(radio => {
+    radio.addEventListener('change', () => updateTotals(cart));
+  });
 });
+
+// ─── SUMMARY RENDERING ──────────────────────────────────────────
 
 function renderCheckoutSummary(cart) {
   const container = document.getElementById('checkout-line-items');
@@ -43,21 +45,38 @@ function renderCheckoutSummary(cart) {
   `).join('');
 }
 
+function getDeliveryCost(method) {
+  if (method === 'express') return 15;
+  return 0; // standard and pickup are free
+}
+
 function updateTotals(cart) {
   const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-  document.getElementById('checkout-subtotal').textContent = `$${subtotal.toFixed(2)}`;
-  document.getElementById('checkout-total').textContent = `$${subtotal.toFixed(2)}*`;
+  const method   = document.querySelector('input[name="delivery"]:checked')?.value || 'standard';
+  const delivery = getDeliveryCost(method);
+  const total    = subtotal + delivery;
+
+  const deliveryEl = document.getElementById('checkout-delivery');
+  if (deliveryEl) {
+    deliveryEl.textContent = delivery > 0 ? `+$${delivery.toFixed(2)}` : 'Free';
+  }
+  const subtotalEl = document.getElementById('checkout-subtotal');
+  if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+
+  const totalEl = document.getElementById('checkout-total');
+  if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
 }
 
 // ─── FORM VALIDATION ────────────────────────────────────────────
+
 function validateForm() {
   const required = [
-    { id: 'first-name',  label: 'First name' },
-    { id: 'last-name',   label: 'Last name' },
-    { id: 'email',       label: 'Email address' },
-    { id: 'address',     label: 'Street address' },
-    { id: 'suburb',      label: 'Suburb' },
-    { id: 'postcode',    label: 'Postcode' },
+    { id: 'first-name', label: 'First name' },
+    { id: 'last-name',  label: 'Last name' },
+    { id: 'email',      label: 'Email address' },
+    { id: 'address',    label: 'Street address' },
+    { id: 'suburb',     label: 'Suburb' },
+    { id: 'postcode',   label: 'Postcode' },
   ];
 
   for (const field of required) {
@@ -95,9 +114,9 @@ function clearError() {
 }
 
 // ─── SUBMIT ──────────────────────────────────────────────────────
+
 document.getElementById('checkout-submit-btn')?.addEventListener('click', async () => {
   clearError();
-
   if (!validateForm()) return;
 
   const cart = getCart?.() || [];
@@ -111,10 +130,10 @@ document.getElementById('checkout-submit-btn')?.addEventListener('click', async 
 
   const payload = {
     items: cart.map(item => ({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      quantity: item.quantity
+      id:       item.id,
+      name:     item.name,
+      price:    item.price,
+      quantity: item.quantity,
     })),
     customer: {
       firstName: document.getElementById('first-name')?.value.trim(),
@@ -130,35 +149,31 @@ document.getElementById('checkout-submit-btn')?.addEventListener('click', async 
       state:    document.getElementById('state')?.value,
       postcode: document.getElementById('postcode')?.value.trim(),
       notes:    document.getElementById('delivery-notes')?.value.trim(),
-    }
+    },
   };
 
   try {
-    // BACKEND: POST /api/create-checkout
-    // Returns { checkoutUrl } from Square Checkout API
-    const response = await fetch('/api/create-checkout', {
-      method: 'POST',
+    const res = await fetch('/api/create-checkout', {
+      method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body:    JSON.stringify(payload),
     });
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(error.message || `Server error: ${response.status}`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || `Server error (${res.status})`);
     }
 
-    const { checkoutUrl } = await response.json();
+    const { checkoutUrl } = await res.json();
+    if (!checkoutUrl) throw new Error('No checkout URL returned from payment server.');
 
-    if (!checkoutUrl) throw new Error('No checkout URL received from payment server.');
-
-    // Redirect to Square hosted checkout
     window.location.href = checkoutUrl;
 
   } catch (err) {
     console.error('Checkout error:', err);
     showError(
       err.message.includes('fetch')
-        ? 'Unable to connect to payment server. Please check your connection and try again, or call us on 1300 872 267.'
+        ? 'Unable to connect. Please check your connection and try again, or call us on 1300 872 267.'
         : err.message
     );
     btn.disabled = false;

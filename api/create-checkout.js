@@ -6,28 +6,30 @@ import { supabase } from './_supabase.js';
 const require = createRequire(import.meta.url);
 
 // Load product prices server-side to prevent client-side price manipulation.
-// Single SKU per product now — every product is sold as a 1-tonne bulk bag.
 let productPrices = {};
 try {
   const data = require('../data/products.json');
-  data.products.forEach(p => {
-    productPrices[p.id] = p.price;
-  });
+  data.products.forEach(p => { productPrices[p.id] = p.price; });
 } catch (e) {
   console.warn('Could not load products.json:', e.message);
 }
 
-function validateAndPriceCart(items) {
+const EXPRESS_DELIVERY_CENTS = 1500; // $15.00
+
+function validateCart(items) {
+  if (!Array.isArray(items) || items.length === 0) {
+    throw new Error('Cart is empty');
+  }
   return items.map(item => {
     const serverPrice = productPrices[item.id];
-    if (!serverPrice) throw new Error(`Unknown product ID: ${item.id}`);
+    if (!serverPrice) throw new Error(`Unknown product: ${item.id}`);
     if (Math.abs(serverPrice - parseFloat(item.price)) > 0.01) {
-      console.warn(`Price mismatch for ${item.id}: submitted $${item.price}, server $${serverPrice}`);
+      console.warn(`[price-mismatch] ${item.id}: submitted $${item.price}, server $${serverPrice}`);
     }
     return {
-      id: item.id,
-      name: item.name,
-      price: serverPrice,
+      id:       item.id,
+      name:     item.name,
+      price:    serverPrice,
       quantity: Math.max(1, parseInt(item.quantity, 10) || 1),
     };
   });
@@ -41,37 +43,37 @@ export async function POST(request) {
   try {
     const { items, customer, delivery } = await request.json();
 
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      return Response.json({ error: 'Cart is empty' }, { status: 400, headers: corsHeaders(request) });
-    }
+    // 1. Validate cart against server-side prices
+    const validatedItems = validateCart(items);
+    const isExpress = delivery?.method === 'express';
+    const totalCents =
+      validatedItems.reduce((s, i) => s + Math.round(i.price * 100) * i.quantity, 0) +
+      (isExpress ? EXPRESS_DELIVERY_CENTS : 0);
 
-    const validatedItems = validateAndPriceCart(items);
-    const totalCents = validatedItems.reduce((s, i) => s + Math.round(i.price * 100) * i.quantity, 0)
-      + (delivery?.method === 'express' ? 1500 : 0);
-
-    // 1. Insert order in Supabase FIRST so we can put its UUID in Square's redirect URL.
+    // 2. Create order record in Supabase (before Square, so we have the UUID for the redirect URL)
     const { data: order, error: orderErr } = await supabase
       .from('orders')
       .insert({
         customer_name:    `${customer?.firstName || ''} ${customer?.lastName || ''}`.trim(),
-        customer_email:   customer?.email || null,
-        customer_phone:   customer?.phone || null,
-        delivery_address: delivery ? [delivery.address, delivery.address2, delivery.suburb, delivery.state, delivery.postcode].filter(Boolean).join(', ') : null,
-        notes:            delivery?.notes || null,
-        status:           'pending_payment',
-        total_cents:      totalCents,
+        customer_email:   customer?.email    || null,
+        customer_phone:   customer?.phone    || null,
+        delivery_address: delivery
+          ? [delivery.address, delivery.address2, delivery.suburb, delivery.state, delivery.postcode]
+              .filter(Boolean).join(', ')
+          : null,
+        notes:       delivery?.notes || null,
+        status:      'pending_payment',
+        total_cents: totalCents,
       })
       .select()
       .single();
+
     if (orderErr) {
-      console.error('[checkout-fail]', JSON.stringify({ stage: 'order-insert', error: orderErr.message }));
+      console.error('[checkout] order-insert failed:', orderErr.message);
       throw new Error('Could not create order record');
     }
 
-    // 2. Insert line items BEFORE calling Square. If this fails the customer hasn't
-    //    paid yet — better to surface the error here than end up with a paid order
-    //    that admin sees as "$0 with no items". Best-effort cleanup of the orphan
-    //    order row before throwing so it doesn't sit in the table.
+    // 3. Insert line items — must succeed before we send the customer to Square
     const { error: itemsErr } = await supabase
       .from('order_items')
       .insert(validatedItems.map(i => ({
@@ -81,60 +83,58 @@ export async function POST(request) {
         quantity:    i.quantity,
         price_cents: Math.round(i.price * 100),
       })));
+
     if (itemsErr) {
-      console.error('[checkout-fail]', JSON.stringify({ stage: 'items-insert', orderId: order.id, error: itemsErr.message }));
-      await supabase.from('orders').delete().eq('id', order.id); // best-effort
-      throw new Error('Could not record order line items');
+      console.error('[checkout] items-insert failed:', itemsErr.message, '— cleaning up order', order.id);
+      await supabase.from('orders').delete().eq('id', order.id);
+      throw new Error('Could not record order items');
     }
 
-    // 2. Build Square payment link with the Supabase order id in the redirect URL.
+    // 4. Create Square Payment Link
     const squareClient = new Client({
-      accessToken: process.env.SQUARE_ACCESS_TOKEN,
-      environment: process.env.SQUARE_ENVIRONMENT === 'production'
+      accessToken:  process.env.SQUARE_ACCESS_TOKEN,
+      environment:  process.env.SQUARE_ENVIRONMENT === 'production'
         ? Environment.Production
         : Environment.Sandbox,
     });
 
-    const lineItems = validatedItems.map(item => ({
-      name: item.name,
-      quantity: String(item.quantity),
-      basePriceMoney: {
-        amount: BigInt(Math.round(item.price * 100)),
-        currency: 'AUD',
-      },
+    const lineItems = validatedItems.map(i => ({
+      name:           i.name,
+      quantity:       String(i.quantity),
+      basePriceMoney: { amount: BigInt(Math.round(i.price * 100)), currency: 'AUD' },
     }));
 
-    if (delivery?.method === 'express') {
+    if (isExpress) {
       lineItems.push({
-        name: 'Express Delivery',
-        quantity: '1',
-        basePriceMoney: { amount: BigInt(1500), currency: 'AUD' },
+        name:           'Express Delivery',
+        quantity:       '1',
+        basePriceMoney: { amount: BigInt(EXPRESS_DELIVERY_CENTS), currency: 'AUD' },
       });
     }
 
     const siteUrl = process.env.SITE_URL || 'https://urbanlandscapesupplies.com.au';
 
-    const response = await squareClient.checkoutApi.createPaymentLink({
+    const squareRes = await squareClient.checkoutApi.createPaymentLink({
       idempotencyKey: `uls-${order.id}`,
       order: {
         locationId: process.env.SQUARE_LOCATION_ID,
         lineItems,
         ...(customer?.email ? {
           fulfillments: [{
-            type: 'SHIPMENT',
+            type:  'SHIPMENT',
             state: 'PROPOSED',
             shipmentDetails: {
               recipient: {
-                displayName: `${customer.firstName} ${customer.lastName}`.trim(),
+                displayName:  `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
                 emailAddress: customer.email,
-                phoneNumber: customer.phone || undefined,
-                address: delivery ? {
-                  addressLine1: delivery.address,
-                  addressLine2: delivery.address2 || undefined,
-                  locality: delivery.suburb,
-                  postalCode: delivery.postcode,
-                  administrativeDistrictLevel1: delivery.state || 'NSW',
-                  country: 'AU',
+                phoneNumber:  customer.phone || undefined,
+                address: delivery?.address ? {
+                  addressLine1:                  delivery.address,
+                  addressLine2:                  delivery.address2 || undefined,
+                  locality:                      delivery.suburb,
+                  postalCode:                    delivery.postcode,
+                  administrativeDistrictLevel1:  delivery.state || 'NSW',
+                  country:                       'AU',
                 } : undefined,
               },
             },
@@ -142,50 +142,50 @@ export async function POST(request) {
         } : {}),
       },
       checkoutOptions: {
-        redirectUrl: `${siteUrl}/order-confirmation.html?order=${order.id}`,
-        merchantSupportEmail: process.env.EMAIL_TO_STAFF || process.env.EMAIL_TO || 'orders@urbanlandscapesupplies.com.au',
-        allowTipping: false,
-        askForShippingAddress: !delivery?.address,
+        // id= matches what order-confirmation.html and /api/order both expect
+        redirectUrl:           `${siteUrl}/order-confirmation?id=${order.id}`,
+        merchantSupportEmail:  process.env.EMAIL_TO_STAFF || 'orders@urbanlandscapesupplies.com.au',
+        allowTipping:          false,
+        askForShippingAddress: false,
       },
       ...(customer?.email ? { prePopulatedData: { buyerEmail: customer.email } } : {}),
     });
 
-    const checkoutUrl   = response.result?.paymentLink?.url;
-    const squareOrderId = response.result?.paymentLink?.orderId;
+    const checkoutUrl   = squareRes.result?.paymentLink?.url;
+    const squareOrderId = squareRes.result?.paymentLink?.orderId;
+
     if (!checkoutUrl) {
-      console.error('[checkout-fail]', JSON.stringify({ stage: 'square-no-url', orderId: order.id }));
-      throw new Error('Square did not return a checkout URL');
+      console.error('[checkout] Square returned no URL — orderId:', order.id);
+      throw new Error('Payment gateway did not return a checkout URL');
     }
 
-    // 4. Patch the order with Square's order id. The webhook looks orders up by
-    //    square_order_id, so this MUST succeed — otherwise a paid order can't be
-    //    matched back. Awaited (no longer fire-and-forget).
+    // 5. Link the Square order ID back to our record so the webhook can match it
     const { error: patchErr } = await supabase
       .from('orders')
       .update({ square_order_id: squareOrderId })
       .eq('id', order.id);
+
     if (patchErr) {
-      console.error('[checkout-fail]', JSON.stringify({ stage: 'order-patch', orderId: order.id, squareOrderId, error: patchErr.message }));
-      throw new Error('Could not link Square order to record');
+      console.error('[checkout] order-patch failed:', patchErr.message, '— orderId:', order.id);
+      throw new Error('Could not link payment to order');
     }
 
     return Response.json(
-      { checkoutUrl, orderId: order.id, squareOrderId },
+      { checkoutUrl, orderId: order.id },
       { headers: corsHeaders(request) }
     );
 
   } catch (err) {
-    console.error('Square checkout error:', err instanceof ApiError ? err.errors : err);
-
     if (err instanceof ApiError) {
+      console.error('[checkout] Square API error:', err.errors);
       return Response.json(
-        { error: 'Payment gateway error', message: err.errors?.[0]?.detail || 'Unable to create checkout.' },
+        { error: 'Payment gateway error', message: err.errors?.[0]?.detail || 'Could not create checkout.' },
         { status: 422, headers: corsHeaders(request) }
       );
     }
-
+    console.error('[checkout] error:', err.message);
     return Response.json(
-      { error: 'Server error', message: 'An unexpected error occurred. Please call us on 1300 872 267.' },
+      { error: 'Server error', message: err.message || 'An unexpected error occurred. Please call us on 1300 872 267.' },
       { status: 500, headers: corsHeaders(request) }
     );
   }
