@@ -7,7 +7,7 @@
       "categoryLabel": "Decorative Pebbles",
       "price": 800,
       "unit": "per 1 tonne bulk bag",
-      "description": "Classic rounded snow white pebbles \u2014 the most popular decorative pebble in Sydney gardens. Clean, bright and timeless for any garden style.",
+      "description": "Classic rounded snow white pebbles — the most popular decorative pebble in Sydney gardens. Clean, bright and timeless for any garden style.",
       "features": [
         "Rounded smooth finish",
         "Brilliant white colour",
@@ -19,7 +19,7 @@
         "30-50mm",
         "50-80mm"
       ],
-      "image": "/images/products/pebbles-snow-white-1.jpg",
+      "image": "/images/products/pebbles-snow-white-lifestyle.jpg",
       "images": [
         "/images/products/pebbles-snow-white-1.jpg",
         "/images/products/pebbles-snow-white-2.jpg",
@@ -46,9 +46,9 @@
         "Angular crushed stone",
         "Bright white finish",
         "Drainage friendly",
-        "10\u201320mm size"
+        "10–20mm size"
       ],
-      "image": "/images/products/pebbles-crushed-snow-white-1.jpg",
+      "image": "/images/products/pebbles-crushed-snow-white-lifestyle.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -64,11 +64,11 @@
       "description": "Smooth charcoal grey pebbles with subtle earthy variation. A versatile, contemporary choice for garden beds, pathways and water features.",
       "features": [
         "Smooth finish",
-        "10\u201325mm size",
+        "10–25mm size",
         "Weather resistant",
         "Versatile application"
       ],
-      "image": "/images/products/pebbles-charcoal-grey-1.jpg",
+      "image": "/images/products/pebbles-charcoal-grey-lifestyle.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -81,7 +81,7 @@
       "categoryLabel": "Decorative Pebbles",
       "price": 1000,
       "unit": "per 1 tonne bulk bag",
-      "description": "Lightweight volcanic lava pebbles in dark charcoal tones. Highly porous \u2014 ideal as a planting medium, pot topper and feature garden accent.",
+      "description": "Lightweight volcanic lava pebbles in dark charcoal tones. Highly porous — ideal as a planting medium, pot topper and feature garden accent.",
       "features": [
         "Lightweight volcanic rock",
         "Multiple size options",
@@ -93,7 +93,7 @@
         "30-50mm",
         "50-70mm"
       ],
-      "image": "/images/products/pebbles-charcoal-lava-1.jpg",
+      "image": "/images/products/pebbles-charcoal-lava-lifestyle.jpg",
       "images": [
         "/images/products/pebbles-charcoal-lava-1.jpg",
         "/images/products/pebbles-charcoal-lava-2.jpg",
@@ -115,18 +115,18 @@
       "categoryLabel": "Decorative Pebbles",
       "price": 1000,
       "unit": "per 1 tonne bulk bag",
-      "description": "Striking volcanic red lava pebbles \u2014 warm, bold tones that add drama to garden beds, potted plants and feature areas. Lightweight and highly porous.",
+      "description": "Striking volcanic red lava pebbles — warm, bold tones that add drama to garden beds, potted plants and feature areas. Lightweight and highly porous.",
       "features": [
         "Lightweight volcanic rock",
         "Warm red tones",
-        "30\u201350mm size",
+        "30–50mm size",
         "Excellent aeration"
       ],
       "sizes": [
         "30-50mm"
       ],
       "supplier": "Waratah Supplies",
-      "image": "/images/products/pebbles-red-lava-1.jpg",
+      "image": "/images/products/pebbles-red-lava-lifestyle.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -149,7 +149,7 @@
       "sizes": [
         "25-40mm"
       ],
-      "image": "/images/products/mulch-hardwood-chip.jpg",
+      "image": "/images/products/mulch-hardwood-chip-lifestyle.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -172,7 +172,7 @@
       "sizes": [
         "10-40mm"
       ],
-      "image": "/images/products/mulch-woodlands-blend.jpg",
+      "image": "/images/products/mulch-woodlands-blend-lifestyle.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -192,7 +192,7 @@
         "Moisture retention",
         "Domestic & commercial use"
       ],
-      "image": "/images/products/mulch-woodlands-natural.jpg",
+      "image": "/images/products/mulch-woodlands-natural-lifestyle.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -212,7 +212,7 @@
         "Weed suppression",
         "Moisture retention"
       ],
-      "image": "/images/products/mulch-nls-pine-bark.jpg",
+      "image": "/images/products/mulch-nls-pine-bark-lifestyle.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -232,7 +232,7 @@
         "Improves nutrient availability",
         "Revitalises lawns & garden beds"
       ],
-      "image": "/images/products/soil-nls-top-dressing.jpg",
+      "image": "/images/products/soil-nls-top-dressing-lifestyle.jpg",
       "badge": null,
       "featured": true,
       "inStock": true,
@@ -252,7 +252,7 @@
         "Strong nutrient retention",
         "Reliable moisture management"
       ],
-      "image": "/images/products/soil-planter-box-a.jpg",
+      "image": "/images/products/soil-planter-box-a-lifestyle.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -272,7 +272,7 @@
         "Improves drainage",
         "Suits Buffalo, Couch, Kikuyu, Zoysia"
       ],
-      "image": "/images/products/soil-premium-turf-underlay.jpg",
+      "image": "/images/products/soil-premium-turf-underlay-lifestyle.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -292,7 +292,7 @@
         "Tiling, rendering & paving",
         "Sandpit safe"
       ],
-      "image": "/images/products/sand-sydney-1.jpg",
+      "image": "/images/products/sand-nls-sydney-lifestyle.jpg",
       "badge": null,
       "featured": true,
       "inStock": true,
@@ -305,8 +305,8 @@
       "name": "Bulk Garden Soil",
       "category": "soil",
       "price": 65,
-      "unit": "m\u00b3",
-      "description": "Premium garden soil blend \u2014 rich in organic matter, suitable for garden beds, lawn preparation and landscaping fill.",
+      "unit": "m³",
+      "description": "Premium garden soil blend — rich in organic matter, suitable for garden beds, lawn preparation and landscaping fill.",
       "uses": [
         "Garden beds",
         "Lawn preparation",
@@ -321,7 +321,7 @@
       "name": "Bulk Turf Blend",
       "category": "soil",
       "price": 75,
-      "unit": "m\u00b3",
+      "unit": "m³",
       "description": "Premium turf underlay blend with added sand and fertiliser. Ideal for laying new lawns and top dressing established turf.",
       "uses": [
         "New lawn installation",
@@ -337,7 +337,7 @@
       "name": "Washed Sand",
       "category": "sand",
       "price": 85,
-      "unit": "m\u00b3",
+      "unit": "m³",
       "description": "Clean washed concrete sand, free of clay and impurities. Suitable for concrete mixing, plastering and general construction.",
       "uses": [
         "Concrete mixing",
@@ -353,7 +353,7 @@
       "name": "Coarse Sand",
       "category": "sand",
       "price": 80,
-      "unit": "m\u00b3",
+      "unit": "m³",
       "description": "Coarse-grade washed sand for drainage applications, garden soil improvement and general landscaping use.",
       "uses": [
         "Soil improvement",
@@ -369,7 +369,7 @@
       "name": "Brickie's Sand",
       "category": "sand",
       "price": 90,
-      "unit": "m\u00b3",
+      "unit": "m³",
       "description": "Fine plasticity sand for bricklaying, block laying and mortar applications. Consistent particle size for reliable mixes.",
       "uses": [
         "Bricklaying mortar",
@@ -418,7 +418,7 @@
       "category": "gravel",
       "price": 68,
       "unit": "tonne",
-      "description": "Fine crushed aggregate \u2014 ideal for compacting under pavers, paths and as a levelling base. Binds firmly when compacted and dampened.",
+      "description": "Fine crushed aggregate — ideal for compacting under pavers, paths and as a levelling base. Binds firmly when compacted and dampened.",
       "uses": [
         "Paver bedding",
         "Path levelling",
