@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { corsHeaders, optionsResponse } from './_cors.js';
+import { supabase } from './_supabase.js';
 
 export function OPTIONS(request) {
   return optionsResponse(request);
@@ -25,6 +26,21 @@ export async function POST(request) {
       secure: false,
       auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
     });
+
+    // Save to Supabase so it appears in the CRM Trade tab (non-blocking)
+    supabase.from('trade_applications').insert({
+      company_name:     business,
+      contact_name:     `${firstName} ${lastName}`.trim(),
+      email,
+      phone,
+      abn:              abn || null,
+      delivery_address: address || null,
+      business_type:    businessType || null,
+      notes:            notes || null,
+      status:           'pending',
+    }).then(({ error }) => {
+      if (error) console.error('Trade application Supabase insert failed:', error.message)
+    })
 
     await Promise.all([
       transport.sendMail({

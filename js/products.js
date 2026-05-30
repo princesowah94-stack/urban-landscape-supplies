@@ -11,15 +11,35 @@ let stockMap = {};
 async function loadProducts() {
   if (productsLoaded) return { products: allProducts, bulkMaterials: allBulkMaterials };
   try {
-    const res = await fetch('/data/products.json');
+    // Fetch live product data from Supabase via /api/products.
+    // Falls back to the static JSON file if the API is unavailable.
+    const res = await fetch('/api/products');
+    if (!res.ok) throw new Error(`/api/products returned ${res.status}`);
     const data = await res.json();
-    allProducts = data.products;
-    allBulkMaterials = data.bulkMaterials;
+    allProducts = data.products || [];
+    // bulkMaterials are not yet in Supabase — keep reading from static JSON
+    try {
+      const staticRes = await fetch('/data/products.json');
+      const staticData = await staticRes.json();
+      allBulkMaterials = staticData.bulkMaterials || [];
+    } catch (_) {
+      allBulkMaterials = [];
+    }
     productsLoaded = true;
-    return data;
+    return { products: allProducts, bulkMaterials: allBulkMaterials };
   } catch (err) {
-    console.error('Failed to load products.json', err);
-    return { products: [], bulkMaterials: [] };
+    console.error('Failed to load products from API, falling back to static JSON', err);
+    try {
+      const res = await fetch('/data/products.json');
+      const data = await res.json();
+      allProducts = data.products || [];
+      allBulkMaterials = data.bulkMaterials || [];
+      productsLoaded = true;
+      return data;
+    } catch (fallbackErr) {
+      console.error('Static JSON fallback also failed', fallbackErr);
+      return { products: [], bulkMaterials: [] };
+    }
   }
 }
 
