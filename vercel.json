@@ -6,7 +6,8 @@
   ],
   "redirects": [
     { "source": "/bulk-materials", "destination": "/products", "permanent": true },
-    { "source": "/bulk-materials.html", "destination": "/products", "permanent": true }
+    { "source": "/bulk-materials.html", "destination": "/products", "permanent": true },
+    { "source": "/:path*", "has": [{ "type": "host", "value": "www.urbanlandscapesupplies.com.au" }], "destination": "https://urbanlandscapesupplies.com.au/:path*", "permanent": true }
   ],
   "crons": [
     { "path": "/api/cron/cleanup-orphans", "schedule": "0 17 * * *" }
@@ -51,7 +52,7 @@
     {
       "source": "/(.*\\.(?:css|js))",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=3600" }
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
