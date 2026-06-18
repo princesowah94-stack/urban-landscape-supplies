@@ -21,6 +21,8 @@ export async function POST(request) {
       return Response.json({ error: 'Contact details required' }, { status: 400, headers: corsHeaders(request) });
     }
 
+    const emailRegex     = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const safeReplyTo    = emailRegex.test(contact.email) ? contact.email : undefined;
     const referenceId    = 'BQ-' + Date.now().toString(36).toUpperCase();
     const itemsTable     = items.map(i => `  • ${i.name}: ${i.quantity} ${i.unit} (est. $${(i.price * i.quantity).toFixed(2)})`).join('\n');
     const estimatedTotal = items.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0);
@@ -38,7 +40,7 @@ export async function POST(request) {
       transport.sendMail({
         from,
         to: process.env.EMAIL_TO,
-        replyTo: contact.email,
+        replyTo: safeReplyTo,
         subject: `New Bulk Quote [${referenceId}] — ${contact.firstName} ${contact.lastName}`,
         text: [
           `NEW BULK QUOTE REQUEST`,

@@ -26,6 +26,9 @@ export async function POST(request) {
       );
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const safeReplyTo = emailRegex.test(email) ? email : undefined;
+
     const transport = nodemailer.createTransport({
       host: process.env.EMAIL_HOST || 'smtp.gmail.com',
       port: parseInt(process.env.EMAIL_PORT, 10) || 587,
@@ -36,7 +39,7 @@ export async function POST(request) {
     await transport.sendMail({
       from: `"${process.env.EMAIL_FROM_NAME || 'ULS Website'}" <${process.env.EMAIL_FROM}>`,
       to: process.env.EMAIL_TO,
-      replyTo: email,
+      replyTo: safeReplyTo,
       subject: `Website Contact [${SUBJECT_LABELS[subject] || subject || 'General'}] — ${name}`,
       text: [
         `Name:    ${name}`,

@@ -14,7 +14,7 @@ try {
   console.warn('Could not load products.json:', e.message);
 }
 
-const EXPRESS_DELIVERY_CENTS = 1500; // $15.00
+const EXPRESS_DELIVERY_CENTS = parseInt(process.env.EXPRESS_DELIVERY_CENTS || '1500', 10);
 
 function validateCart(items) {
   if (!Array.isArray(items) || items.length === 0) {

@@ -17,6 +17,8 @@ export async function POST(request) {
       );
     }
 
+    const emailRegex  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const safeReplyTo = emailRegex.test(email) ? email : undefined;
     const referenceId = 'TRD-' + Date.now().toString(36).toUpperCase();
     const from = `"${process.env.EMAIL_FROM_NAME || 'Urban Landscape Supplies'}" <${process.env.EMAIL_FROM}>`;
 
@@ -46,7 +48,7 @@ export async function POST(request) {
       transport.sendMail({
         from,
         to: process.env.EMAIL_TO,
-        replyTo: email,
+        replyTo: safeReplyTo,
         subject: `Trade Application [${referenceId}] — ${business}`,
         text: [
           `TRADE ACCOUNT APPLICATION`,
