@@ -10,5 +10,5 @@ export async function GET(request) {
     return Response.json({ error: error.message }, { status: 500, headers: corsHeaders(request) });
   }
 
-  return Response.json(data, { headers: corsHeaders(request) });
+  return Response.json({ inventory: data || [] }, { headers: corsHeaders(request) });
 }

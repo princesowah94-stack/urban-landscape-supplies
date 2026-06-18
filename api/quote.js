@@ -80,7 +80,7 @@ export async function POST(request) {
           `Delivery: ${deliveryLine}`,
           `Preferred window: ${delivery?.dateFrom || 'flexible'} → ${delivery?.dateTo || 'flexible'}`,
           ``,
-          `Questions? Call 1300 872 267`,
+          `Questions? Call ${process.env.PHONE_NUMBER || '1300 872 267'}`,
           ``,
           `The Urban Landscape Supplies Team`,
           `Sydney NSW · urbanlandscapesupplies.com.au`,

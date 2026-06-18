@@ -806,3 +806,17 @@
 .stock-badge--in  { color: var(--color-success, #22c55e); }
 .stock-badge--low { color: #f59e0b; }
 .stock-badge--out { color: var(--color-text-muted); }
+
+/* ─── DISABLED STATES ────────────────────────────────────────── */
+.form-input:disabled,
+.form-select:disabled,
+.form-textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--color-gray-100);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}

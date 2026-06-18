@@ -51,8 +51,8 @@ async function loadStock() {
   try {
     const res = await fetch('/api/stock');
     if (!res.ok) return;
-    const items = await res.json();
-    stockMap = Object.fromEntries(items.map(i => [i.product_id, i]));
+    const { inventory } = await res.json();
+    stockMap = Object.fromEntries((inventory || []).map(i => [i.product_id, i]));
   } catch { /* stock display is non-critical */ }
 }
 

@@ -146,6 +146,11 @@
 
 .nav-link svg { transition: transform var(--duration-base) var(--ease-out); }
 .nav-item:hover .nav-link svg { transform: rotate(180deg); }
+.nav-link:focus-visible {
+  outline: 2px solid var(--color-sage);
+  outline-offset: 3px;
+  border-radius: var(--radius-xs);
+}
 
 /* Dropdown */
 .nav-dropdown {

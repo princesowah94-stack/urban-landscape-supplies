@@ -75,7 +75,7 @@ export async function POST(request) {
           `Your trade application (ref: ${referenceId}) has been received.`,
           `We'll be in touch within 1 business day to discuss your account terms.`,
           ``,
-          `Questions? Call 1300 872 267`,
+          `Questions? Call ${process.env.PHONE_NUMBER || '1300 872 267'}`,
           ``,
           `The Urban Landscape Supplies Team`,
           `Sydney NSW · urbanlandscapesupplies.com.au`,
