@@ -70,6 +70,10 @@ function webpFor(jpgPath) {
   return jpgPath && jpgPath.replace(/\.jpe?g$/i, '.webp');
 }
 
+function avifFor(srcPath) {
+  return srcPath && srcPath.replace(/\.(jpe?g|webp|png)$/i, '.avif');
+}
+
 // ─── PRODUCT CARD HTML ─────────────────────────────────────────
 function buildProductCard(product) {
   const badgeHtml = product.badge
@@ -80,6 +84,7 @@ function buildProductCard(product) {
     <article class="product-card" data-id="${product.id}" onclick="window.location='/product/${product.id}'">
       <div class="product-card__image-wrap">
         <picture>
+          <source type="image/avif" srcset="${avifFor(product.image)}" />
           <source type="image/webp" srcset="${webpFor(product.image)}" />
           <img
             src="${product.image}"
@@ -356,6 +361,7 @@ function initProductGallery(product) {
           ${images.map((src, i) => `
             <div class="pgal__slide">
               <picture>
+                <source type="image/avif" srcset="${avifFor(src)}" />
                 <source type="image/webp" srcset="${webpFor(src)}" />
                 <img src="${src}" alt="${product.name}" loading="${i === 0 ? 'eager' : 'lazy'}" ${i === 0 ? 'fetchpriority="high"' : ''} onerror="this.style.background='var(--color-gray-200)'" />
               </picture>

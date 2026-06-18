@@ -16,6 +16,9 @@
   <meta name="description" content="Premium soil, mulch, pebbles, sand and 1-tonne bulk bags delivered to Bella Vista NSW 2153 from our Wetherill Park yard. Mid-Ring — delivery from $25 (free over $200)." />
   <meta name="robots" content="index, follow" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap">
   <link rel="stylesheet" href="../css/tokens.css" />
   <link rel="stylesheet" href="../css/base.css" />
   <link rel="stylesheet" href="../css/components.css" />
@@ -61,7 +64,7 @@
 <!-- HEADER -->
 <header class="site-header" id="site-header">
   <div class="container"><div class="header-inner">
-    <a href="../index.html" class="site-logo" aria-label="Urban Landscape Supplies — Home">
+    <a href="/" class="site-logo" aria-label="Urban Landscape Supplies — Home">
         <img src="../images/brand/mark-dark.png" alt="" class="site-logo__mark" width="48" height="33" loading="eager" fetchpriority="high" />
         <div class="site-logo__wordmark">
           Urban Landscape
@@ -72,21 +75,21 @@
       <div class="nav-item">
         <span class="nav-link" tabindex="0">Products <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4l4 4 4-4"/></svg></span>
         <div class="nav-dropdown">
-          <a href="../products.html?cat=pebbles">Decorative Pebbles</a>
-          <a href="../products.html?cat=soil">Soil &amp; Turf</a>
-          <a href="../products.html?cat=mulch">Mulch &amp; Bark</a>
-          <a href="../products.html?cat=sand">Sand</a>
+          <a href="/products?cat=pebbles">Decorative Pebbles</a>
+          <a href="/products?cat=soil">Soil &amp; Turf</a>
+          <a href="/products?cat=mulch">Mulch &amp; Bark</a>
+          <a href="/products?cat=sand">Sand</a>
           <div class="nav-dropdown__divider"></div>
-          <a href="../products.html" class="nav-dropdown__cta">View All Products →</a>
+          <a href="/products" class="nav-dropdown__cta">View All Products →</a>
         </div>
       </div>
-      <a href="../delivery-areas.html" class="nav-link">Delivery</a>
-      <a href="../trade.html" class="nav-link">Trade</a>
-      <a href="../about.html" class="nav-link">About</a>
-      <a href="../contact.html" class="nav-link">Contact</a>
+      <a href="/delivery-areas" class="nav-link">Delivery</a>
+      <a href="/trade" class="nav-link">Trade</a>
+      <a href="/about" class="nav-link">About</a>
+      <a href="/contact" class="nav-link">Contact</a>
     </nav>
     <div class="header-actions">
-      <a href="../bulk-quote.html" class="bulk-quote-btn" id="bulk-quote-btn" style="display:none">
+      <a href="/bulk-quote" class="bulk-quote-btn" id="bulk-quote-btn" style="display:none">
         <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
         <span class="btn-text">Bulk Quote</span>
         <span class="bulk-quote-count" id="bulk-quote-count">0</span>
@@ -104,17 +107,17 @@
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <div class="mobile-nav__section">
     <p class="mobile-nav__heading">Products</p>
-    <a href="../products.html?cat=pebbles" class="mobile-nav__sub-link">Decorative Pebbles</a>
-    <a href="../products.html?cat=soil" class="mobile-nav__sub-link">Soil &amp; Turf</a>
-    <a href="../products.html?cat=mulch" class="mobile-nav__sub-link">Mulch &amp; Bark</a>
-    <a href="../products.html?cat=sand" class="mobile-nav__sub-link">Sand</a>
-    <a href="../products.html" class="mobile-nav__link">View All Products</a>
+    <a href="/products?cat=pebbles" class="mobile-nav__sub-link">Decorative Pebbles</a>
+    <a href="/products?cat=soil" class="mobile-nav__sub-link">Soil &amp; Turf</a>
+    <a href="/products?cat=mulch" class="mobile-nav__sub-link">Mulch &amp; Bark</a>
+    <a href="/products?cat=sand" class="mobile-nav__sub-link">Sand</a>
+    <a href="/products" class="mobile-nav__link">View All Products</a>
   </div>
   <div class="mobile-nav__section">
-    <a href="../delivery-areas.html" class="mobile-nav__link">Delivery Areas</a>
-    <a href="../trade.html" class="mobile-nav__link">Trade &amp; Contractors</a>
-    <a href="../about.html" class="mobile-nav__link">About Us</a>
-    <a href="../contact.html" class="mobile-nav__link">Contact</a>
+    <a href="/delivery-areas" class="mobile-nav__link">Delivery Areas</a>
+    <a href="/trade" class="mobile-nav__link">Trade &amp; Contractors</a>
+    <a href="/about" class="mobile-nav__link">About Us</a>
+    <a href="/contact" class="mobile-nav__link">Contact</a>
   </div>
 </nav>
 <div class="overlay" id="overlay"></div>
@@ -128,9 +131,9 @@
   <div style="background:var(--color-gray-50);border-bottom:1px solid var(--color-border)">
     <div class="container" style="padding-top:var(--sp-3);padding-bottom:var(--sp-3)">
       <nav aria-label="Breadcrumb" style="font-size:var(--text-sm);color:var(--color-text-muted);display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap">
-        <a href="../index.html" style="color:var(--color-text-muted);text-decoration:none">Home</a>
+        <a href="/" style="color:var(--color-text-muted);text-decoration:none">Home</a>
         <span>›</span>
-        <a href="../delivery-areas.html" style="color:var(--color-text-muted);text-decoration:none">Delivery Areas</a>
+        <a href="/delivery-areas" style="color:var(--color-text-muted);text-decoration:none">Delivery Areas</a>
         <span>›</span>
         <a id="bc-region" href="#" style="color:var(--color-text-muted);text-decoration:none"></a>
         <span>›</span>
@@ -152,8 +155,8 @@
         Part of our <span data-region-name></span> delivery area.
       </p>
       <div style="display:flex;gap:var(--sp-4);margin-top:var(--sp-6);flex-wrap:wrap">
-        <a href="../products.html" class="btn btn--primary">Shop Now</a>
-        <a href="../bulk-quote.html" class="btn btn--outline">Get a Bulk Quote</a>
+        <a href="/products" class="btn btn--primary">Shop Now</a>
+        <a href="/bulk-quote" class="btn btn--outline">Get a Bulk Quote</a>
       </div>
     </div>
   </div>
@@ -214,25 +217,25 @@
 
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--sp-4)">
 
-        <a href="../products.html?cat=pebbles" style="display:block;padding:var(--sp-5);background:var(--color-white);border:1px solid var(--color-border);border-radius:var(--radius-md);text-decoration:none;transition:box-shadow .2s">
+        <a href="/products?cat=pebbles" style="display:block;padding:var(--sp-5);background:var(--color-white);border:1px solid var(--color-border);border-radius:var(--radius-md);text-decoration:none;transition:box-shadow .2s">
           <div style="font-size:1.6rem;margin-bottom:var(--sp-2)">⚪</div>
           <div style="font-weight:var(--weight-medium);color:var(--color-charcoal);margin-bottom:var(--sp-1)">Decorative Pebbles</div>
           <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Snow white, black polished, lava &amp; more</div>
         </a>
 
-        <a href="../products.html?cat=soil" style="display:block;padding:var(--sp-5);background:var(--color-white);border:1px solid var(--color-border);border-radius:var(--radius-md);text-decoration:none;transition:box-shadow .2s">
+        <a href="/products?cat=soil" style="display:block;padding:var(--sp-5);background:var(--color-white);border:1px solid var(--color-border);border-radius:var(--radius-md);text-decoration:none;transition:box-shadow .2s">
           <div style="font-size:1.6rem;margin-bottom:var(--sp-2)">🪴</div>
           <div style="font-weight:var(--weight-medium);color:var(--color-charcoal);margin-bottom:var(--sp-1)">Garden Soil</div>
           <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Premium blends, vegie mix, native &amp; raised bed</div>
         </a>
 
-        <a href="../products.html?cat=sand" style="display:block;padding:var(--sp-5);background:var(--color-white);border:1px solid var(--color-border);border-radius:var(--radius-md);text-decoration:none;transition:box-shadow .2s">
+        <a href="/products?cat=sand" style="display:block;padding:var(--sp-5);background:var(--color-white);border:1px solid var(--color-border);border-radius:var(--radius-md);text-decoration:none;transition:box-shadow .2s">
           <div style="font-size:1.6rem;margin-bottom:var(--sp-2)">🏖️</div>
           <div style="font-weight:var(--weight-medium);color:var(--color-charcoal);margin-bottom:var(--sp-1)">Sand</div>
           <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Washed, coarse &amp; play sand by the tonne</div>
         </a>
 
-        <a href="../bulk-quote.html" style="display:block;padding:var(--sp-5);background:var(--color-bg-bulk);border:1px solid transparent;border-radius:var(--radius-md);text-decoration:none;transition:box-shadow .2s">
+        <a href="/bulk-quote" style="display:block;padding:var(--sp-5);background:var(--color-bg-bulk);border:1px solid transparent;border-radius:var(--radius-md);text-decoration:none;transition:box-shadow .2s">
           <div style="font-size:1.6rem;margin-bottom:var(--sp-2)">🚛</div>
           <div style="font-weight:var(--weight-medium);color:var(--color-white);margin-bottom:var(--sp-1)">Bulk Materials</div>
           <div style="font-size:var(--text-sm);color:rgba(255,255,255,0.65)">Soil, sand &amp; gravel by the m³</div>
@@ -270,7 +273,7 @@
         <!-- Populated by delivery.js -->
       </div>
       <p style="margin-top:var(--sp-6)">
-        <a href="../delivery-areas.html" style="color:var(--color-sage);font-size:var(--text-sm)">← View all delivery areas</a>
+        <a href="/delivery-areas" style="color:var(--color-sage);font-size:var(--text-sm)">← View all delivery areas</a>
       </p>
     </div>
   </section>
@@ -309,7 +312,7 @@
             <svg class="accordion-trigger__icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
           </button>
           <div class="accordion-content"><div class="accordion-body">
-            Yes — bulk soil, mulch, sand and gravel by the cubic metre can be delivered to <span class="faq-suburb"></span> by tipper truck. Pricing for bulk deliveries is calculated separately based on your address and order size. Use our <a href="../bulk-quote.html" style="color:var(--color-sage)">bulk quote form</a> to get a price.
+            Yes — bulk soil, mulch, sand and gravel by the cubic metre can be delivered to <span class="faq-suburb"></span> by tipper truck. Pricing for bulk deliveries is calculated separately based on your address and order size. Use our <a href="/bulk-quote" style="color:var(--color-sage)">bulk quote form</a> to get a price.
           </div></div>
         </div>
 
@@ -345,8 +348,8 @@
       </h2>
       <p style="color:rgba(255,255,255,0.7);margin-bottom:var(--sp-8);max-width:480px;margin-left:auto;margin-right:auto">Shop our full range online and have it delivered to your door.</p>
       <div style="display:flex;gap:var(--sp-4);justify-content:center;flex-wrap:wrap">
-        <a href="../products.html" class="btn btn--primary">Shop All Products</a>
-        <a href="../bulk-quote.html" class="btn btn--outline-light">Get a Bulk Quote</a>
+        <a href="/products" class="btn btn--primary">Shop All Products</a>
+        <a href="/bulk-quote" class="btn btn--outline-light">Get a Bulk Quote</a>
       </div>
     </div>
   </section>
@@ -364,25 +367,25 @@
       </div>
       <div class="footer-col">
         <h4 class="footer-heading">Products</h4>
-        <a href="../products.html?cat=pebbles">Decorative Pebbles</a>
-        <a href="../products.html?cat=soil">Soil &amp; Turf</a>
-        <a href="../products.html?cat=mulch">Mulch &amp; Bark</a>
-        <a href="../products.html?cat=sand">Sand</a>
-        <a href="../products.html">View All Products</a>
+        <a href="/products?cat=pebbles">Decorative Pebbles</a>
+        <a href="/products?cat=soil">Soil &amp; Turf</a>
+        <a href="/products?cat=mulch">Mulch &amp; Bark</a>
+        <a href="/products?cat=sand">Sand</a>
+        <a href="/products">View All Products</a>
       </div>
       <div class="footer-col">
         <h4 class="footer-heading">Information</h4>
-        <a href="../delivery-areas.html">Delivery Areas</a>
-        <a href="../trade.html">Trade Accounts</a>
-        <a href="../faq.html">FAQs</a>
-        <a href="../about.html">About Us</a>
-        <a href="../contact.html">Contact</a>
+        <a href="/delivery-areas">Delivery Areas</a>
+        <a href="/trade">Trade Accounts</a>
+        <a href="/faq">FAQs</a>
+        <a href="/about">About Us</a>
+        <a href="/contact">Contact</a>
       </div>
       <div class="footer-col">
         <h4 class="footer-heading">Contact</h4>
         <a href="tel:1300872267">1300 872 267</a>
         <p style="font-size:var(--text-sm);color:var(--color-footer-muted)">Mon–Fri 7am–5pm<br>Sat 8am–1pm</p>
-        <a href="../contact.html" class="btn btn--outline-light" style="margin-top:var(--sp-4);display:inline-block">Get in Touch</a>
+        <a href="/contact" class="btn btn--outline-light" style="margin-top:var(--sp-4);display:inline-block">Get in Touch</a>
       </div>
     </div>
     <div class="footer-bottom">
@@ -403,7 +406,7 @@
   <div class="cart-drawer__body" id="cart-body"><p class="cart-empty">Your cart is empty.</p></div>
   <div class="cart-drawer__footer" id="cart-footer" style="display:none">
     <div class="cart-subtotal"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
-    <a href="../cart.html" class="btn btn--primary btn--full">View Cart &amp; Checkout</a>
+    <a href="/cart" class="btn btn--primary btn--full">View Cart &amp; Checkout</a>
   </div>
 </div>
 

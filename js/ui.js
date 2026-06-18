@@ -256,3 +256,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('cart:update', renderCartPage);
   }
 });
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
