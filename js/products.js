@@ -60,8 +60,49 @@ function stockBadgeHtml(productId) {
   const inv = stockMap[productId];
   if (!inv) return '';
   if (inv.stock === 0) return `<span class="stock-badge stock-badge--out">Out of stock</span>`;
-  if (inv.stock <= inv.low_stock_threshold) return `<span class="stock-badge stock-badge--low">Low stock</span>`;
-  return `<span class="stock-badge stock-badge--in">In stock</span>`;
+  if (inv.stock <= inv.low_stock_threshold) return `<span class="stock-badge stock-badge--low">Only ${inv.stock} left!</span>`;
+  return `<span class="stock-badge stock-badge--in">${inv.stock} available</span>`;
+}
+
+function applyStockToBadgeEl(inv) {
+  const badge = document.getElementById('stock-badge');
+  if (!badge) return;
+  if (inv.stock === 0) {
+    badge.className = 'stock-badge stock-badge--out';
+    badge.textContent = 'Out of stock';
+  } else if (inv.stock <= inv.low_stock_threshold) {
+    badge.className = 'stock-badge stock-badge--low';
+    badge.textContent = `Only ${inv.stock} left!`;
+  } else {
+    badge.className = 'stock-badge stock-badge--in';
+    badge.textContent = `${inv.stock} available`;
+  }
+}
+
+async function initRealtimeStock(productId) {
+  try {
+    const cfg = await fetch('/api/public-config').then(r => r.json());
+    if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) return;
+    const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+    client
+      .channel(`inventory-${productId}`)
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'inventory',
+        filter: `product_id=eq.${productId}`,
+      }, (payload) => {
+        const inv = payload.new;
+        stockMap[productId] = inv;
+        applyStockToBadgeEl(inv);
+        const addBtn = document.getElementById('detail-add-btn');
+        if (addBtn && inv.stock === 0) {
+          addBtn.textContent = 'Out of Stock';
+          addBtn.disabled = true;
+        }
+      })
+      .subscribe();
+  } catch { /* realtime is non-critical */ }
 }
 
 // Returns the .webp sibling of an /images/products/*.jpg path; falls through
@@ -207,7 +248,7 @@ async function renderProductDetail() {
 
   if (!id) { window.location.href = '/products'; return; }
 
-  await loadProducts();
+  await Promise.all([loadProducts(), loadStock()]);
   const product = getProductById(id);
 
   if (!product) { window.location.href = 'products.html'; return; }
@@ -302,6 +343,20 @@ async function renderProductDetail() {
       };
     }
   }
+
+  // Stock badge on detail page
+  const inv = stockMap[id];
+  if (inv) applyStockToBadgeEl(inv);
+
+  // Block Add to Cart if inventory says zero (even if in_stock boolean is true)
+  const addBtn2 = document.getElementById('detail-add-btn');
+  if (addBtn2 && inv && inv.stock === 0) {
+    addBtn2.textContent = 'Out of Stock';
+    addBtn2.disabled = true;
+  }
+
+  // Live updates when stock changes in the CRM
+  initRealtimeStock(id);
 
   // Related products
   renderRelatedProducts(product);

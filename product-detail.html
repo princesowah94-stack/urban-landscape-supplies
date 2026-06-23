@@ -151,7 +151,7 @@
 
         <!-- Stock + SKU -->
         <div class="detail-meta">
-          <span class="stock-badge stock-badge--in">In Stock</span>
+          <span class="stock-badge stock-badge--in" id="stock-badge">In Stock</span>
           <span>SKU: <span id="detail-sku"></span></span>
         </div>
 
@@ -197,6 +197,7 @@
 </aside>
 <div class="toast" id="toast"><span class="toast__icon">✓</span><span id="toast-msg"></span></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/products.js"></script>
 <script src="js/ui.js"></script>
