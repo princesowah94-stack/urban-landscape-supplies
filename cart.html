@@ -8,7 +8,7 @@
   <meta name="robots" content="noindex" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap">
   <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/components.css" />
@@ -95,12 +95,14 @@
   <script defer src="/js/analytics.js"></script>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to content</a>
+
 
 <div class="utility-bar">
   <div class="container">
     <div class="utility-bar__inner">
       <div class="utility-bar__msg">
-        <span>🚚 Free delivery Sydney metro over $150</span>
+        <span><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true" style="vertical-align:-2px;margin-right:5px"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zm10 0a2 2 0 11-4 0 2 2 0 014 0zm1-7V7l-3-3H5a2 2 0 00-2 2v9h2m14 0h2M7 11H5m2 0h6m4 0v3"/></svg>Free delivery Sydney metro over $150</span>
         <span class="sep"></span>
         <span class="hide-mobile">🔒 Secure Square Payments</span>
       </div>
@@ -115,8 +117,8 @@
 <header class="site-header" id="site-header">
   <div class="container">
     <div class="header-inner">
-      <a href="index.html" class="site-logo" aria-label="Urban Landscape Supplies — Home">
-        <img src="images/brand/mark-dark.png" alt="" class="site-logo__mark" width="48" height="33" loading="eager" fetchpriority="high" />
+      <a href="/" class="site-logo" aria-label="Urban Landscape Supplies — Home">
+        <img src="images/brand/mark-dark.png" alt="" class="site-logo__mark" width="48" height="33" loading="eager" />
         <div class="site-logo__wordmark">
           Urban Landscape
           <span class="site-logo__sub">Supplies</span>
@@ -128,18 +130,19 @@
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4l4 4 4-4"/></svg>
           </span>
           <div class="nav-dropdown">
-            <a href="products.html?cat=pebbles">Decorative Pebbles</a>
-            <a href="products.html?cat=soil">Soil &amp; Turf</a>
-            <a href="products.html?cat=mulch">Mulch &amp; Bark</a>
-            <a href="products.html?cat=sand">Sand</a>
+            <a href="/products?cat=pebbles">Decorative Pebbles</a>
+            <a href="/products?cat=soil">Soil &amp; Turf</a>
+            <a href="/products?cat=mulch">Mulch &amp; Bark</a>
+            <a href="/products?cat=sand">Sand</a>
             <div class="nav-dropdown__divider"></div>
-            <a href="products.html" class="nav-dropdown__cta">View All →</a>
+            <a href="/products" class="nav-dropdown__cta">View All →</a>
           </div>
         </div>
-        <a href="delivery-areas.html" class="nav-link">Delivery</a>
-        <a href="trade.html" class="nav-link">Trade</a>
-        <a href="about.html" class="nav-link">About</a>
-        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="/delivery-areas" class="nav-link">Delivery</a>
+        <a href="/trade" class="nav-link">Trade</a>
+        <a href="/about" class="nav-link">About</a>
+        <a href="/faq" class="nav-link">FAQ</a>
+        <a href="/contact" class="nav-link">Contact</a>
       </nav>
       <div class="header-actions">
         <button class="header-cart-btn active" id="cart-toggle" style="background:var(--color-gray-100)">
@@ -154,11 +157,11 @@
 
 <nav class="mobile-nav" id="mobile-nav">
   <div class="mobile-nav__section">
-    <a href="products.html" class="mobile-nav__link">Products</a>
-    <a href="delivery-areas.html" class="mobile-nav__link">Delivery Areas</a>
-    <a href="trade.html" class="mobile-nav__link">Trade</a>
-    <a href="about.html" class="mobile-nav__link">About</a>
-    <a href="contact.html" class="mobile-nav__link">Contact</a>
+    <a href="/products" class="mobile-nav__link">Products</a>
+    <a href="/delivery-areas" class="mobile-nav__link">Delivery Areas</a>
+    <a href="/trade" class="mobile-nav__link">Trade</a>
+    <a href="/about" class="mobile-nav__link">About</a>
+    <a href="/contact" class="mobile-nav__link">Contact</a>
   </div>
 </nav>
 <div class="overlay" id="overlay"></div>
@@ -167,7 +170,7 @@
 <div style="background:var(--color-gray-50);border-bottom:1px solid var(--color-border);padding:var(--sp-3) 0">
   <div class="container">
     <nav class="breadcrumb">
-      <span class="breadcrumb__item"><a href="index.html">Home</a></span>
+      <span class="breadcrumb__item"><a href="/">Home</a></span>
       <span class="breadcrumb__sep">›</span>
       <span class="breadcrumb__item breadcrumb__item--current">Cart</span>
     </nav>
@@ -208,7 +211,7 @@
         </div>
 
         <div style="margin-top:var(--sp-6);padding-top:var(--sp-6);border-top:1px solid var(--color-border);display:flex;gap:var(--sp-4);flex-wrap:wrap">
-          <a href="products.html" class="btn btn--secondary">← Continue Shopping</a>
+          <a href="/products" class="btn btn--secondary">← Continue Shopping</a>
         </div>
 
         <!-- Bulk Quote Promo -->
@@ -219,7 +222,7 @@
               <p style="font-weight:700;font-size:var(--text-sm);color:var(--color-text-primary)">Also ordering bulk materials?</p>
               <p style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-top:2px">Sand, soil and mulch by the cubic metre are ordered separately via our bulk quote system.</p>
             </div>
-            <a href="bulk-quote.html" class="btn btn--bulk btn--sm" style="flex-shrink:0;white-space:nowrap">Bulk Quote →</a>
+            <a href="/bulk-quote" class="btn btn--bulk btn--sm" style="flex-shrink:0;white-space:nowrap">Bulk Quote →</a>
           </div>
         </div>
       </div>
@@ -241,7 +244,7 @@
           <span id="cart-page-total">$0.00</span>
         </div>
 
-        <a href="checkout.html" class="btn btn--primary btn--full btn--lg" style="margin-top:var(--sp-5)" id="cart-checkout-btn">
+        <a href="/checkout" class="btn btn--primary btn--full btn--lg" style="margin-top:var(--sp-5)" id="cart-checkout-btn">
           Proceed to Checkout
         </a>
 
@@ -269,9 +272,9 @@
     <div class="footer-lower" style="border-top:none;padding:var(--sp-6) 0">
       <p class="footer-lower__copy">© 2025 Urban Landscape Supplies Pty Ltd.</p>
       <div class="footer-lower__links">
-        <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
-        <a href="faq.html#delivery">Delivery Policy</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/faq#delivery">Delivery Policy</a>
       </div>
     </div>
   </div>
@@ -290,7 +293,7 @@
       <span class="cart-subtotal__label">Subtotal</span>
       <span class="cart-subtotal__amount" id="cart-subtotal">$0.00</span>
     </div>
-    <a href="checkout.html" class="btn btn--primary btn--full" id="drawer-checkout-btn">Checkout</a>
+    <a href="/checkout" class="btn btn--primary btn--full" id="drawer-checkout-btn">Checkout</a>
   </div>
 </aside>
 
