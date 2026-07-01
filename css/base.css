@@ -212,6 +212,9 @@ strong {
 .prose ul { list-style: disc; padding-left: var(--sp-6); margin-bottom: var(--sp-5); }
 .prose ul li { margin-bottom: var(--sp-2); line-height: var(--leading-normal); }
 
+/* Inline links within body text must be distinguishable beyond colour alone */
+p a, li a, td a { text-decoration: underline; }
+
 /* ─── BADGE ──────────────────────────────────────────────────── */
 .badge {
   display: inline-flex;

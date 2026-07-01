@@ -17,7 +17,8 @@
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap"></noscript>
   <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/components.css" />
@@ -103,9 +104,10 @@
   </div></div>
 </header>
 <div class="overlay" id="overlay"></div>
+<main id="main-content">
 
 <!-- HERO -->
-<div id="main-content" style="background:var(--color-gray-100);border-bottom:1px solid var(--color-border);padding:var(--sp-20) 0">
+<div style="background:var(--color-gray-100);border-bottom:1px solid var(--color-border);padding:var(--sp-20) 0">
   <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-16);align-items:center">
     <div>
       <p class="eyebrow eyebrow--sage" style="margin-bottom:var(--sp-3)">Our Story</p>
@@ -114,7 +116,10 @@
       <p style="font-size:var(--text-base);color:var(--color-text-secondary);line-height:var(--leading-normal)">Family ownership means something to us. Every product we stock, every delivery we make, and every customer we serve reflects our commitment to quality, reliability and genuine service. We sit at the same Wetherill Park address as our sister business, Urban Pots — together covering Sydney's full landscape and planter supply range.</p>
     </div>
     <div>
-      <img src="images/hero/hero-about.jpg" alt="Urban Landscape Supplies yard — Sydney NSW" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius-xl);box-shadow:var(--shadow-xl)" onerror="this.style.background='var(--color-gray-200)'" />
+      <picture>
+        <source type="image/avif" srcset="images/hero/hero-about.avif" />
+        <img src="images/hero/hero-about.jpg" alt="Urban Landscape Supplies yard — Sydney NSW" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius-xl);box-shadow:var(--shadow-xl)" width="800" height="600" loading="lazy" onerror="this.style.background='var(--color-gray-200)'" />
+      </picture>
     </div>
   </div>
 </div>
@@ -195,6 +200,7 @@
   </div>
 </section>
 
+</main>
 <footer class="site-footer">
   <div class="container">
     <div class="footer-upper">
