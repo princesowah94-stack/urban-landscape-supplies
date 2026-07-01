@@ -560,6 +560,10 @@
 
       const { referenceId } = await response.json();
 
+      if (typeof window.trackEvent === 'function') {
+        window.trackEvent('generate_lead', { method: 'bulk_quote_form' });
+      }
+
       // Clear bulk quote
       localStorage.removeItem('uls_bulk_quote');
       syncBulkQuoteUI?.();

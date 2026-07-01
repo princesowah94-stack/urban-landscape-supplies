@@ -228,6 +228,9 @@
       });
     } catch {}
 
+    if (typeof window.trackEvent === 'function') {
+      window.trackEvent('generate_lead', { method: 'contact_form' });
+    }
     document.getElementById('contact-form').style.display = 'none';
     document.getElementById('contact-success').style.display = 'block';
   });

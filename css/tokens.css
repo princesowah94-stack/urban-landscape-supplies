@@ -18,7 +18,7 @@
   --color-charcoal:     #222222;
   --color-gray-900:     #333333;
   --color-gray-700:     #555555;
-  --color-gray-500:     #878787;
+  --color-gray-500:     #767676;
   --color-gray-300:     #c4c4c4;
   --color-gray-200:     #e0ddd8;
   --color-gray-100:     #f4f2ef;
@@ -31,7 +31,7 @@
   --color-text-muted:     var(--color-gray-500);
   --color-text-inverse:   var(--color-white);
 
-  --color-bg-page:        var(--color-white);
+  --color-bg-page:        var(--color-gray-50);
   --color-bg-subtle:      var(--color-gray-100);
   --color-bg-card:        var(--color-white);
   --color-bg-bulk:        #2c2e20;
@@ -44,7 +44,7 @@
   --color-cta-bg-hover:   var(--color-sage-light);
   --color-cta-bg-pressed: var(--color-sage-dark);
 
-  --color-price:          var(--color-taupe);
+  --color-price:          #7a5c3d;
   --color-badge-bg:       var(--color-taupe-pale);
   --color-badge-text:     var(--color-taupe);
 
@@ -57,7 +57,7 @@
   --color-utility-text:   rgba(255,255,255,0.85);
 
   /* ─── TYPOGRAPHY ────────────────────────────────────────── */
-  --font-heading: 'Times New Roman', Georgia, 'Times', serif;
+  --font-heading: 'Lora', Georgia, 'Times', serif;
   --font-body:    'Roboto Condensed', 'Arial Narrow', Arial, sans-serif;
 
   /* Fluid type scale */

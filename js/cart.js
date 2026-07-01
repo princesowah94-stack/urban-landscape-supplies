@@ -42,6 +42,15 @@ function addToCart(item) {
   }
 
   saveCart(cart);
+
+  if (typeof window.trackEvent === 'function') {
+    window.trackEvent('add_to_cart', {
+      currency: 'AUD',
+      value: parseFloat(item.price) * (parseInt(item.quantity, 10) || 1),
+      items: [{ item_id: item.id, item_name: item.name, price: parseFloat(item.price), quantity: parseInt(item.quantity, 10) || 1 }]
+    });
+  }
+
   showToast(`"${item.name}" added to cart`);
   openCartDrawer();
 }
@@ -120,7 +129,7 @@ function renderDrawerItems(cart) {
         <div class="empty-state__icon">🛒</div>
         <h3 class="empty-state__title">Your cart is empty</h3>
         <p class="empty-state__text">Browse our products and add something to get started.</p>
-        <a href="products.html" class="btn btn--primary" style="margin-top:var(--sp-4)" onclick="closeCartDrawer()">Shop Now</a>
+        <a href="/products" class="btn btn--primary" style="margin-top:var(--sp-4)" onclick="closeCartDrawer()">Shop Now</a>
       </div>
     `;
     return;
@@ -211,6 +220,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // Cart toggle button
   document.getElementById('cart-toggle')?.addEventListener('click', openCartDrawer);
   document.getElementById('cart-close')?.addEventListener('click', closeCartDrawer);
+
+  // begin_checkout — fired when user navigates from cart drawer to checkout
+  document.getElementById('drawer-checkout-btn')?.addEventListener('click', () => {
+    const cart = getCart();
+    if (cart.length === 0) return;
+    if (typeof window.trackEvent === 'function') {
+      window.trackEvent('begin_checkout', {
+        currency: 'AUD',
+        value: cartTotal(cart),
+        items: cart.map(i => ({ item_id: i.id, item_name: i.name, price: i.price, quantity: i.quantity }))
+      });
+    }
+  });
 
   // Overlay click closes drawer
   document.getElementById('overlay')?.addEventListener('click', () => {

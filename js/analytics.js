@@ -29,3 +29,16 @@
     anonymize_ip: true,
   });
 })();
+
+/**
+ * Fire a GA4 event. Safe to call before gtag.js has loaded — events queue in
+ * dataLayer and replay automatically.
+ *
+ * @param {string} eventName  GA4 event name (snake_case)
+ * @param {Object} params     Event parameters
+ */
+window.trackEvent = function trackEvent(eventName, params) {
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', eventName, params || {});
+  }
+};

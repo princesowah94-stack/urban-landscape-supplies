@@ -241,6 +241,22 @@ strong {
   color: #c0392b;
 }
 
+/* ─── SKIP LINK ──────────────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  background: var(--color-sage-dark);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  font-size: var(--text-sm);
+  font-family: var(--font-body);
+  z-index: 1000;
+  text-decoration: none;
+}
+.skip-link:focus { top: 0; }
+
 /* ─── RESPONSIVE VISIBILITY ──────────────────────────────────── */
 @media (max-width: 767px) {
   .hide-mobile { display: none !important; }
@@ -250,4 +266,14 @@ strong {
 
 @media (min-width: 768px) {
   .hide-desktop { display: none !important; }
+}
+
+/* ─── REDUCED MOTION ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
