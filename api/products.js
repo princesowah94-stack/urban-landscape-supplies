@@ -60,6 +60,16 @@ export default async function handler(req, res) {
   return res.status(200).json({ products: (data || []).map(toClientShape) })
 }
 
+// Bag size options for decorative pebbles — maintained here since Supabase
+// doesn't have a bag_sizes column. Keyed by product id.
+const BAG_SIZES = {
+  'pebbles-snow-white':        [{ id: '20kg', label: '20kg Bag', price: 18,     unit: 'per 20kg bag' }, { id: 'bulk', label: '1 Tonne Bulk Bag', price: 800,    unit: 'per 1 tonne bulk bag' }],
+  'pebbles-crushed-snow-white':[{ id: '20kg', label: '20kg Bag', price: 18,     unit: 'per 20kg bag' }, { id: 'bulk', label: '1 Tonne Bulk Bag', price: 1097.5, unit: 'per 1 tonne bulk bag' }],
+  'pebbles-charcoal-grey':     [{ id: '20kg', label: '20kg Bag', price: 22,     unit: 'per 20kg bag' }, { id: 'bulk', label: '1 Tonne Bulk Bag', price: 1000,   unit: 'per 1 tonne bulk bag' }],
+  'pebbles-charcoal-lava':     [{ id: '20kg', label: '20kg Bag', price: 22,     unit: 'per 20kg bag' }, { id: 'bulk', label: '1 Tonne Bulk Bag', price: 1000,   unit: 'per 1 tonne bulk bag' }],
+  'pebbles-red-lava':          [{ id: '20kg', label: '20kg Bag', price: 22,     unit: 'per 20kg bag' }, { id: 'bulk', label: '1 Tonne Bulk Bag', price: 1000,   unit: 'per 1 tonne bulk bag' }],
+}
+
 /**
  * Convert DB row to the same shape as data/products.json.
  * DB stores price in cents (integer); retail JS expects price in AUD dollars.
@@ -81,5 +91,6 @@ function toClientShape(row) {
     featured:      row.featured,
     inStock:       row.in_stock,
     sku:           row.sku || '',
+    bagSizes:      BAG_SIZES[row.id] || null,
   }
 }
