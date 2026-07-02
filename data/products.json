@@ -32,7 +32,11 @@
       "badge": "Bestseller",
       "featured": true,
       "inStock": true,
-      "sku": "ULS-PEB-001"
+      "sku": "ULS-PEB-001",
+      "bagSizes": [
+        { "id": "20kg", "label": "20kg Bag", "price": 18, "unit": "per 20kg bag" },
+        { "id": "bulk", "label": "1 Tonne Bulk Bag", "price": 800, "unit": "per 1 tonne bulk bag" }
+      ]
     },
     {
       "id": "pebbles-crushed-snow-white",
@@ -52,7 +56,11 @@
       "badge": null,
       "featured": false,
       "inStock": true,
-      "sku": "ULS-PEB-002"
+      "sku": "ULS-PEB-002",
+      "bagSizes": [
+        { "id": "20kg", "label": "20kg Bag", "price": 18, "unit": "per 20kg bag" },
+        { "id": "bulk", "label": "1 Tonne Bulk Bag", "price": 1097.5, "unit": "per 1 tonne bulk bag" }
+      ]
     },
     {
       "id": "pebbles-charcoal-grey",
@@ -72,7 +80,11 @@
       "badge": null,
       "featured": false,
       "inStock": true,
-      "sku": "ULS-PEB-004"
+      "sku": "ULS-PEB-004",
+      "bagSizes": [
+        { "id": "20kg", "label": "20kg Bag", "price": 22, "unit": "per 20kg bag" },
+        { "id": "bulk", "label": "1 Tonne Bulk Bag", "price": 1000, "unit": "per 1 tonne bulk bag" }
+      ]
     },
     {
       "id": "pebbles-charcoal-lava",
@@ -106,7 +118,11 @@
       "badge": null,
       "featured": true,
       "inStock": true,
-      "sku": "ULS-PEB-006"
+      "sku": "ULS-PEB-006",
+      "bagSizes": [
+        { "id": "20kg", "label": "20kg Bag", "price": 22, "unit": "per 20kg bag" },
+        { "id": "bulk", "label": "1 Tonne Bulk Bag", "price": 1000, "unit": "per 1 tonne bulk bag" }
+      ]
     },
     {
       "id": "pebbles-red-lava",
@@ -130,7 +146,11 @@
       "badge": null,
       "featured": false,
       "inStock": true,
-      "sku": "ULS-PEB-007"
+      "sku": "ULS-PEB-007",
+      "bagSizes": [
+        { "id": "20kg", "label": "20kg Bag", "price": 22, "unit": "per 20kg bag" },
+        { "id": "bulk", "label": "1 Tonne Bulk Bag", "price": 1000, "unit": "per 1 tonne bulk bag" }
+      ]
     },
     {
       "id": "mulch-hardwood-chip",

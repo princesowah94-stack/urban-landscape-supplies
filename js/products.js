@@ -306,9 +306,37 @@ async function renderProductDetail() {
     }
   }
 
-  // Packaging selector removed — every product is a single 1-tonne bulk bag SKU now.
+  // Bag size selector (20kg bag vs 1 Tonne Bulk Bag) — decorative pebbles only
   const pkgWrap = document.getElementById('detail-pkg-selector');
-  if (pkgWrap) pkgWrap.innerHTML = '';
+  if (pkgWrap) {
+    if (product.bagSizes && product.bagSizes.length > 0) {
+      let selectedBag = product.bagSizes.find(b => b.id === 'bulk') || product.bagSizes[0];
+
+      pkgWrap.innerHTML = `
+        <div class="size-selector">
+          <p class="size-selector__label">Bag Size</p>
+          <div class="size-selector__options">
+            ${product.bagSizes.map(b => `
+              <button class="size-btn${b.id === selectedBag.id ? ' size-btn--active' : ''}"
+                      data-bag-id="${b.id}">${b.label}</button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      pkgWrap.querySelectorAll('.size-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          selectedBag = product.bagSizes.find(b => b.id === btn.dataset.bagId);
+          pkgWrap.querySelectorAll('.size-btn').forEach(b => b.classList.remove('size-btn--active'));
+          btn.classList.add('size-btn--active');
+          setTextById('detail-price', `$${selectedBag.price.toFixed(2)}`);
+          setTextById('detail-unit', selectedBag.unit);
+        });
+      });
+      pkgWrap._getSelectedBagSize = () => selectedBag;
+    } else {
+      pkgWrap.innerHTML = '';
+    }
+  }
 
   // Features list
   const featList = document.getElementById('detail-features');
@@ -332,11 +360,21 @@ async function renderProductDetail() {
         const qty = parseInt(document.getElementById('detail-qty')?.value || '1', 10);
         const sizeWrap = document.getElementById('detail-size-selector');
         const selectedSize = sizeWrap?._getSelectedSize?.();
+        const pkgWrap = document.getElementById('detail-pkg-selector');
+        const selectedBag = pkgWrap?._getSelectedBagSize?.();
 
-        const baseId    = product.id + (selectedSize ? `-${selectedSize}` : '');
-        const baseName  = product.name + (selectedSize ? ` (${selectedSize})` : '');
+        const idParts = [product.id, selectedSize, selectedBag?.id].filter(Boolean);
+        const sizeLabel = [selectedSize, selectedBag?.label].filter(Boolean).join(', ');
+        const baseName = product.name + (sizeLabel ? ` (${sizeLabel})` : '');
 
-        addToCart({ id: baseId, name: baseName, price: product.price, unit: product.unit, image: product.image, quantity: qty });
+        addToCart({
+          id:       idParts.join('-'),
+          name:     baseName,
+          price:    selectedBag ? selectedBag.price : product.price,
+          unit:     selectedBag ? selectedBag.unit  : product.unit,
+          image:    product.image,
+          quantity: qty
+        });
         addBtn.textContent = '✓ Added to Cart';
         addBtn.classList.add('added');
         setTimeout(() => { addBtn.textContent = 'Add to Cart'; addBtn.classList.remove('added'); }, 1600);
