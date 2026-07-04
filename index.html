@@ -73,6 +73,21 @@
     }
   }
   </script>
+  <!-- WebSite schema with SearchAction -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://urbanlandscapesupplies.com.au/#website",
+    "url": "https://urbanlandscapesupplies.com.au",
+    "name": "Urban Landscape Supplies",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://urbanlandscapesupplies.com.au/products?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
   <!-- Favicons + PWA -->
   <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png" />
