@@ -434,6 +434,14 @@
   color: var(--color-text-muted);
 }
 
+.testimonial-card__source {
+  display: flex;
+  align-items: center;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--sp-2);
+}
+
 /* ─── SISTER BANNER ───────────────────────────────────────────── */
 .sister-banner {
   background: var(--color-taupe-pale);
