@@ -36,11 +36,14 @@ export async function POST(request) {
       auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
     });
 
+    const safeSubject = SUBJECT_LABELS[subject] || 'General';
+    const safeName    = String(name).replace(/[\r\n]/g, '');
+
     await transport.sendMail({
       from: `"${process.env.EMAIL_FROM_NAME || 'ULS Website'}" <${process.env.EMAIL_FROM}>`,
       to: process.env.EMAIL_TO,
       replyTo: safeReplyTo,
-      subject: `Website Contact [${SUBJECT_LABELS[subject] || subject || 'General'}] — ${name}`,
+      subject: `Website Contact [${safeSubject}] — ${safeName}`,
       text: [
         `Name:    ${name}`,
         `Email:   ${email}`,

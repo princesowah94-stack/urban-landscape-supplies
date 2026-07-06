@@ -3,6 +3,8 @@
  * calls /api/create-checkout → redirects to Square hosted checkout
  */
 
+const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+
 document.addEventListener('DOMContentLoaded', () => {
   const cart = getCart?.() || [];
   if (cart.length === 0) { window.location.href = 'cart.html'; return; }
@@ -25,22 +27,22 @@ function renderCheckoutSummary(cart) {
     <div class="checkout-line-item">
       <div class="checkout-line-item__img-wrap">
         <picture>
-          <source type="image/webp" srcset="${(item.image || '').replace(/\.jpe?g$/i, '.webp')}" />
+          <source type="image/webp" srcset="${esc((item.image || '').replace(/\.jpe?g$/i, '.webp'))}" />
           <img
-            src="${item.image}"
-            alt="${item.name}"
+            src="${esc(item.image)}"
+            alt="${esc(item.name)}"
             class="checkout-line-item__img"
             loading="lazy"
             onerror="this.src='images/products/placeholder.jpg'"
           />
         </picture>
-        <span class="checkout-line-item__qty">${item.quantity}</span>
+        <span class="checkout-line-item__qty">${parseInt(item.quantity, 10)}</span>
       </div>
       <div style="flex:1">
-        <p style="font-size:var(--text-sm);font-weight:600;color:var(--color-text-primary)">${item.name}</p>
-        <p style="font-size:var(--text-xs);color:var(--color-text-muted)">${item.unit}</p>
+        <p style="font-size:var(--text-sm);font-weight:600;color:var(--color-text-primary)">${esc(item.name)}</p>
+        <p style="font-size:var(--text-xs);color:var(--color-text-muted)">${esc(item.unit)}</p>
       </div>
-      <span style="font-size:var(--text-sm);font-weight:700;color:var(--color-price)">$${(item.price * item.quantity).toFixed(2)}</span>
+      <span style="font-size:var(--text-sm);font-weight:700;color:var(--color-price)">$${(parseFloat(item.price) * parseInt(item.quantity, 10)).toFixed(2)}</span>
     </div>
   `).join('');
 }

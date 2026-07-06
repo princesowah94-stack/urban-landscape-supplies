@@ -6,13 +6,10 @@ import { supabase } from './_supabase.js';
 const require = createRequire(import.meta.url);
 
 // Load product prices server-side to prevent client-side price manipulation.
-let productPrices = {};
-try {
-  const data = require('../data/products.json');
-  data.products.forEach(p => { productPrices[p.id] = p.price; });
-} catch (e) {
-  console.warn('Could not load products.json:', e.message);
-}
+// Hard failure at cold start is intentional — surfaces immediately in Vercel logs.
+const _productData = require('../data/products.json');
+const productPrices = {};
+_productData.products.forEach(p => { productPrices[p.id] = p.price; });
 
 const EXPRESS_DELIVERY_CENTS = parseInt(process.env.EXPRESS_DELIVERY_CENTS || '1500', 10);
 

@@ -4,6 +4,8 @@
 
 const CART_KEY = 'uls_cart';
 
+const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+
 // ─── STORAGE ────────────────────────────────────────────────────
 function getCart() {
   try {
@@ -136,48 +138,75 @@ function renderDrawerItems(cart) {
   }
 
   container.innerHTML = cart.map(item => `
-    <div class="cart-item" data-id="${item.id}">
+    <div class="cart-item" data-id="${esc(item.id)}">
       <picture>
-        <source type="image/webp" srcset="${(item.image || '').replace(/\.jpe?g$/i, '.webp')}" />
+        <source type="image/webp" srcset="${esc((item.image || '').replace(/\.jpe?g$/i, '.webp'))}" />
         <img
-          src="${item.image}"
-          alt="${item.name}"
+          src="${esc(item.image)}"
+          alt="${esc(item.name)}"
           class="cart-item__img"
           loading="lazy"
           onerror="this.src='images/products/placeholder.jpg'"
         />
       </picture>
       <div>
-        <p class="cart-item__name">${item.name}</p>
-        <p class="cart-item__meta">${item.unit}</p>
+        <p class="cart-item__name">${esc(item.name)}</p>
+        <p class="cart-item__meta">${esc(item.unit)}</p>
         <div class="qty-stepper">
-          <button class="qty-stepper__btn" onclick="updateCartQty('${item.id}', ${item.quantity - 1})" aria-label="Decrease quantity">−</button>
-          <input class="qty-stepper__val" type="number" value="${item.quantity}" min="1"
-            onchange="updateCartQty('${item.id}', this.value)"
+          <button class="qty-stepper__btn" onclick="updateCartQty(${JSON.stringify(item.id)}, ${parseInt(item.quantity, 10) - 1})" aria-label="Decrease quantity">−</button>
+          <input class="qty-stepper__val" type="number" value="${parseInt(item.quantity, 10)}" min="1"
+            onchange="updateCartQty(${JSON.stringify(item.id)}, this.value)"
             aria-label="Quantity"
           />
-          <button class="qty-stepper__btn" onclick="updateCartQty('${item.id}', ${item.quantity + 1})" aria-label="Increase quantity">+</button>
+          <button class="qty-stepper__btn" onclick="updateCartQty(${JSON.stringify(item.id)}, ${parseInt(item.quantity, 10) + 1})" aria-label="Increase quantity">+</button>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:var(--sp-2)">
-        <span class="cart-item__price">${formatPrice(item.price * item.quantity)}</span>
-        <button class="cart-item__remove" onclick="removeFromCart('${item.id}')" aria-label="Remove ${item.name}">×</button>
+        <span class="cart-item__price">${formatPrice(parseFloat(item.price) * parseInt(item.quantity, 10))}</span>
+        <button class="cart-item__remove" onclick="removeFromCart(${JSON.stringify(item.id)})" aria-label="Remove ${esc(item.name)}">×</button>
       </div>
     </div>
   `).join('');
 }
 
 // ─── DRAWER OPEN/CLOSE ──────────────────────────────────────────
-function openCartDrawer() {
-  document.getElementById('cart-drawer')?.classList.add('open');
+let _cartTrigger = null;
+let _trapHandler = null;
+
+function getFocusable(el) {
+  return [...el.querySelectorAll('a[href],button:not([disabled]),input,[tabindex]:not([tabindex="-1"])')];
+}
+
+function trapFocus(e, drawer) {
+  if (e.key === 'Escape') { closeCartDrawer(); return; }
+  if (e.key !== 'Tab') return;
+  const els = getFocusable(drawer);
+  if (!els.length) return;
+  const first = els[0], last = els[els.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+}
+
+function openCartDrawer(triggerEl) {
+  _cartTrigger = triggerEl || document.getElementById('cart-toggle');
+  const drawer = document.getElementById('cart-drawer');
+  drawer?.classList.add('open');
   document.getElementById('overlay')?.classList.add('active');
   document.body.style.overflow = 'hidden';
+  const focusable = getFocusable(drawer);
+  if (focusable.length) focusable[0].focus();
+  _trapHandler = (e) => trapFocus(e, drawer);
+  drawer?.addEventListener('keydown', _trapHandler);
 }
 
 function closeCartDrawer() {
-  document.getElementById('cart-drawer')?.classList.remove('open');
+  const drawer = document.getElementById('cart-drawer');
+  drawer?.classList.remove('open');
+  if (_trapHandler) { drawer?.removeEventListener('keydown', _trapHandler); _trapHandler = null; }
   document.getElementById('overlay')?.classList.remove('active');
   document.body.style.overflow = '';
+  _cartTrigger?.focus();
+  _cartTrigger = null;
 }
 
 // ─── TOAST ──────────────────────────────────────────────────────
@@ -218,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('cart:update', e => syncCartUI(e.detail.cart));
 
   // Cart toggle button
-  document.getElementById('cart-toggle')?.addEventListener('click', openCartDrawer);
+  document.getElementById('cart-toggle')?.addEventListener('click', e => openCartDrawer(e.currentTarget));
   document.getElementById('cart-close')?.addEventListener('click', closeCartDrawer);
 
   // begin_checkout — fired when user navigates from cart drawer to checkout

@@ -255,6 +255,28 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCartPage();
     window.addEventListener('cart:update', renderCartPage);
   }
+
+  // Products nav keyboard support
+  const navBtn = document.querySelector('.nav-link--btn[aria-haspopup]');
+  const navItem = navBtn?.closest('.nav-item');
+  if (navBtn && navItem) {
+    const toggle = (force) => {
+      const open = force ?? navBtn.getAttribute('aria-expanded') !== 'true';
+      navBtn.setAttribute('aria-expanded', String(open));
+      navItem.classList.toggle('nav-item--open', open);
+    };
+    navBtn.addEventListener('click', () => toggle());
+    navBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+      if (e.key === 'Escape') { toggle(false); navBtn.focus(); }
+    });
+    navItem.querySelector('.nav-dropdown')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { toggle(false); navBtn.focus(); }
+    });
+    document.addEventListener('click', (e) => {
+      if (!navItem.contains(e.target)) toggle(false);
+    });
+  }
 });
 
 if ('serviceWorker' in navigator) {

@@ -173,10 +173,19 @@
   z-index: var(--z-dropdown);
 }
 
-.nav-item:hover .nav-dropdown {
+.nav-item:hover .nav-dropdown,
+.nav-item--open .nav-dropdown {
   opacity: 1;
   pointer-events: all;
   transform: translateX(-50%) translateY(0);
+}
+
+.nav-item--open .nav-link svg { transform: rotate(180deg); }
+
+button.nav-link--btn {
+  background: none;
+  border: none;
+  font: inherit;
 }
 
 .nav-dropdown a {
