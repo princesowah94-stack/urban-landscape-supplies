@@ -4,7 +4,7 @@ export default function middleware(request) {
   const auth = request.headers.get('authorization') || '';
   const [type, encoded] = auth.split(' ');
   const valid = type === 'Basic' &&
-    Buffer.from(encoded || '', 'base64').toString().split(':')[1] === process.env.ADMIN_PASSWORD;
+    Buffer.from(encoded || '', 'base64').toString().split(':')[1] === process.env.BASIC_AUTH_PASSWORD;
 
   if (!valid) {
     return new Response('Unauthorized', {
