@@ -19,7 +19,7 @@
         "30-50mm",
         "50-80mm"
       ],
-      "image": "/images/products/pebbles-snow-white-lifestyle.jpg",
+      "image": "/images/products/pebbles-snow-white-1.jpg",
       "images": [
         "/images/products/pebbles-snow-white-1.jpg",
         "/images/products/pebbles-snow-white-2.jpg",
@@ -34,8 +34,18 @@
       "inStock": true,
       "sku": "ULS-PEB-001",
       "bagSizes": [
-        { "id": "20kg", "label": "20kg Bag", "price": 18, "unit": "per 20kg bag" },
-        { "id": "bulk", "label": "1 Tonne Bulk Bag", "price": 800, "unit": "per 1 tonne bulk bag" }
+        {
+          "id": "20kg",
+          "label": "20kg Bag",
+          "price": 18,
+          "unit": "per 20kg bag"
+        },
+        {
+          "id": "bulk",
+          "label": "1 Tonne Bulk Bag",
+          "price": 800,
+          "unit": "per 1 tonne bulk bag"
+        }
       ]
     },
     {
@@ -52,14 +62,24 @@
         "Drainage friendly",
         "10–20mm size"
       ],
-      "image": "/images/products/pebbles-crushed-snow-white-lifestyle.jpg",
+      "image": "/images/products/pebbles-crushed-snow-white-1.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
       "sku": "ULS-PEB-002",
       "bagSizes": [
-        { "id": "20kg", "label": "20kg Bag", "price": 18, "unit": "per 20kg bag" },
-        { "id": "bulk", "label": "1 Tonne Bulk Bag", "price": 1097.5, "unit": "per 1 tonne bulk bag" }
+        {
+          "id": "20kg",
+          "label": "20kg Bag",
+          "price": 18,
+          "unit": "per 20kg bag"
+        },
+        {
+          "id": "bulk",
+          "label": "1 Tonne Bulk Bag",
+          "price": 1097.5,
+          "unit": "per 1 tonne bulk bag"
+        }
       ]
     },
     {
@@ -76,14 +96,24 @@
         "Weather resistant",
         "Versatile application"
       ],
-      "image": "/images/products/pebbles-charcoal-grey-lifestyle.jpg",
+      "image": "/images/products/pebbles-charcoal-grey-1.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
       "sku": "ULS-PEB-004",
       "bagSizes": [
-        { "id": "20kg", "label": "20kg Bag", "price": 22, "unit": "per 20kg bag" },
-        { "id": "bulk", "label": "1 Tonne Bulk Bag", "price": 1000, "unit": "per 1 tonne bulk bag" }
+        {
+          "id": "20kg",
+          "label": "20kg Bag",
+          "price": 22,
+          "unit": "per 20kg bag"
+        },
+        {
+          "id": "bulk",
+          "label": "1 Tonne Bulk Bag",
+          "price": 1000,
+          "unit": "per 1 tonne bulk bag"
+        }
       ]
     },
     {
@@ -105,7 +135,7 @@
         "30-50mm",
         "50-70mm"
       ],
-      "image": "/images/products/pebbles-charcoal-lava-lifestyle.jpg",
+      "image": "/images/products/pebbles-charcoal-lava-1.jpg",
       "images": [
         "/images/products/pebbles-charcoal-lava-1.jpg",
         "/images/products/pebbles-charcoal-lava-2.jpg",
@@ -120,8 +150,18 @@
       "inStock": true,
       "sku": "ULS-PEB-006",
       "bagSizes": [
-        { "id": "20kg", "label": "20kg Bag", "price": 22, "unit": "per 20kg bag" },
-        { "id": "bulk", "label": "1 Tonne Bulk Bag", "price": 1000, "unit": "per 1 tonne bulk bag" }
+        {
+          "id": "20kg",
+          "label": "20kg Bag",
+          "price": 22,
+          "unit": "per 20kg bag"
+        },
+        {
+          "id": "bulk",
+          "label": "1 Tonne Bulk Bag",
+          "price": 1000,
+          "unit": "per 1 tonne bulk bag"
+        }
       ]
     },
     {
@@ -142,14 +182,24 @@
         "30-50mm"
       ],
       "supplier": "Waratah Supplies",
-      "image": "/images/products/pebbles-red-lava-lifestyle.jpg",
+      "image": "/images/products/pebbles-red-lava-1.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
       "sku": "ULS-PEB-007",
       "bagSizes": [
-        { "id": "20kg", "label": "20kg Bag", "price": 22, "unit": "per 20kg bag" },
-        { "id": "bulk", "label": "1 Tonne Bulk Bag", "price": 1000, "unit": "per 1 tonne bulk bag" }
+        {
+          "id": "20kg",
+          "label": "20kg Bag",
+          "price": 22,
+          "unit": "per 20kg bag"
+        },
+        {
+          "id": "bulk",
+          "label": "1 Tonne Bulk Bag",
+          "price": 1000,
+          "unit": "per 1 tonne bulk bag"
+        }
       ]
     },
     {
@@ -169,7 +219,7 @@
       "sizes": [
         "25-40mm"
       ],
-      "image": "/images/products/mulch-hardwood-chip-lifestyle.jpg",
+      "image": "/images/products/mulch-hardwood-chip.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -192,7 +242,7 @@
       "sizes": [
         "10-40mm"
       ],
-      "image": "/images/products/mulch-woodlands-blend-lifestyle.jpg",
+      "image": "/images/products/mulch-woodlands-blend.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -212,7 +262,7 @@
         "Moisture retention",
         "Domestic & commercial use"
       ],
-      "image": "/images/products/mulch-woodlands-natural-lifestyle.jpg",
+      "image": "/images/products/mulch-woodlands-natural.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -232,7 +282,7 @@
         "Weed suppression",
         "Moisture retention"
       ],
-      "image": "/images/products/mulch-nls-pine-bark-lifestyle.jpg",
+      "image": "/images/products/mulch-nls-pine-bark.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -252,7 +302,7 @@
         "Improves nutrient availability",
         "Revitalises lawns & garden beds"
       ],
-      "image": "/images/products/soil-nls-top-dressing-lifestyle.jpg",
+      "image": "/images/products/soil-nls-top-dressing.jpg",
       "badge": null,
       "featured": true,
       "inStock": true,
@@ -272,7 +322,7 @@
         "Strong nutrient retention",
         "Reliable moisture management"
       ],
-      "image": "/images/products/soil-planter-box-a-lifestyle.jpg",
+      "image": "/images/products/soil-planter-box-a.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -292,7 +342,7 @@
         "Improves drainage",
         "Suits Buffalo, Couch, Kikuyu, Zoysia"
       ],
-      "image": "/images/products/soil-premium-turf-underlay-lifestyle.jpg",
+      "image": "/images/products/soil-premium-turf-underlay.jpg",
       "badge": null,
       "featured": false,
       "inStock": true,
@@ -312,7 +362,7 @@
         "Tiling, rendering & paving",
         "Sandpit safe"
       ],
-      "image": "/images/products/sand-nls-sydney-lifestyle.jpg",
+      "image": "/images/products/sand-sydney-1.jpg",
       "badge": null,
       "featured": true,
       "inStock": true,
