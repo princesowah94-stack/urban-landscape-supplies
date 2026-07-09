@@ -248,6 +248,9 @@
           <textarea id="t-notes" class="form-textarea" placeholder="Tell us about your business and typical requirements..."></textarea>
         </div>
       </div>
+      <div id="trade-error" role="alert" style="display:none;padding:var(--sp-4) var(--sp-5);background:rgba(220,60,60,0.06);border:1px solid rgba(220,60,60,0.30);border-radius:var(--radius-md);color:var(--color-text-primary);font-size:var(--text-sm)">
+        Something went wrong and your application wasn't submitted. Please try again, or call us on <a href="tel:1300872267" style="color:var(--color-sage);font-weight:600">1300 872 267</a> and we'll set you up over the phone.
+      </div>
       <button type="submit" class="btn btn--dark btn--lg" id="trade-submit">Submit Application</button>
       <p style="font-size:var(--text-xs);color:var(--color-text-muted);text-align:center">
         By submitting you agree to our <a href="/privacy" style="color:var(--color-sage)">Privacy Policy</a>. Your information is only used to assess your trade account application.
@@ -283,28 +286,36 @@
   document.getElementById('trade-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('trade-submit');
+    const errEl = document.getElementById('trade-error');
     btn.disabled = true;
     btn.textContent = 'Submitting...';
+    errEl.style.display = 'none';
     try {
-      await fetch('/api/trade-application', {
+      const res = await fetch('/api/trade-application', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          firstName: document.getElementById('t-first').value,
-          lastName:  document.getElementById('t-last').value,
-          email:     document.getElementById('t-email').value,
-          phone:     document.getElementById('t-phone').value,
-          business:  document.getElementById('t-business').value,
-          abn:       document.getElementById('t-abn').value,
-          type:      document.getElementById('t-type').value,
-          spend:     document.getElementById('t-spend').value,
-          notes:     document.getElementById('t-notes').value,
+          firstName:    document.getElementById('t-first').value,
+          lastName:     document.getElementById('t-last').value,
+          email:        document.getElementById('t-email').value,
+          phone:        document.getElementById('t-phone').value,
+          business:     document.getElementById('t-business').value,
+          abn:          document.getElementById('t-abn').value,
+          businessType: document.getElementById('t-type').value,
+          spend:        document.getElementById('t-spend').value,
+          notes:        document.getElementById('t-notes').value,
         })
       });
-    } catch {}
-    document.getElementById('trade-form').style.display = 'none';
-    document.getElementById('trade-success').style.display = 'block';
-    document.getElementById('trade-success').scrollIntoView({ behavior: 'smooth' });
+      if (!res.ok) throw new Error('Submission failed');
+      document.getElementById('trade-form').style.display = 'none';
+      document.getElementById('trade-success').style.display = 'block';
+      document.getElementById('trade-success').scrollIntoView({ behavior: 'smooth' });
+    } catch {
+      errEl.style.display = 'block';
+      errEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      btn.disabled = false;
+      btn.textContent = 'Submit Application';
+    }
   });
 </script>
 </body>
