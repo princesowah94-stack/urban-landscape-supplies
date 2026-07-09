@@ -70,24 +70,6 @@ const BAG_SIZES = {
   'pebbles-red-lava':          [{ id: '20kg', label: '20kg Bag', price: 22,     unit: 'per 20kg bag' }, { id: 'bulk', label: '1 Tonne Bulk Bag', price: 1000,   unit: 'per 1 tonne bulk bag' }],
 }
 
-// Real product photos — Supabase rows still point at the retired AI
-// lifestyle images, so override here. Keyed by product id.
-const IMAGE_OVERRIDES = {
-  'pebbles-snow-white':         '/images/products/pebbles-snow-white-1.jpg',
-  'pebbles-crushed-snow-white': '/images/products/pebbles-crushed-snow-white-1.jpg',
-  'pebbles-charcoal-grey':      '/images/products/pebbles-charcoal-grey-1.jpg',
-  'pebbles-charcoal-lava':      '/images/products/pebbles-charcoal-lava-1.jpg',
-  'pebbles-red-lava':           '/images/products/pebbles-red-lava-1.jpg',
-  'mulch-hardwood-chip':        '/images/products/mulch-hardwood-chip.jpg',
-  'mulch-woodlands-blend':      '/images/products/mulch-woodlands-blend.jpg',
-  'mulch-woodlands-natural':    '/images/products/mulch-woodlands-natural.jpg',
-  'mulch-nls-pine-bark':        '/images/products/mulch-nls-pine-bark.jpg',
-  'soil-nls-top-dressing':      '/images/products/soil-nls-top-dressing.jpg',
-  'soil-planter-box-a':         '/images/products/soil-planter-box-a.jpg',
-  'soil-premium-turf-underlay': '/images/products/soil-premium-turf-underlay.jpg',
-  'sand-nls-sydney':            '/images/products/sand-sydney-1.jpg',
-}
-
 /**
  * Convert DB row to the same shape as data/products.json.
  * DB stores price in cents (integer); retail JS expects price in AUD dollars.
@@ -103,8 +85,8 @@ function toClientShape(row) {
     description:   row.description || '',
     features:      row.features || [],
     sizes:         row.sizes || [],
-    image:         IMAGE_OVERRIDES[row.id] || row.image || '',
-    images:        (row.images || []).filter(i => !String(i).includes('-lifestyle')),
+    image:         row.image || '',
+    images:        row.images || [],
     badge:         row.badge || null,
     featured:      row.featured,
     inStock:       row.in_stock,
