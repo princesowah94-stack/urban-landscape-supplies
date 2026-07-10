@@ -182,7 +182,7 @@ export async function POST(request) {
     }
     console.error('[checkout] error:', err.message);
     return Response.json(
-      { error: 'Server error', message: err.message || 'An unexpected error occurred. Please call us on 1300 872 267.' },
+      { error: 'Server error', message: 'We couldn’t process your order right now. Please try again, or call us on 1300 872 267 and we’ll place it for you over the phone.' },
       { status: 500, headers: corsHeaders(request) }
     );
   }
