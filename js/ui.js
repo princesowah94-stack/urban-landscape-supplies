@@ -239,6 +239,12 @@ document.addEventListener('DOMContentLoaded', () => {
     isOpen ? closeMobileNav() : openMobileNav();
   });
 
+  // Mobile nav — cart shortcut
+  document.getElementById('mobile-cart-cta')?.addEventListener('click', (e) => {
+    closeMobileNav();
+    openCartDrawer?.(e.currentTarget);
+  });
+
   initHeaderScroll();
   initAccordions();
   initBulkCalculators();

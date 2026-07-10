@@ -557,3 +557,39 @@
   .trust-item:nth-child(n+4) { display: none; }
   .bulk-cta__title { font-size: var(--text-3xl); }
 }
+
+@media (max-width: 640px) {
+  /* Trust strip: 2-up grid instead of nowrap flex — all 5 items wrap cleanly,
+     so the nth-child(n+4) hide above is no longer needed at this width */
+  .trust-items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-3) var(--sp-4);
+    justify-items: start;
+  }
+
+  .trust-item,
+  .trust-item:nth-child(n+4) {
+    display: flex;
+    white-space: normal;
+    font-size: var(--text-xs);
+  }
+}
+
+@media (max-width: 420px) {
+  /* Hero postcode row: stack vertically so input + button don't fight for space */
+  .home-hero__delivery-row {
+    flex-direction: column;
+  }
+
+  .home-hero__delivery-btn,
+  .home-hero__postcode {
+    width: 100%;
+  }
+}
+
+@media (max-width: 359px) {
+  .category-grid {
+    grid-template-columns: 1fr;
+  }
+}

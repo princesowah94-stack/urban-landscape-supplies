@@ -820,3 +820,65 @@
   cursor: not-allowed;
   pointer-events: none;
 }
+
+/* ─── RESPONSIVE ──────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  /* Bulk-calc row: 2-col grid, result spans full width and wraps */
+  .bulk-calc-row {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .bulk-calc-result {
+    grid-column: 1 / -1;
+    white-space: normal;
+    text-align: left;
+  }
+
+  /* Product card Add to Cart: larger, full-width tap target */
+  .product-card__add-btn {
+    padding: var(--sp-3) var(--sp-3);
+    font-size: var(--text-sm);
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Qty stepper: bump to 44px touch target minimum */
+  .qty-stepper__btn {
+    width: 44px;
+    height: 44px;
+    font-size: var(--text-lg);
+  }
+
+  .qty-stepper__val {
+    width: 44px;
+    height: 44px;
+    line-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Checkout step bar: hide labels, condense to circles + connector */
+  .step__label {
+    display: none;
+  }
+
+  .steps {
+    gap: 0;
+    justify-content: center;
+  }
+
+  .step {
+    flex: none;
+    gap: 0;
+  }
+
+  .step__line {
+    width: 32px;
+    flex: none;
+    margin: 0 var(--sp-1);
+  }
+}

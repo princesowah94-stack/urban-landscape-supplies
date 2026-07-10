@@ -699,4 +699,50 @@ button.nav-link--btn {
 @media (max-width: 480px) {
   .bulk-quote-btn .btn-text { display: none; }
   .utility-bar__msg .sep + span { display: none; }
+
+  /* Utility bar clips wrapped content at very narrow widths — the phone
+     number and message are already reachable via the footer, so hide it */
+  .utility-bar { display: none; }
+}
+
+@media (max-width: 640px) {
+  /* Inner-page photo heroes (Contact, About) can collapse to text height
+     only with no image visible — enforce a floor */
+  .page-hero--photo {
+    min-height: 220px;
+  }
+
+  .page-hero--photo .page-hero__title {
+    font-size: var(--text-2xl);
+  }
+}
+
+/* ─── MOBILE NAV — CART SHORTCUT ─────────────────────────────── */
+.mobile-nav__cart-cta {
+  display: block;
+  margin-top: var(--sp-6);
+  padding: var(--sp-4) var(--sp-6);
+  background: var(--color-sage);
+  color: var(--color-white);
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  text-align: center;
+  border-radius: var(--radius-sm);
+  letter-spacing: var(--tracking-wide);
+  transition: background var(--duration-fast) var(--ease-out);
+  cursor: pointer;
+  border: none;
+  width: 100%;
+}
+
+.mobile-nav__cart-cta:hover {
+  background: var(--color-sage-dark);
+}
+
+/* On desktop this element won't exist, but guard anyway */
+@media (min-width: 769px) {
+  .mobile-nav__cart-cta {
+    display: none;
+  }
 }
