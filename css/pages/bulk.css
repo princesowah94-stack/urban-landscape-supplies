@@ -168,3 +168,12 @@
   font-size: var(--text-xs);
   font-weight: var(--weight-bold);
 }
+
+/* ─── RESPONSIVE ──────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  /* Fixed float quote button can sit over the last section's content —
+     reserve space so it never overlaps card actions on mobile */
+  .bulk-material-section:last-of-type {
+    padding-bottom: calc(var(--sp-16) + 64px);
+  }
+}
