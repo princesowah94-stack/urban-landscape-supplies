@@ -1,9 +1,8 @@
 /**
  * checkout.js — Renders order summary, collects delivery info,
  * calls /api/create-checkout → redirects to Square hosted checkout
+ * Note: esc() is declared in cart.js, which this page always loads first.
  */
-
-const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 
 document.addEventListener('DOMContentLoaded', () => {
   const cart = getCart?.() || [];
