@@ -1,22 +1,25 @@
 /* ============================================================
    Urban Landscape Supplies — Service Worker
    Cache strategy:
-   - Static assets (CSS/JS/fonts): cache-first (versioned filenames)
+   - CSS: NOT intercepted — passes straight through to the network.
+     Safari treats SW-mediated stylesheet responses as cross-origin-
+     restricted and refuses to apply them (confirmed via a real iOS
+     device: getComputedStyle returned no values from any of our
+     stylesheets, and reading .cssRules threw "Not allowed to access
+     cross-origin stylesheet" — on a same-origin file). Excluding CSS
+     from the fetch handler avoids the SW/CSSOM interaction entirely.
+   - JS/fonts: cache-first (versioned filenames)
    - Images: cache-first with network fallback
    - HTML navigation: stale-while-revalidate (fresh content + fast load)
    - API routes: network-only
    ============================================================ */
 
-const CACHE_NAME = 'uls-v6';
+const CACHE_NAME = 'uls-v7';
 
 const PRECACHE = [
   '/',
   '/products',
   '/delivery-areas',
-  '/css/tokens.css',
-  '/css/base.css',
-  '/css/components.css',
-  '/css/layout.css',
   '/js/ui.js',
   '/js/products.js',
   '/js/cart.js',
@@ -57,8 +60,13 @@ self.addEventListener('fetch', event => {
   // API and admin routes: always network
   if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/admin')) return;
 
-  // Static assets (CSS, JS): cache-first
-  if (/\.(css|js)(\?.*)?$/.test(url.pathname)) {
+  // CSS: never intercepted — let the browser fetch it normally (see header note)
+  if (/\.css(\?.*)?$/.test(url.pathname)) {
+    return;
+  }
+
+  // JS: cache-first
+  if (/\.js(\?.*)?$/.test(url.pathname)) {
     event.respondWith(cacheFirst(request));
     return;
   }
