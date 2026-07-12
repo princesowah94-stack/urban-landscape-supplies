@@ -753,5 +753,71 @@
   });
 </script>
 
+<!-- TEMP DIAGNOSTIC — inline so it runs even if external CSS/JS fails.
+     Reports whether stylesheets actually applied; remove once resolved. -->
+<script>
+(function () {
+  function reportDiagnostic(data) {
+    try {
+      var payload = JSON.stringify(data);
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/diagnostic', new Blob([payload], { type: 'application/json' }));
+      } else {
+        fetch('/api/diagnostic', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(function () {});
+      }
+    } catch (e) {}
+  }
+
+  function showBanner(diag) {
+    var el = document.createElement('div');
+    el.setAttribute('style', 'position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#b91c1c;color:#fff;padding:16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;box-shadow:0 2px 10px rgba(0,0,0,0.3);');
+    el.innerHTML =
+      '<strong>We’ve detected a display issue on this page.</strong><br>' +
+      'Please screenshot this message and send it to Prince on 1300 872 267 — it’ll help us fix it fast.<br>' +
+      '<span style="opacity:0.85;font-size:12px">sheets=' + diag.sheetCount + ' failed=' + (diag.failedSheets.join(', ') || 'none') + ' viewport=' + diag.viewport + '</span> ' +
+      '<button onclick="this.parentElement.remove()" style="margin-left:12px;background:#fff;color:#b91c1c;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-weight:bold">Dismiss</button>';
+    document.body.insertBefore(el, document.body.firstChild);
+  }
+
+  function checkStyles() {
+    var sageColor = '';
+    try {
+      sageColor = getComputedStyle(document.documentElement).getPropertyValue('--color-sage').trim();
+    } catch (e) {}
+
+    var cssApplied = sageColor !== '';
+    var failedSheets = [];
+    for (var i = 0; i < document.styleSheets.length; i++) {
+      var s = document.styleSheets[i];
+      if (!s.href || s.href.indexOf('/css/') === -1) continue;
+      try {
+        var rules = s.cssRules;
+        if (!rules || rules.length === 0) failedSheets.push(s.href.split('/').pop() + ' [0 rules]');
+      } catch (e) {
+        failedSheets.push(s.href.split('/').pop() + ' [' + e.message + ']');
+      }
+    }
+
+    var diag = {
+      page: location.pathname,
+      cssApplied: cssApplied,
+      sheetCount: document.styleSheets.length,
+      failedSheets: failedSheets,
+      viewport: window.innerWidth + 'x' + window.innerHeight,
+      dpr: window.devicePixelRatio || 1,
+      connection: (navigator.connection && navigator.connection.effectiveType) || 'unknown',
+      swControlled: !!(navigator.serviceWorker && navigator.serviceWorker.controller),
+      referrer: document.referrer || 'direct',
+    };
+
+    reportDiagnostic(diag);
+    if (!cssApplied) showBanner(diag);
+  }
+
+  if (document.readyState === 'complete') checkStyles();
+  else window.addEventListener('load', checkStyles);
+})();
+</script>
+
 </body>
 </html>
