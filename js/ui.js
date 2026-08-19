@@ -183,7 +183,7 @@ function renderCartPage() {
         <div class="empty-state__icon">🛒</div>
         <h3 class="empty-state__title">Your cart is empty</h3>
         <p class="empty-state__text">You haven't added anything yet — browse our products to get started.</p>
-        <a href="products.html" class="btn btn--primary" style="margin-top:var(--sp-6)">Browse Products</a>
+        <a href="/products" class="btn btn--primary" style="margin-top:var(--sp-6)">Browse Products</a>
       </div>
     `;
     if (checkoutBtn) checkoutBtn.style.display = 'none';
@@ -192,7 +192,7 @@ function renderCartPage() {
 
   container.innerHTML = cart.map(item => `
     <div class="cart-item" data-id="${item.id}">
-      <img src="${item.image}" alt="${item.name}" class="cart-item__img" onerror="this.src='images/products/placeholder.jpg'" />
+      <img src="${item.image}" alt="${item.name}" class="cart-item__img" onerror="this.src='/images/products/placeholder.jpg'" />
       <div>
         <p class="cart-item__name" style="font-size:var(--text-md)">${item.name}</p>
         <p class="cart-item__meta">${item.unit}</p>

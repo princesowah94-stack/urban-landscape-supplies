@@ -5,13 +5,32 @@ import { supabase } from './_supabase.js';
 
 const require = createRequire(import.meta.url);
 
-// Load product prices server-side to prevent client-side price manipulation.
-// Hard failure at cold start is intentional — surfaces immediately in Vercel logs.
-const _productData = require('../data/products.json');
-const productsById = {};
-_productData.products.forEach(p => { productsById[p.id] = p; });
-// Longest ids first so prefix matching on composite cart ids is unambiguous.
-const productIdsByLength = Object.keys(productsById).sort((a, b) => b.length - a.length);
+// Product prices are resolved server-side (never trusted from the client).
+// Source of truth is Supabase (so CRM price/bag-size edits apply to checkout
+// immediately); data/products.json is only a cold fallback if the DB is down.
+// ponytail: module-scope cache, 60s TTL — fine for one warm function instance.
+import { toClientShape } from './products.js';
+const _fallbackData = require('../data/products.json');
+let _catalogue = { byId: {}, idsByLength: [], loadedAt: 0 };
+const CATALOGUE_TTL_MS = 60_000;
+
+function indexCatalogue(list) {
+  const byId = {};
+  list.forEach(p => { byId[p.id] = p; });
+  return { byId, idsByLength: Object.keys(byId).sort((a, b) => b.length - a.length), loadedAt: Date.now() };
+}
+
+async function getCatalogue() {
+  if (Date.now() - _catalogue.loadedAt < CATALOGUE_TTL_MS && _catalogue.idsByLength.length) return _catalogue;
+  const { data, error } = await supabase.from('products').select('*').is('archived_at', null);
+  if (error || !data?.length) {
+    console.error('[checkout] products from DB failed, using products.json fallback:', error?.message);
+    if (!_catalogue.idsByLength.length) _catalogue = indexCatalogue(_fallbackData.products);
+    return _catalogue;
+  }
+  _catalogue = indexCatalogue(data.map(toClientShape));
+  return _catalogue;
+}
 
 const EXPRESS_DELIVERY_CENTS = parseInt(process.env.EXPRESS_DELIVERY_CENTS || '1500', 10);
 const MAX_QTY = 100;
@@ -20,11 +39,11 @@ const MAX_ITEMS = 50;
 // Cart ids are `<productId>[-<size>][-<bagId>]` (see js/products.js). Sizes
 // themselves contain hyphens ("20-30mm"), so resolve by known-prefix match and
 // known-bag-suffix rather than splitting on '-'.
-function resolveCartItem(rawId) {
+function resolveCartItem(rawId, catalogue) {
   const id = String(rawId || '');
-  const baseId = productIdsByLength.find(p => id === p || id.startsWith(p + '-'));
+  const baseId = catalogue.idsByLength.find(p => id === p || id.startsWith(p + '-'));
   if (!baseId) return null;
-  const product = productsById[baseId];
+  const product = catalogue.byId[baseId];
   const rest = id.slice(baseId.length + 1);           // "" | "20-30mm" | "20-30mm-20kg" | "20kg"
   const bag = (product.bagSizes || []).find(b => rest === b.id || rest.endsWith('-' + b.id)) || null;
   const size = bag ? rest.slice(0, rest.length - bag.id.length).replace(/-$/, '') : rest;
@@ -36,11 +55,12 @@ function resolveCartItem(rawId) {
   };
 }
 
-function validateCart(items) {
+async function validateCart(items) {
   if (!Array.isArray(items) || items.length === 0) throw new Error('Cart is empty');
   if (items.length > MAX_ITEMS) throw new Error('Too many items');
+  const catalogue = await getCatalogue();
   return items.map(item => {
-    const resolved = resolveCartItem(item?.id);
+    const resolved = resolveCartItem(item?.id, catalogue);
     if (!resolved) throw new Error(`Unknown product: ${item?.id}`);
     if (Math.abs(resolved.price - parseFloat(item.price)) > 0.01) {
       console.warn(`[price-mismatch] ${item.id}: submitted $${item.price}, server $${resolved.price}`);
@@ -64,7 +84,7 @@ export async function POST(request) {
     const { items, customer, delivery } = await request.json();
 
     // 1. Validate cart against server-side prices
-    const validatedItems = validateCart(items);
+    const validatedItems = await validateCart(items);
     const isExpress = delivery?.method === 'express';
     const totalCents =
       validatedItems.reduce((s, i) => s + Math.round(i.price * 100) * i.quantity, 0) +

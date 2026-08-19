@@ -107,12 +107,18 @@ async function initRealtimeStock(productId) {
 
 // Returns the .webp sibling of an /images/products/*.jpg path; falls through
 // for anything that doesn't match (e.g. external URLs, png placeholders).
+// Only the site's own optimised images have .webp/.avif siblings. CRM-uploaded
+// images (absolute Storage URLs) don't, so return the original for those —
+// a <source> that 404s would NOT fall back to <img src>.
+function hasOptimisedSiblings(p) {
+  return typeof p === 'string' && p.startsWith('/images/products/');
+}
 function webpFor(jpgPath) {
-  return jpgPath && jpgPath.replace(/\.jpe?g$/i, '.webp');
+  return hasOptimisedSiblings(jpgPath) ? jpgPath.replace(/\.jpe?g$/i, '.webp') : jpgPath;
 }
 
 function avifFor(srcPath) {
-  return srcPath && srcPath.replace(/\.(jpe?g|webp|png)$/i, '.avif');
+  return hasOptimisedSiblings(srcPath) ? srcPath.replace(/\.(jpe?g|webp|png)$/i, '.avif') : srcPath;
 }
 
 // ─── PRODUCT CARD HTML ─────────────────────────────────────────
@@ -132,7 +138,7 @@ function buildProductCard(product) {
             alt="${product.name}"
             class="product-card__image"
             loading="lazy"
-            onerror="this.src='images/products/placeholder.jpg'"
+            onerror="this.src='/images/products/placeholder.jpg'"
           />
         </picture>
         ${badgeHtml}
@@ -251,7 +257,7 @@ async function renderProductDetail() {
   await Promise.all([loadProducts(), loadStock()]);
   const product = getProductById(id);
 
-  if (!product) { window.location.href = 'products.html'; return; }
+  if (!product) { window.location.href = '/products'; return; }
 
   // Update page meta
   document.title = `${product.name} | Urban Landscape Supplies`;
@@ -261,7 +267,7 @@ async function renderProductDetail() {
   const bc = document.getElementById('breadcrumb-product');
   if (bc) {
     bc.textContent = product.name;
-    document.getElementById('breadcrumb-category-link').href = `products.html?cat=${product.category}`;
+    document.getElementById('breadcrumb-category-link').href = `/products?cat=${product.category}`;
     document.getElementById('breadcrumb-category-label').textContent = product.categoryLabel;
   }
 
@@ -515,5 +521,5 @@ function updateResultCount(n) {
 }
 
 function clearFilters() {
-  window.location.href = 'products.html';
+  window.location.href = '/products';
 }

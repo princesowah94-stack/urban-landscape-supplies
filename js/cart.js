@@ -146,7 +146,7 @@ function renderDrawerItems(cart) {
           alt="${esc(item.name)}"
           class="cart-item__img"
           loading="lazy"
-          onerror="this.src='images/products/placeholder.jpg'"
+          onerror="this.src='/images/products/placeholder.jpg'"
         />
       </picture>
       <div>

@@ -2,7 +2,8 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/delivery/:suburb", "destination": "/delivery-suburb.html?suburb=:suburb" }
+    { "source": "/delivery/:suburb", "destination": "/delivery-suburb.html?suburb=:suburb" },
+    { "source": "/product/:id", "destination": "/product-detail.html?id=:id" }
   ],
   "redirects": [
     { "source": "/bulk-materials", "destination": "/products", "permanent": true },

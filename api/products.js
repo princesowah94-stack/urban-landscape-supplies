@@ -9,6 +9,8 @@
  */
 import { supabase } from './_supabase.js'
 
+export { toClientShape, toBagSizes }
+
 export default async function handler(req, res) {
   // Only allow GET
   if (req.method !== 'GET') {
@@ -23,6 +25,7 @@ export default async function handler(req, res) {
       .from('products')
       .select('*')
       .eq('id', id)
+      .is('archived_at', null)
       .maybeSingle()
 
     if (error) {
@@ -41,6 +44,7 @@ export default async function handler(req, res) {
   let query = supabase
     .from('products')
     .select('*')
+    .is('archived_at', null)
     .order('sort_order', { ascending: true })
 
   // By default only return in-stock; ?all=1 returns everything (for admin)
@@ -58,16 +62,6 @@ export default async function handler(req, res) {
   // Return in the same shape as products.json so existing JS works unchanged
   res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
   return res.status(200).json({ products: (data || []).map(toClientShape) })
-}
-
-// Bag size options for decorative pebbles — maintained here since Supabase
-// doesn't have a bag_sizes column. Keyed by product id.
-const BAG_SIZES = {
-  'pebbles-snow-white':        [{ id: '20kg', label: '20kg Bag', price: 18,     unit: 'per 20kg bag' }, { id: 'bulk', label: '1 Tonne Bulk Bag', price: 800,    unit: 'per 1 tonne bulk bag' }],
-  'pebbles-crushed-snow-white':[{ id: '20kg', label: '20kg Bag', price: 18,     unit: 'per 20kg bag' }, { id: 'bulk', label: '1 Tonne Bulk Bag', price: 1097.5, unit: 'per 1 tonne bulk bag' }],
-  'pebbles-charcoal-grey':     [{ id: '20kg', label: '20kg Bag', price: 22,     unit: 'per 20kg bag' }, { id: 'bulk', label: '1 Tonne Bulk Bag', price: 1000,   unit: 'per 1 tonne bulk bag' }],
-  'pebbles-charcoal-lava':     [{ id: '20kg', label: '20kg Bag', price: 22,     unit: 'per 20kg bag' }, { id: 'bulk', label: '1 Tonne Bulk Bag', price: 1000,   unit: 'per 1 tonne bulk bag' }],
-  'pebbles-red-lava':          [{ id: '20kg', label: '20kg Bag', price: 22,     unit: 'per 20kg bag' }, { id: 'bulk', label: '1 Tonne Bulk Bag', price: 1000,   unit: 'per 1 tonne bulk bag' }],
 }
 
 /**
@@ -91,6 +85,13 @@ function toClientShape(row) {
     featured:      row.featured,
     inStock:       row.in_stock,
     sku:           row.sku || '',
-    bagSizes:      BAG_SIZES[row.id] || null,
+    bagSizes:      toBagSizes(row.bag_sizes),
   }
+}
+
+// DB stores bag sizes as [{id,label,price_cents,unit}]; retail JS expects
+// dollars (same as the old hardcoded map). Empty array → null (no selector).
+function toBagSizes(raw) {
+  if (!Array.isArray(raw) || raw.length === 0) return null
+  return raw.map(b => ({ id: b.id, label: b.label, price: (b.price_cents || 0) / 100, unit: b.unit || '' }))
 }
