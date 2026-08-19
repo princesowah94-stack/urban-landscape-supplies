@@ -144,6 +144,9 @@
             <label class="form-label form-label--required" for="cf-message">Message</label>
             <textarea id="cf-message" class="form-textarea" placeholder="How can we help?" required style="min-height:140px"></textarea>
           </div>
+          <div id="contact-error" role="alert" style="display:none;padding:var(--sp-4) var(--sp-5);background:rgba(220,60,60,0.06);border:1px solid rgba(220,60,60,0.30);border-radius:var(--radius-md);color:var(--color-text-primary);font-size:var(--text-sm);margin-bottom:var(--sp-4)">
+            Something went wrong and your message wasn't sent. Please try again, or call us on <a href="tel:1300872267" style="color:var(--color-sage);font-weight:600">1300 872 267</a>.
+          </div>
           <button type="submit" class="btn btn--primary btn--lg" id="contact-submit">Send Message</button>
         </form>
       </div>
@@ -246,21 +249,26 @@
       message: document.getElementById('cf-message').value,
     };
 
-    // For local dev without backend, show success immediately
-    // In production, POST to /api/contact endpoint
+    const errEl = document.getElementById('contact-error');
+    errEl.style.display = 'none';
     try {
-      await fetch('/api/contact', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-    } catch {}
-
-    if (typeof window.trackEvent === 'function') {
-      window.trackEvent('generate_lead', { method: 'contact_form' });
+      if (!res.ok) throw new Error('Send failed');
+      if (typeof window.trackEvent === 'function') {
+        window.trackEvent('generate_lead', { method: 'contact_form' });
+      }
+      document.getElementById('contact-form').style.display = 'none';
+      document.getElementById('contact-success').style.display = 'block';
+    } catch {
+      errEl.style.display = 'block';
+      errEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      btn.disabled = false;
+      btn.textContent = 'Send Message';
     }
-    document.getElementById('contact-form').style.display = 'none';
-    document.getElementById('contact-success').style.display = 'block';
   });
 </script>
 </body>

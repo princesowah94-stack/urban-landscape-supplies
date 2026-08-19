@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import { corsHeaders, optionsResponse } from './_cors.js';
 import { supabase } from './_supabase.js';
+import { str, text, isEmail } from './_validate.js';
 
 const SUBJECT_LABELS = {
   order: 'Order enquiry',
@@ -17,17 +18,21 @@ export function OPTIONS(request) {
 
 export async function POST(request) {
   try {
-    const { name, email, phone, subject, message } = await request.json();
+    const b = await request.json();
+    const name    = str(b?.name, 120);
+    const email   = str(b?.email, 254);
+    const phone   = str(b?.phone, 40);
+    const subject = str(b?.subject, 40);
+    const message = text(b?.message, 5000);
 
-    if (!name || !email || !message) {
+    if (!name || !isEmail(email) || !message) {
       return Response.json(
-        { error: 'Name, email and message are required' },
+        { error: 'Name, valid email and message are required' },
         { status: 400, headers: corsHeaders(request) }
       );
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const safeReplyTo = emailRegex.test(email) ? email : undefined;
+    const safeReplyTo = email;
 
     const transport = nodemailer.createTransport({
       host: process.env.EMAIL_HOST || 'smtp.gmail.com',

@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import { corsHeaders, optionsResponse } from './_cors.js';
 import { supabase } from './_supabase.js';
+import { str, text, isEmail } from './_validate.js';
 
 export function OPTIONS(request) {
   return optionsResponse(request);
@@ -8,20 +9,28 @@ export function OPTIONS(request) {
 
 export async function POST(request) {
   try {
-    const { business, abn, firstName, lastName, email, phone, businessType, spend, notes } = await request.json();
+    const b = await request.json();
+    const business     = str(b?.business, 150);
+    const abn          = str(b?.abn, 20);
+    const firstName    = str(b?.firstName, 80);
+    const lastName     = str(b?.lastName, 80);
+    const email        = str(b?.email, 254);
+    const phone        = str(b?.phone, 40);
+    const businessType = str(b?.businessType, 60);
+    const spend        = str(b?.spend, 40);
+    const notes        = text(b?.notes, 3000);
 
-    if (!business || !email || !phone) {
+    if (!business || !isEmail(email) || !phone) {
       return Response.json(
-        { error: 'Business name, email and phone are required' },
+        { error: 'Business name, valid email and phone are required' },
         { status: 400, headers: corsHeaders(request) }
       );
     }
 
-    const emailRegex  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const safeReplyTo = emailRegex.test(email) ? email : undefined;
+    const safeReplyTo = email;
     const referenceId = 'TRD-' + Date.now().toString(36).toUpperCase();
     const from = `"${process.env.EMAIL_FROM_NAME || 'Urban Landscape Supplies'}" <${process.env.EMAIL_FROM}>`;
-    const safeBusiness = String(business).replace(/[\r\n]/g, '');
+    const safeBusiness = business;
 
     // The Supabase insert is the source of truth — an application only counts
     // as received once this row exists. Emails are best-effort on top.

@@ -8,26 +8,49 @@ const require = createRequire(import.meta.url);
 // Load product prices server-side to prevent client-side price manipulation.
 // Hard failure at cold start is intentional — surfaces immediately in Vercel logs.
 const _productData = require('../data/products.json');
-const productPrices = {};
-_productData.products.forEach(p => { productPrices[p.id] = p.price; });
+const productsById = {};
+_productData.products.forEach(p => { productsById[p.id] = p; });
+// Longest ids first so prefix matching on composite cart ids is unambiguous.
+const productIdsByLength = Object.keys(productsById).sort((a, b) => b.length - a.length);
 
 const EXPRESS_DELIVERY_CENTS = parseInt(process.env.EXPRESS_DELIVERY_CENTS || '1500', 10);
+const MAX_QTY = 100;
+const MAX_ITEMS = 50;
+
+// Cart ids are `<productId>[-<size>][-<bagId>]` (see js/products.js). Sizes
+// themselves contain hyphens ("20-30mm"), so resolve by known-prefix match and
+// known-bag-suffix rather than splitting on '-'.
+function resolveCartItem(rawId) {
+  const id = String(rawId || '');
+  const baseId = productIdsByLength.find(p => id === p || id.startsWith(p + '-'));
+  if (!baseId) return null;
+  const product = productsById[baseId];
+  const rest = id.slice(baseId.length + 1);           // "" | "20-30mm" | "20-30mm-20kg" | "20kg"
+  const bag = (product.bagSizes || []).find(b => rest === b.id || rest.endsWith('-' + b.id)) || null;
+  const size = bag ? rest.slice(0, rest.length - bag.id.length).replace(/-$/, '') : rest;
+  if (size && !(product.sizes || []).includes(size)) return null;
+  const label = [size, bag?.label].filter(Boolean).join(', ');
+  return {
+    name:  product.name + (label ? ` (${label})` : ''),
+    price: bag ? bag.price : product.price,
+  };
+}
 
 function validateCart(items) {
-  if (!Array.isArray(items) || items.length === 0) {
-    throw new Error('Cart is empty');
-  }
+  if (!Array.isArray(items) || items.length === 0) throw new Error('Cart is empty');
+  if (items.length > MAX_ITEMS) throw new Error('Too many items');
   return items.map(item => {
-    const serverPrice = productPrices[item.id];
-    if (!serverPrice) throw new Error(`Unknown product: ${item.id}`);
-    if (Math.abs(serverPrice - parseFloat(item.price)) > 0.01) {
-      console.warn(`[price-mismatch] ${item.id}: submitted $${item.price}, server $${serverPrice}`);
+    const resolved = resolveCartItem(item?.id);
+    if (!resolved) throw new Error(`Unknown product: ${item?.id}`);
+    if (Math.abs(resolved.price - parseFloat(item.price)) > 0.01) {
+      console.warn(`[price-mismatch] ${item.id}: submitted $${item.price}, server $${resolved.price}`);
     }
+    const qty = parseInt(item.quantity, 10);
     return {
-      id:       item.id,
-      name:     item.name,
-      price:    serverPrice,
-      quantity: Math.max(1, parseInt(item.quantity, 10) || 1),
+      id:       String(item.id),
+      name:     resolved.name,            // server-resolved, never client-supplied
+      price:    resolved.price,           // server-resolved
+      quantity: Math.min(MAX_QTY, Math.max(1, Number.isFinite(qty) ? qty : 1)),
     };
   });
 }

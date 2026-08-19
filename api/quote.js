@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import { waitUntil } from '@vercel/functions';
 import { corsHeaders, optionsResponse } from './_cors.js';
 import { supabase } from './_supabase.js';
+import { str, text, num, isEmail } from './_validate.js';
 
 // Coerce empty strings / undefined to null so DATE columns don't choke
 const orNull = (v) => (v === '' || v === undefined ? null : v);
@@ -12,17 +13,39 @@ export function OPTIONS(request) {
 
 export async function POST(request) {
   try {
-    const { items, delivery, contact } = await request.json();
+    const body = await request.json();
+    const rawItems = body?.items;
+    const delivery = body?.delivery && typeof body.delivery === 'object' ? body.delivery : {};
+    const contact  = body?.contact  && typeof body.contact  === 'object' ? body.contact  : {};
 
-    if (!items || items.length === 0) {
+    if (!Array.isArray(rawItems) || rawItems.length === 0 || rawItems.length > 50) {
       return Response.json({ error: 'No items in quote' }, { status: 400, headers: corsHeaders(request) });
     }
-    if (!contact?.email || !contact?.phone) {
-      return Response.json({ error: 'Contact details required' }, { status: 400, headers: corsHeaders(request) });
+    if (!isEmail(contact.email) || !str(contact.phone, 40)) {
+      return Response.json({ error: 'Valid email and phone required' }, { status: 400, headers: corsHeaders(request) });
     }
 
-    const emailRegex     = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const safeReplyTo    = emailRegex.test(contact.email) ? contact.email : undefined;
+    // Sanitise everything we echo into emails / DB. Quote prices are indicative
+    // only (staff confirm), but still bounded so a bad payload can't blow up totals.
+    const items = rawItems.map(i => ({
+      id:       str(i?.id, 100),
+      name:     str(i?.name, 150),
+      unit:     str(i?.unit, 40),
+      price:    num(i?.price,    { min: 0, max: 100000 }),
+      quantity: num(i?.quantity, { min: 0.01, max: 10000, fallback: 1 }),
+    }));
+    contact.firstName = str(contact.firstName, 80);
+    contact.lastName  = str(contact.lastName, 80);
+    contact.phone     = str(contact.phone, 40);
+    contact.company   = str(contact.company, 120);
+    contact.notes     = text(contact.notes, 2000);
+    delivery.address  = str(delivery.address, 200);
+    delivery.suburb   = str(delivery.suburb, 80);
+    delivery.postcode = str(delivery.postcode, 10);
+    delivery.access   = text(delivery.access, 2000);
+    delivery.notes    = text(delivery.notes, 2000);
+
+    const safeReplyTo    = contact.email;
     const referenceId    = 'BQ-' + Date.now().toString(36).toUpperCase();
     const itemsTable     = items.map(i => `  • ${i.name}: ${i.quantity} ${i.unit} (est. $${(i.price * i.quantity).toFixed(2)})`).join('\n');
     const estimatedTotal = items.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0);
