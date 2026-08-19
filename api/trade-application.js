@@ -2,9 +2,25 @@ import nodemailer from 'nodemailer';
 import { corsHeaders, optionsResponse } from './_cors.js';
 import { supabase } from './_supabase.js';
 import { str, text, isEmail } from './_validate.js';
+import { getTradeDiscount } from './_trade.js';
 
 export function OPTIONS(request) {
   return optionsResponse(request);
+}
+
+// GET /api/trade-application?email=…  → { trade: { tier, percent } | null }
+// Used by checkout to show "Trade pricing applied" once the email is entered.
+// Only reveals tier + percent for an ACTIVE account; never lists accounts.
+export async function GET(request) {
+  const email = new URL(request.url).searchParams.get('email') || '';
+  if (!isEmail(email)) {
+    return Response.json({ trade: null }, { status: 200, headers: corsHeaders(request) });
+  }
+  const trade = await getTradeDiscount(email).catch(() => null);
+  return Response.json(
+    { trade: trade ? { tier: trade.tier, percent: trade.percent } : null },
+    { status: 200, headers: { ...corsHeaders(request), 'Cache-Control': 'no-store' } }
+  );
 }
 
 export async function POST(request) {

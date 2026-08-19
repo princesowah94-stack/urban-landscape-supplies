@@ -2,6 +2,7 @@ import { Client, Environment, ApiError } from 'square';
 import { createRequire } from 'module';
 import { corsHeaders, optionsResponse } from './_cors.js';
 import { supabase } from './_supabase.js';
+import { getTradeDiscount, applyDiscountCents } from './_trade.js';
 
 const require = createRequire(import.meta.url);
 
@@ -85,6 +86,15 @@ export async function POST(request) {
 
     // 1. Validate cart against server-side prices
     const validatedItems = await validateCart(items);
+
+    // 1b. Trade pricing — active trade account matched by checkout email gets
+    // its tier discount applied to item prices (not delivery). Server-side only.
+    const trade = await getTradeDiscount(customer?.email).catch(() => null);
+    if (trade?.percent) {
+      for (const i of validatedItems) {
+        i.price = applyDiscountCents(Math.round(i.price * 100), trade.percent) / 100;
+      }
+    }
     const isExpress = delivery?.method === 'express';
     const totalCents =
       validatedItems.reduce((s, i) => s + Math.round(i.price * 100) * i.quantity, 0) +
@@ -102,6 +112,9 @@ export async function POST(request) {
               .filter(Boolean).join(', ')
           : null,
         notes:       delivery?.notes || null,
+        delivery_notes_internal: trade?.percent
+          ? `Trade pricing applied: ${trade.tier} (−${trade.percent}%) · ${trade.company || ''}`.trim()
+          : null,
         status:      'pending_payment',
         total_cents: totalCents,
       })

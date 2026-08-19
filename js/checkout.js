@@ -14,6 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('input[name="delivery"]').forEach(radio => {
     radio.addEventListener('change', () => updateTotals(cart));
   });
+
+  // Trade pricing: probe once the customer has typed their email.
+  const emailEl = document.getElementById('email');
+  emailEl?.addEventListener('blur', () => checkTradePricing(cart));
+  emailEl?.addEventListener('change', () => checkTradePricing(cart));
+  if (emailEl?.value) checkTradePricing(cart); // browser autofill
 });
 
 // ─── SUMMARY RENDERING ──────────────────────────────────────────
@@ -51,18 +57,54 @@ function getDeliveryCost(method) {
   return 0; // standard and pickup are free
 }
 
+// Trade pricing — populated by checkTradePricing() once a valid email is entered.
+// Display only; the server re-checks the account and applies the real discount.
+let tradeDiscount = null; // { tier, percent } | null
+
+async function checkTradePricing(cart) {
+  const email = document.getElementById('email')?.value.trim() || '';
+  const banner = document.getElementById('trade-banner');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { tradeDiscount = null; if (banner) banner.hidden = true; updateTotals(cart); return; }
+  try {
+    const res = await fetch('/api/trade-application?email=' + encodeURIComponent(email));
+    const data = res.ok ? await res.json() : { trade: null };
+    tradeDiscount = data.trade && data.trade.percent > 0 ? data.trade : null;
+  } catch { tradeDiscount = null; }
+  if (banner) {
+    if (tradeDiscount) {
+      const tier = tradeDiscount.tier.charAt(0).toUpperCase() + tradeDiscount.tier.slice(1);
+      banner.textContent = `Trade pricing applied — ${tier} account, ${tradeDiscount.percent}% off materials.`;
+      banner.hidden = false;
+    } else {
+      banner.hidden = true;
+    }
+  }
+  updateTotals(cart);
+}
+
 function updateTotals(cart) {
-  const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+  const gross    = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+  const discount = tradeDiscount ? cart.reduce((s, i) => s + (i.price * i.quantity - Math.round(i.price * 100 * (1 - tradeDiscount.percent / 100)) / 100 * i.quantity), 0) : 0;
+  const subtotal = gross - discount;
   const method   = document.querySelector('input[name="delivery"]:checked')?.value || 'standard';
   const delivery = getDeliveryCost(method);
   const total    = subtotal + delivery;
+
+  const tradeRow = document.getElementById('checkout-trade-row');
+  if (tradeRow) {
+    tradeRow.hidden = !tradeDiscount;
+    if (tradeDiscount) {
+      document.getElementById('checkout-trade-label').textContent = `(${tradeDiscount.percent}%)`;
+      document.getElementById('checkout-trade').textContent = `−$${discount.toFixed(2)}`;
+    }
+  }
 
   const deliveryEl = document.getElementById('checkout-delivery');
   if (deliveryEl) {
     deliveryEl.textContent = delivery > 0 ? `+$${delivery.toFixed(2)}` : 'Free';
   }
   const subtotalEl = document.getElementById('checkout-subtotal');
-  if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+  if (subtotalEl) subtotalEl.textContent = `$${gross.toFixed(2)}`;
 
   const totalEl = document.getElementById('checkout-total');
   if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
