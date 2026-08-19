@@ -329,6 +329,26 @@
       "sku": "ULS-SOIL-002"
     },
     {
+      "id": "soil-garden-mix",
+      "name": "Garden Mix",
+      "category": "soil",
+      "categoryLabel": "Soil & Turf",
+      "price": 129,
+      "unit": "per 1 tonne bulk bag",
+      "description": "An all-purpose garden soil blended for new garden beds, borders and general planting. A balanced mix of screened soil, composted organics and sand that drains freely, holds moisture and gives roots an easy start. Suited to most ornamentals, shrubs and hedging.",
+      "features": [
+        "All-purpose blend for new and existing beds",
+        "Free-draining with good moisture retention",
+        "Composted organics for steady nutrition",
+        "Ready to plant straight from the bag"
+      ],
+      "image": "/images/products/soil-planter-box-a.jpg",
+      "badge": null,
+      "featured": false,
+      "inStock": true,
+      "sku": "ULS-SOIL-004"
+    },
+    {
       "id": "soil-premium-turf-underlay",
       "name": "Premium Turf Underlay 80/20",
       "category": "soil",
