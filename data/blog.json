@@ -1,0 +1,31 @@
+{
+  "posts": [
+    {
+      "slug": "how-much-mulch-do-i-need",
+      "title": "How Much Mulch Do I Need? Coverage Guide for Sydney Gardens",
+      "description": "Work out exactly how much mulch to order with our coverage table — square metres, depth and tonnes explained for Sydney gardens, plus which mulch suits which job.",
+      "date": "2026-09-01",
+      "heroImage": "/images/products/mulch-hardwood-chip-lifestyle",
+      "heroAlt": "Fresh hardwood chip mulch spread through a Sydney garden bed",
+      "tag": "Guides"
+    },
+    {
+      "slug": "turf-underlay-guide",
+      "title": "Turf Underlay: How Much You Need and How to Prepare for New Lawn",
+      "description": "Laying new turf in Sydney? Here's how deep your turf underlay should be, how much to order per square metre, and how to prep the ground so your lawn takes root fast.",
+      "date": "2026-09-01",
+      "heroImage": "/images/products/soil-premium-turf-underlay-lifestyle",
+      "heroAlt": "Levelled turf underlay soil prepared for new lawn",
+      "tag": "Guides"
+    },
+    {
+      "slug": "decorative-pebbles-garden-ideas-sydney",
+      "title": "Decorative Pebbles: 7 Garden Ideas That Work in Sydney",
+      "description": "From white pebble pathways to lava rock feature beds — seven low-maintenance ways Sydney homeowners use decorative pebbles, with coverage tips and colour pairings.",
+      "date": "2026-09-01",
+      "heroImage": "/images/products/pebbles-snow-white-lifestyle",
+      "heroAlt": "Snow white decorative pebbles in a landscaped Sydney garden",
+      "tag": "Inspiration"
+    }
+  ]
+}

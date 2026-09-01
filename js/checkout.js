@@ -52,9 +52,9 @@ function renderCheckoutSummary(cart) {
   `).join('');
 }
 
-function getDeliveryCost(method) {
-  if (method === 'express') return 15;
-  return 0; // standard and pickup are free
+// Delivery is quoted per job after checkout — nothing is charged online for it.
+function getDeliveryCost() {
+  return 0;
 }
 
 // Trade pricing — populated by checkTradePricing() once a valid email is entered.
@@ -87,7 +87,7 @@ function updateTotals(cart) {
   const discount = tradeDiscount ? cart.reduce((s, i) => s + (i.price * i.quantity - Math.round(i.price * 100 * (1 - tradeDiscount.percent / 100)) / 100 * i.quantity), 0) : 0;
   const subtotal = gross - discount;
   const method   = document.querySelector('input[name="delivery"]:checked')?.value || 'standard';
-  const delivery = getDeliveryCost(method);
+  const delivery = getDeliveryCost();
   const total    = subtotal + delivery;
 
   const tradeRow = document.getElementById('checkout-trade-row');
@@ -101,7 +101,7 @@ function updateTotals(cart) {
 
   const deliveryEl = document.getElementById('checkout-delivery');
   if (deliveryEl) {
-    deliveryEl.textContent = delivery > 0 ? `+$${delivery.toFixed(2)}` : 'Free';
+    deliveryEl.textContent = method === 'pickup' ? 'Free' : 'Quoted separately';
   }
   const subtotalEl = document.getElementById('checkout-subtotal');
   if (subtotalEl) subtotalEl.textContent = `$${gross.toFixed(2)}`;
@@ -216,7 +216,7 @@ document.getElementById('checkout-submit-btn')?.addEventListener('click', async 
     console.error('Checkout error:', err);
     showError(
       err.message.includes('fetch')
-        ? 'Unable to connect. Please check your connection and try again, or call us on 1300 872 267.'
+        ? 'Unable to connect. Please check your connection and try again, or call us on 0433 132 406.'
         : err.message
     );
     btn.disabled = false;

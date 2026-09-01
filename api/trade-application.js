@@ -101,7 +101,7 @@ export async function POST(request) {
           `Your trade application (ref: ${referenceId}) has been received.`,
           `We'll review it and be in touch within 2 business days.`,
           ``,
-          `Questions? Call ${process.env.PHONE_NUMBER || '1300 872 267'}`,
+          `Questions? Call ${process.env.PHONE_NUMBER || '0433 132 406'}`,
           ``,
           `The Urban Landscape Supplies Team`,
           `Sydney NSW · urbanlandscapesupplies.com.au`,

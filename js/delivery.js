@@ -73,25 +73,16 @@ function showDeliveryInfo(suburb, data, container) {
       <span class="zone-badge zone-badge--${zoneCls}">${zone.label}</span>
       <h3>${suburb.name} NSW ${suburb.postcode}</h3>
       <div class="delivery-result-row">
-        <span class="delivery-result-row__label">Standard delivery fee</span>
-        <span class="delivery-result-row__value">$${zone.deliveryFee}</span>
-      </div>
-      <div class="delivery-result-row">
-        <span class="delivery-result-row__label">Free delivery from</span>
-        <span class="delivery-result-row__value delivery-result-row__value--free">$${zone.freeThreshold}</span>
+        <span class="delivery-result-row__label">Delivery cost</span>
+        <span class="delivery-result-row__value">Quoted per job</span>
       </div>
       <div class="delivery-result-row">
         <span class="delivery-result-row__label">Estimated timeframe</span>
         <span class="delivery-result-row__value">${zone.days}</span>
       </div>
-      <div class="order-slider-wrap">
-        <div class="order-slider-label">
-          <span>Order value</span>
-          <strong id="slider-value">$150</strong>
-        </div>
-        <input type="range" class="order-slider" id="order-slider"
-          min="0" max="500" step="10" value="150" />
-        <div class="order-slider-result" id="slider-result"></div>
+      <div class="delivery-result-row">
+        <span class="delivery-result-row__label">Get a price</span>
+        <span class="delivery-result-row__value"><a href="tel:0433132406" style="color:var(--color-sage)">0433 132 406</a></span>
       </div>
       <a href="/delivery/${suburb.slug}" class="btn btn--primary btn--sm" style="margin-top:var(--sp-5);display:inline-block">
         View ${suburb.name} delivery details →
@@ -99,24 +90,6 @@ function showDeliveryInfo(suburb, data, container) {
     </div>
   `;
   container.hidden = false;
-
-  // Wire up slider
-  const slider    = container.querySelector('#order-slider');
-  const sliderVal = container.querySelector('#slider-value');
-  const sliderRes = container.querySelector('#slider-result');
-
-  function updateSlider() {
-    const val = parseInt(slider.value, 10);
-    sliderVal.textContent = `$${val}`;
-    if (val >= zone.freeThreshold) {
-      sliderRes.innerHTML = `Your delivery to <strong>${suburb.name}</strong>: <span class="free-badge">FREE</span>`;
-    } else {
-      sliderRes.innerHTML = `Your delivery to <strong>${suburb.name}</strong>: <span class="fee">$${zone.deliveryFee}</span>`;
-    }
-  }
-
-  slider.addEventListener('input', updateSlider);
-  updateSlider();
 }
 
 /* ─── HUB PAGE REGION GRID ────────────────────────────────── */
@@ -192,8 +165,7 @@ async function initSuburbPage() {
   if (metaDesc) {
     metaDesc.setAttribute('content',
       `Premium mulch, soil, pebbles and bulk landscape materials delivered to ${suburb.name} NSW ${suburb.postcode}. ` +
-      `${zone.label} — ${suburb.zone === 'A' ? 'free delivery over $150' : suburb.zone === 'B' ? 'delivery from $25' : 'delivery from $45'}. ` +
-      `Urban Landscape Supplies Sydney.`
+      `${zone.label} — delivery quoted per job. Urban Landscape Supplies Sydney.`
     );
   }
 
@@ -210,7 +182,7 @@ async function initSuburbPage() {
     "@type": "LocalBusiness",
     "name": "Urban Landscape Supplies",
     "url": "https://urbanlandscapesupplies.com.au",
-    "telephone": "+611300872267",
+    "telephone": "+61433132406",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Sydney",
@@ -270,30 +242,8 @@ async function initSuburbPage() {
   document.querySelectorAll('[data-suburb-landmark]').forEach(el => el.textContent = suburb.landmark);
   document.querySelectorAll('[data-region-name]').forEach(el => el.textContent = region.name);
 
-  // Delivery info card
-  document.getElementById('info-fee').textContent     = `$${zone.deliveryFee}`;
-  document.getElementById('info-fee-sub').textContent = `on orders under $${zone.freeThreshold}`;
-  document.getElementById('info-free').textContent    = `$${zone.freeThreshold}+`;
-  document.getElementById('info-days').textContent    = zone.days;
-
-  // Inline calculator
-  const calcSlider = document.getElementById('suburb-order-slider');
-  const calcLabel  = document.getElementById('suburb-slider-value');
-  const calcResult = document.getElementById('suburb-slider-result');
-
-  if (calcSlider) {
-    function updateSuburbSlider() {
-      const val = parseInt(calcSlider.value, 10);
-      calcLabel.textContent = `$${val}`;
-      if (val >= zone.freeThreshold) {
-        calcResult.innerHTML = `Delivery to <strong>${suburb.name}</strong>: <span class="free">FREE</span>`;
-      } else {
-        calcResult.innerHTML = `Delivery to <strong>${suburb.name}</strong>: <span class="fee">$${zone.deliveryFee}</span>`;
-      }
-    }
-    calcSlider.addEventListener('input', updateSuburbSlider);
-    updateSuburbSlider();
-  }
+  // Delivery info card — cost is quoted per job; only the timeframe is data-driven
+  document.getElementById('info-days').textContent = zone.days;
 
   // Nearby suburbs
   const nearby = data.suburbs.filter(s => s.region === suburb.region && s.slug !== slug).slice(0, 8);
@@ -303,8 +253,6 @@ async function initSuburbPage() {
 
   // FAQ suburb name injection
   document.querySelectorAll('.faq-suburb').forEach(el => el.textContent = suburb.name);
-  document.querySelectorAll('.faq-fee').forEach(el => el.textContent = `$${zone.deliveryFee}`);
-  document.querySelectorAll('.faq-threshold').forEach(el => el.textContent = `$${zone.freeThreshold}`);
   document.querySelectorAll('.faq-days').forEach(el => el.textContent = zone.days);
 
   // Reveal page

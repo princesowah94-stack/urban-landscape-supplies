@@ -95,7 +95,7 @@ function shellHtml({ heading, intro, order, items }) {
       ` : ''}
       <hr style="border:none;border-top:1px solid #eee;margin:24px 0">
       <p style="font-size:12px;color:#999;line-height:1.5;margin:0">
-        Urban Landscape Supplies · Wetherill Park NSW · 1300 872 267
+        Urban Landscape Supplies · Wetherill Park NSW · 0433 132 406
       </p>
     </div>
   `;
@@ -105,7 +105,7 @@ export async function sendCustomerOrderEmail({ order, items }) {
   if (!order?.customer_email) return;
   const html = shellHtml({
     heading: 'Thanks for your order!',
-    intro: `Hi ${order.customer_name?.split(' ')[0] || 'there'} — we've received your payment and the yard team is preparing your order. We'll be in touch with delivery details shortly.`,
+    intro: `Hi ${order.customer_name?.split(' ')[0] || 'there'} — we've received your payment and the yard team is preparing your order. Delivery is quoted separately based on your suburb and load — we'll contact you to confirm the delivery cost and day before dispatch.`,
     order, items,
   });
   return getResend().emails.send({
@@ -220,7 +220,7 @@ export async function sendSupplierOrderEmail({ order, items }) {
 
       <hr style="border:none;border-top:1px solid #eee;margin:24px 0">
       <p style="font-size:12px;color:#999;line-height:1.5;margin:0">
-        Urban Landscape Supplies · Wetherill Park NSW · 1300 872 267<br>
+        Urban Landscape Supplies · Wetherill Park NSW · 0433 132 406<br>
         Automated dispatch notification — reply to reach the ULS office.
       </p>
     </div>

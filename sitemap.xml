@@ -242,4 +242,14 @@
     <lastmod>2026-05-05</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <!-- END:products -->
 
+  <!-- Blog -->
+  <url><loc>https://urbanlandscapesupplies.com.au/blog</loc>
+    <lastmod>2026-09-01</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://urbanlandscapesupplies.com.au/blog/how-much-mulch-do-i-need</loc>
+    <lastmod>2026-09-01</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://urbanlandscapesupplies.com.au/blog/turf-underlay-guide</loc>
+    <lastmod>2026-09-01</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://urbanlandscapesupplies.com.au/blog/decorative-pebbles-garden-ideas-sydney</loc>
+    <lastmod>2026-09-01</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
 </urlset>

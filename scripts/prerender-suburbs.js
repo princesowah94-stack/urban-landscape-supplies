@@ -19,6 +19,15 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const DATA = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/suburbs.json'), 'utf8'));
 const DELIVERY_DIR = path.join(ROOT, 'delivery');
+const TEMPLATE = fs.readFileSync(path.join(ROOT, 'delivery-suburb.html'), 'utf8');
+
+// Same rule as prerender-products.js: relative href/src get ../ so the page
+// works one level deep under /delivery/. Regenerating from the template (not
+// editing baked files in place) means template edits propagate on re-run.
+function rewritePathsForSubdir(html) {
+  return html.replace(/(href|src)="(?!\/|https?:\/\/|#|mailto:|tel:|data:|javascript:)([^"]+)"/g,
+    (_, attr, val) => `${attr}="../${val}"`);
+}
 const SITE_URL = 'https://urbanlandscapesupplies.com.au';
 
 const STATIC_TITLE_RE  = /<title>[^<]*<\/title>/;
@@ -32,12 +41,7 @@ const ABOUT_PARA_RE    = /<p style="color:var\(--color-text-secondary\);line-hei
 
 function buildTitle(suburb)   { return `Landscape Supplies Delivery to ${suburb.name} NSW ${suburb.postcode} | Urban Landscape Supplies`; }
 function buildMeta(suburb, zone) {
-  const feeText = suburb.zone === 'A'
-    ? 'free delivery on orders over $150'
-    : suburb.zone === 'B'
-      ? `delivery from $${zone.deliveryFee} (free over $${zone.freeThreshold})`
-      : `delivery from $${zone.deliveryFee} (free over $${zone.freeThreshold})`;
-  return `Premium soil, mulch, pebbles, sand and 1-tonne bulk bags delivered to ${suburb.name} NSW ${suburb.postcode} from our Wetherill Park yard. ${zone.label} — ${feeText}.`;
+  return `Premium soil, mulch, pebbles, sand and 1-tonne bulk bags delivered to ${suburb.name} NSW ${suburb.postcode} from our Wetherill Park yard. ${zone.label} — delivery quoted per job.`;
 }
 
 function buildPrerenderBlock(suburb, region, zone, slug) {
@@ -47,7 +51,7 @@ function buildPrerenderBlock(suburb, region, zone, slug) {
     "@type": "LocalBusiness",
     "name": "Urban Landscape Supplies",
     "url": SITE_URL,
-    "telephone": "+611300872267",
+    "telephone": "+61433132406",
     "image": `${SITE_URL}/images/brand/og-image.jpg`,
     "address": {
       "@type": "PostalAddress",
@@ -112,16 +116,13 @@ function processFile(suburb) {
   const zone   = DATA.zones[suburb.zone];
   const file   = path.join(DELIVERY_DIR, `${slug}.html`);
 
-  if (!fs.existsSync(file)) {
-    console.warn(`SKIP ${slug} — file not found`);
-    return;
-  }
   if (!region || !zone) {
     console.warn(`SKIP ${slug} — region/zone missing in suburbs.json`);
     return;
   }
 
-  let html = fs.readFileSync(file, 'utf8');
+  // Always start from the current template so template edits propagate.
+  let html = rewritePathsForSubdir(TEMPLATE);
 
   const title = buildTitle(suburb);
   const meta  = buildMeta(suburb, zone);

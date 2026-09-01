@@ -2,24 +2,18 @@
   "zones": {
     "A": {
       "label": "Metro Core",
-      "deliveryFee": 15,
-      "freeThreshold": 150,
       "days": "2–3 business days",
-      "description": "Free delivery on orders over $150. $15 flat fee on orders under $150."
+      "description": "Delivery quoted per job. Typical timeframe 2–3 business days."
     },
     "B": {
       "label": "Mid-Ring",
-      "deliveryFee": 25,
-      "freeThreshold": 200,
       "days": "3–5 business days",
-      "description": "Free delivery on orders over $200. $25 flat fee on orders under $200."
+      "description": "Delivery quoted per job. Typical timeframe 3–5 business days."
     },
     "C": {
       "label": "Outer Metro",
-      "deliveryFee": 45,
-      "freeThreshold": 300,
       "days": "4–7 business days",
-      "description": "Free delivery on orders over $300. $45 flat fee on orders under $300."
+      "description": "Delivery quoted per job. Typical timeframe 4–7 business days."
     }
   },
   "regions": [

@@ -103,7 +103,7 @@ export async function POST(request) {
           `Delivery: ${deliveryLine}`,
           `Preferred window: ${delivery?.dateFrom || 'flexible'} → ${delivery?.dateTo || 'flexible'}`,
           ``,
-          `Questions? Call ${process.env.PHONE_NUMBER || '1300 872 267'}`,
+          `Questions? Call ${process.env.PHONE_NUMBER || '0433 132 406'}`,
           ``,
           `The Urban Landscape Supplies Team`,
           `Sydney NSW · urbanlandscapesupplies.com.au`,
@@ -140,7 +140,7 @@ export async function POST(request) {
   } catch (err) {
     console.error('Quote email error:', err);
     return Response.json(
-      { error: 'Failed to send quote', message: 'Please call 1300 872 267' },
+      { error: 'Failed to send quote', message: 'Please call 0433 132 406' },
       { status: 500, headers: corsHeaders(request) }
     );
   }

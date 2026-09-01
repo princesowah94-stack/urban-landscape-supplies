@@ -33,7 +33,6 @@ async function getCatalogue() {
   return _catalogue;
 }
 
-const EXPRESS_DELIVERY_CENTS = parseInt(process.env.EXPRESS_DELIVERY_CENTS || '1500', 10);
 const MAX_QTY = 100;
 const MAX_ITEMS = 50;
 
@@ -95,10 +94,10 @@ export async function POST(request) {
         i.price = applyDiscountCents(Math.round(i.price * 100), trade.percent) / 100;
       }
     }
-    const isExpress = delivery?.method === 'express';
+    // Delivery is quoted per job after the order — nothing charged for it online.
+    // Stale cached clients may still send method 'express'; treat as standard.
     const totalCents =
-      validatedItems.reduce((s, i) => s + Math.round(i.price * 100) * i.quantity, 0) +
-      (isExpress ? EXPRESS_DELIVERY_CENTS : 0);
+      validatedItems.reduce((s, i) => s + Math.round(i.price * 100) * i.quantity, 0);
 
     // 2. Create order record in Supabase (before Square, so we have the UUID for the redirect URL)
     const { data: order, error: orderErr } = await supabase
@@ -156,14 +155,6 @@ export async function POST(request) {
       quantity:       String(i.quantity),
       basePriceMoney: { amount: BigInt(Math.round(i.price * 100)), currency: 'AUD' },
     }));
-
-    if (isExpress) {
-      lineItems.push({
-        name:           'Express Delivery',
-        quantity:       '1',
-        basePriceMoney: { amount: BigInt(EXPRESS_DELIVERY_CENTS), currency: 'AUD' },
-      });
-    }
 
     const siteUrl = process.env.SITE_URL || 'https://urbanlandscapesupplies.com.au';
 
@@ -238,7 +229,7 @@ export async function POST(request) {
     }
     console.error('[checkout] error:', err.message);
     return Response.json(
-      { error: 'Server error', message: 'We couldn’t process your order right now. Please try again, or call us on 1300 872 267 and we’ll place it for you over the phone.' },
+      { error: 'Server error', message: 'We couldn’t process your order right now. Please try again, or call us on 0433 132 406 and we’ll place it for you over the phone.' },
       { status: 500, headers: corsHeaders(request) }
     );
   }
