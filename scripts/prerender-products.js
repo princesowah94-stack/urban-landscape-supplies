@@ -32,6 +32,10 @@ function rewritePathsForSubdir(html) {
     (_, attr, val) => `${attr}="../${val}"`);
 }
 
+function esc(v) {
+  return String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 function fmtAud(price) {
   return Number(price).toFixed(2);
 }
@@ -139,6 +143,65 @@ function bake(p) {
     /<span class="detail-unit" id="detail-unit"><\/span>/,
     `<span class="detail-unit" id="detail-unit">${p.unit || ''}</span>`
   );
+
+  // Bake the first gallery image (the LCP element) so the browser fetches it
+  // from the HTML instead of waiting for products.js + the API. products.js
+  // rebuilds the carousel with the same URLs, so it's already in cache.
+  const first = ((p.images && p.images.length > 1) ? p.images : [p.image])[0];
+  if (first) {
+    const base = first.replace(/\.(jpe?g|webp|png|avif)$/i, '');
+    const local = first.startsWith('/images/products/');
+    const set = (ext) => local ? `${base}-640.${ext} 640w, ${base}-1024.${ext} 1024w` : first;
+    const sizes = '(min-width: 1024px) 560px, 100vw';
+    html = html.replace(
+      /<div class="product-gallery" id="product-gallery">[\s\S]*?<\/div>/,
+      `<div class="product-gallery" id="product-gallery"><div class="pgal"><div class="pgal__viewport"><div class="pgal__track"><div class="pgal__slide"><picture>` +
+      `<source type="image/avif" srcset="${set('avif')}" sizes="${sizes}" />` +
+      `<source type="image/webp" srcset="${set('webp')}" sizes="${sizes}" />` +
+      `<img src="${local ? base + '-1024.jpg' : first}" srcset="${set('jpg')}" sizes="${sizes}" width="1024" height="1024" alt="${esc(p.name)}" loading="eager" fetchpriority="high" />` +
+      `</picture></div></div></div></div></div>`
+    );
+  }
+
+  // Bake the rest of the detail body too. Previously these were empty in the
+  // HTML and filled by products.js after load, which shoved everything below
+  // down (CLS ~0.65 on mobile). products.js re-renders identical markup, so
+  // nothing moves when it runs.
+  html = html.replace(
+    /<span class="detail-category" id="detail-category"><\/span>/,
+    `<span class="detail-category" id="detail-category">${esc(p.categoryLabel || '')}</span>`
+  );
+  if (p.badge) {
+    html = html.replace(
+      /<span class="badge" id="detail-badge" style="display:none;width:fit-content"><\/span>/,
+      `<span class="badge" id="detail-badge" style="width:fit-content">${esc(p.badge)}</span>`
+    );
+  }
+  html = html.replace(
+    /<p class="detail-desc" id="detail-desc"><\/p>/,
+    `<p class="detail-desc" id="detail-desc">${esc(p.description || '')}</p>`
+  );
+  html = html.replace(
+    /<ul class="detail-features" id="detail-features"><\/ul>/,
+    `<ul class="detail-features" id="detail-features">${(p.features || []).map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`
+  );
+  if (p.sizes && p.sizes.length) {
+    html = html.replace(
+      /<div id="detail-size-selector"><\/div>/,
+      `<div id="detail-size-selector"><div class="size-selector"><p class="size-selector__label">Size</p><div class="size-selector__options">${
+        p.sizes.map((sz, i) => `<button class="size-btn${i === 0 ? ' size-btn--active' : ''}" data-size="${esc(sz)}">${esc(sz)}</button>`).join('')
+      }</div></div></div>`
+    );
+  }
+  if (p.bagSizes && p.bagSizes.length) {
+    const sel = (p.bagSizes.find((b) => b.id === 'bulk') || p.bagSizes[0]).id;
+    html = html.replace(
+      /<div id="detail-pkg-selector"><\/div>/,
+      `<div id="detail-pkg-selector"><div class="size-selector"><p class="size-selector__label">Bag Size</p><div class="size-selector__options">${
+        p.bagSizes.map((b) => `<button class="size-btn${b.id === sel ? ' size-btn--active' : ''}" data-bag-id="${esc(b.id)}">${esc(b.label)}</button>`).join('')
+      }</div></div></div>`
+    );
+  }
 
   fs.writeFileSync(path.join(PRODUCT_DIR, `${p.id}.html`), html, 'utf8');
   return p.id;

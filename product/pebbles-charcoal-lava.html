@@ -132,13 +132,11 @@
     <div class="detail-layout">
 
       <!-- Image Carousel -->
-      <div class="product-gallery" id="product-gallery">
-        <!-- JS builds the carousel here -->
-      </div>
+      <div class="product-gallery" id="product-gallery"><div class="pgal"><div class="pgal__viewport"><div class="pgal__track"><div class="pgal__slide"><picture><source type="image/avif" srcset="/images/products/pebbles-charcoal-lava-1-640.avif 640w, /images/products/pebbles-charcoal-lava-1-1024.avif 1024w" sizes="(min-width: 1024px) 560px, 100vw" /><source type="image/webp" srcset="/images/products/pebbles-charcoal-lava-1-640.webp 640w, /images/products/pebbles-charcoal-lava-1-1024.webp 1024w" sizes="(min-width: 1024px) 560px, 100vw" /><img src="/images/products/pebbles-charcoal-lava-1-1024.jpg" srcset="/images/products/pebbles-charcoal-lava-1-640.jpg 640w, /images/products/pebbles-charcoal-lava-1-1024.jpg 1024w" sizes="(min-width: 1024px) 560px, 100vw" width="1024" height="1024" alt="Charcoal Lava Pebbles" loading="eager" fetchpriority="high" /></picture></div></div></div></div></div>
 
       <!-- Info -->
       <div class="detail-body">
-        <span class="detail-category" id="detail-category"></span>
+        <span class="detail-category" id="detail-category">Decorative Pebbles</span>
         <span class="badge" id="detail-badge" style="display:none;width:fit-content"></span>
         <h1 class="detail-name" id="detail-name">Charcoal Lava Pebbles</h1>
 
@@ -147,18 +145,18 @@
           <span class="detail-unit" id="detail-unit">per 1 tonne bulk bag</span>
         </div>
 
-        <p class="detail-desc" id="detail-desc"></p>
+        <p class="detail-desc" id="detail-desc">Lightweight volcanic lava pebbles in dark charcoal tones. Highly porous — ideal as a planting medium, pot topper and feature garden accent.</p>
 
         <div>
           <p style="font-size:var(--text-xs);font-weight:700;letter-spacing:var(--tracking-wider);text-transform:uppercase;color:var(--color-text-muted);margin-bottom:var(--sp-3)">Product Features</p>
-          <ul class="detail-features" id="detail-features"></ul>
+          <ul class="detail-features" id="detail-features"><li>Lightweight volcanic rock</li><li>Multiple size options</li><li>Excellent drainage</li><li>Suits potted arrangements</li></ul>
         </div>
 
         <!-- Size selector (populated by products.js if product has sizes) -->
-        <div id="detail-size-selector"></div>
+        <div id="detail-size-selector"><div class="size-selector"><p class="size-selector__label">Size</p><div class="size-selector__options"><button class="size-btn size-btn--active" data-size="20-30mm">20-30mm</button><button class="size-btn" data-size="30-50mm">30-50mm</button><button class="size-btn" data-size="50-70mm">50-70mm</button></div></div></div>
 
         <!-- Legacy packaging selector slot — kept empty after migration to bulk-only SKUs. -->
-        <div id="detail-pkg-selector"></div>
+        <div id="detail-pkg-selector"><div class="size-selector"><p class="size-selector__label">Bag Size</p><div class="size-selector__options"><button class="size-btn" data-bag-id="20kg">20kg Bag</button><button class="size-btn size-btn--active" data-bag-id="bulk">1 Tonne Bulk Bag</button></div></div></div>
 
         <!-- Add to cart -->
         <div class="detail-add-row">

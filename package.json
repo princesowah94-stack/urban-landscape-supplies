@@ -14,6 +14,7 @@
     "square": "^39.0.0"
   },
   "devDependencies": {
+    "sharp": "0.34.5",
     "supabase": "^2.95.3"
   }
 }

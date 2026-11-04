@@ -121,6 +121,20 @@ function avifFor(srcPath) {
   return hasOptimisedSiblings(srcPath) ? srcPath.replace(/\.(jpe?g|webp|png)$/i, '.avif') : srcPath;
 }
 
+// Responsive srcset using the -640 / -1024 variants made by
+// scripts/make-responsive-images.js. Non-site images (CRM uploads) get the
+// single original URL.
+function srcsetFor(srcPath, ext) {
+  if (!hasOptimisedSiblings(srcPath)) return srcPath;
+  const base = srcPath.replace(/\.(jpe?g|webp|png|avif)$/i, '');
+  return `${base}-640.${ext} 640w, ${base}-1024.${ext} 1024w`;
+}
+function imgSrcFor(srcPath) {
+  return hasOptimisedSiblings(srcPath) ? srcPath.replace(/\.(jpe?g|webp|png|avif)$/i, '-1024.jpg') : srcPath;
+}
+const CARD_SIZES = '(min-width: 1024px) 300px, (min-width: 640px) 33vw, 50vw';
+const GALLERY_SIZES = '(min-width: 1024px) 560px, 100vw';
+
 // ─── PRODUCT CARD HTML ─────────────────────────────────────────
 function buildProductCard(product) {
   const badgeHtml = product.badge
@@ -131,10 +145,13 @@ function buildProductCard(product) {
     <article class="product-card" data-id="${product.id}" onclick="window.location='/product/${product.id}'">
       <div class="product-card__image-wrap">
         <picture>
-          <source type="image/avif" srcset="${avifFor(product.image)}" />
-          <source type="image/webp" srcset="${webpFor(product.image)}" />
+          <source type="image/avif" srcset="${srcsetFor(product.image, 'avif')}" sizes="${CARD_SIZES}" />
+          <source type="image/webp" srcset="${srcsetFor(product.image, 'webp')}" sizes="${CARD_SIZES}" />
           <img
-            src="${product.image}"
+            src="${imgSrcFor(product.image)}"
+            srcset="${srcsetFor(product.image, 'jpg')}"
+            sizes="${CARD_SIZES}"
+            width="640" height="640"
             alt="${product.name}"
             class="product-card__image"
             loading="lazy"
@@ -158,7 +175,7 @@ function buildProductCard(product) {
             class="product-card__add-btn"
             onclick="event.stopPropagation(); addToCartFromCard('${product.id}')"
             ${(product.inStock && (stockMap[product.id]?.stock ?? 1) > 0) ? '' : 'disabled'}
-            aria-label="Add ${product.name} to cart"
+            aria-label="${(product.inStock && (stockMap[product.id]?.stock ?? 1) > 0) ? 'Add to cart' : 'Out of stock'}: ${product.name}"
           >${(product.inStock && (stockMap[product.id]?.stock ?? 1) > 0) ? 'Add to Cart' : 'Out of Stock'}</button>
         </div>
       </div>
@@ -460,9 +477,9 @@ function initProductGallery(product) {
           ${images.map((src, i) => `
             <div class="pgal__slide">
               <picture>
-                <source type="image/avif" srcset="${avifFor(src)}" />
-                <source type="image/webp" srcset="${webpFor(src)}" />
-                <img src="${src}" alt="${product.name}" loading="${i === 0 ? 'eager' : 'lazy'}" ${i === 0 ? 'fetchpriority="high"' : ''} onerror="this.style.background='var(--color-gray-200)'" />
+                <source type="image/avif" srcset="${srcsetFor(src, 'avif')}" sizes="${GALLERY_SIZES}" />
+                <source type="image/webp" srcset="${srcsetFor(src, 'webp')}" sizes="${GALLERY_SIZES}" />
+                <img src="${imgSrcFor(src)}" srcset="${srcsetFor(src, 'jpg')}" sizes="${GALLERY_SIZES}" width="1024" height="1024" alt="${product.name}" loading="${i === 0 ? 'eager' : 'lazy'}" ${i === 0 ? 'fetchpriority="high"' : ''} onerror="this.style.background='var(--color-gray-200)'" />
               </picture>
             </div>
           `).join('')}
