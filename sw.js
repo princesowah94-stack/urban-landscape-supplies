@@ -14,7 +14,7 @@
    - API routes: network-only
    ============================================================ */
 
-const CACHE_NAME = 'uls-v11';
+const CACHE_NAME = 'uls-v12';
 
 const PRECACHE = [
   '/',
@@ -24,7 +24,7 @@ const PRECACHE = [
   '/js/products.js',
   '/js/cart.js',
   '/js/delivery.js',
-  '/images/brand/mark-dark.png',
+  '/images/brand/mark-dark-144.png',
   '/images/brand/og-image.jpg',
   '/manifest.webmanifest',
 ];
