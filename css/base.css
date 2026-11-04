@@ -94,7 +94,7 @@ strong {
 }
 
 .eyebrow--sage {
-  color: var(--color-sage);
+  color: var(--color-sage-dark);
 }
 
 /* ─── LAYOUT UTILITIES ───────────────────────────────────────── */

@@ -39,7 +39,8 @@ const PRERENDER_BLOCK_RE = /\n\s*<!-- BEGIN:prerender -->[\s\S]*?<!-- END:preren
 // Boilerplate paragraph that needs unique local content folded in.
 const ABOUT_PARA_RE    = /<p style="color:var\(--color-text-secondary\);line-height:var\(--leading-loose\);margin-bottom:var\(--sp-4\)">\s*Urban Landscape Supplies delivers premium landscaping products to[\s\S]*?<\/p>/;
 
-function buildTitle(suburb)   { return `Landscape Supplies Delivery to ${suburb.name} NSW ${suburb.postcode} | Urban Landscape Supplies`; }
+// Keyword first, brand last, kept ≤ ~60 chars so Google doesn't truncate it.
+function buildTitle(suburb)   { return `${suburb.name} Landscape Supplies | Urban Landscape Supplies`; }
 function buildMeta(suburb, zone) {
   return `Premium soil, mulch, pebbles, sand and 1-tonne bulk bags delivered to ${suburb.name} NSW ${suburb.postcode} from our Wetherill Park yard. ${zone.label} — delivery quoted per job.`;
 }
@@ -101,8 +102,15 @@ function buildPrerenderBlock(suburb, region, zone, slug) {
     '  <!-- BEGIN:prerender -->',
     `  <link rel="canonical" href="${canonical}" />`,
     `  <meta property="og:title" content="${buildTitle(suburb)}" />`,
+    `  <meta property="og:description" content="${buildMeta(suburb, zone)}" />`,
     `  <meta property="og:url" content="${canonical}" />`,
     `  <meta property="og:type" content="website" />`,
+    `  <meta property="og:site_name" content="Urban Landscape Supplies" />`,
+    `  <meta property="og:locale" content="en_AU" />`,
+    `  <meta property="og:image" content="${SITE_URL}/images/brand/og-image.jpg" />`,
+    `  <meta property="og:image:width" content="1200" />`,
+    `  <meta property="og:image:height" content="630" />`,
+    `  <meta name="twitter:card" content="summary_large_image" />`,
     `  <script type="application/ld+json">${JSON.stringify(localBusiness)}</script>`,
     `  <script type="application/ld+json">${JSON.stringify(breadcrumb)}</script>`,
     '  <!-- END:prerender -->',

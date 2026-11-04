@@ -13,6 +13,8 @@
   --color-taupe:        #b59677;
   --color-taupe-light:  #cdb49a;
   --color-taupe-pale:   #ede3d8;
+  /* Text-safe taupe: ≥4.5:1 on white, linen and taupe-pale, and behind white text */
+  --color-taupe-dark:   #7a5d43;
 
   /* ─── NEUTRAL SCALE ─────────────────────────────────────── */
   --color-charcoal:     #222222;
@@ -46,7 +48,7 @@
 
   --color-price:          #7a5c3d;
   --color-badge-bg:       var(--color-taupe-pale);
-  --color-badge-text:     var(--color-taupe);
+  --color-badge-text:     var(--color-taupe-dark);
 
   --color-success:        #4a7c59;
   --color-error:          #c0392b;

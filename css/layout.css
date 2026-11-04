@@ -276,7 +276,7 @@ button.nav-link--btn {
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
-  color: var(--color-taupe);
+  color: var(--color-taupe-dark);
   border: 1.5px solid var(--color-taupe-light);
   border-radius: var(--radius-sm);
   background: none;
@@ -455,7 +455,7 @@ button.nav-link--btn {
 
 .cart-drawer__bulk-link {
   font-size: var(--text-xs);
-  color: var(--color-taupe);
+  color: var(--color-taupe-dark);
   text-align: center;
   border-top: 1px solid var(--color-border);
   padding-top: var(--sp-3);
@@ -579,7 +579,7 @@ button.nav-link--btn {
 
 .footer-brand__meta {
   font-size: var(--text-xs);
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.6);
   margin-top: var(--sp-4);
   line-height: var(--leading-loose);
 }
@@ -653,7 +653,7 @@ button.nav-link--btn {
 
 .footer-lower__copy {
   font-size: var(--text-xs);
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.6);
 }
 
 .footer-lower__links {
@@ -663,7 +663,7 @@ button.nav-link--btn {
 
 .footer-lower__links a {
   font-size: var(--text-xs);
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.6);
   transition: color var(--duration-fast) var(--ease-out);
 }
 .footer-lower__links a:hover { color: rgba(255,255,255,0.7); }
@@ -745,4 +745,20 @@ button.nav-link--btn {
   .mobile-nav__cart-cta {
     display: none;
   }
+}
+
+/* Tap-to-call in the header on phones/tablets — delivery is quoted per job,
+   so a call is the main conversion. Desktop shows the number in the utility bar. */
+.header-call-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  color: var(--color-sage);
+}
+.header-call-btn:hover { background: var(--color-gray-50); }
+@media (max-width: 1024px) {
+  .header-call-btn { display: inline-flex; }
 }

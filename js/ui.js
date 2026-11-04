@@ -233,6 +233,9 @@ function initScrollReveal() {
 
 // ─── INIT ────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  // Footer copyright year (HTML ships the build year as a fallback)
+  document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
+
   // Mobile nav toggle
   document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
     const isOpen = document.getElementById('mobile-nav')?.classList.contains('open');

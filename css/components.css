@@ -56,7 +56,7 @@
 /* Secondary — outlined sage */
 .btn--secondary {
   background: transparent;
-  color: var(--color-sage);
+  color: var(--color-sage-dark);
   border-color: var(--color-sage);
 }
 .btn--secondary:hover {
@@ -66,13 +66,13 @@
 
 /* Bulk — taupe */
 .btn--bulk {
-  background: var(--color-taupe);
+  background: var(--color-taupe-dark);
   color: var(--color-white);
-  border-color: var(--color-taupe);
+  border-color: var(--color-taupe-dark);
 }
 .btn--bulk:hover {
-  background: var(--color-taupe-light);
-  border-color: var(--color-taupe-light);
+  background: #6a503a;
+  border-color: #6a503a;
   box-shadow: 0 6px 22px rgba(181,150,119,0.30);
 }
 
