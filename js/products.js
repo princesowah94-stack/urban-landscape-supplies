@@ -461,70 +461,90 @@ function injectProductSchema(product) {
 
 // ─── HELPER ────────────────────────────────────────────────────
 function initProductGallery(product) {
-  const images = (product.images && product.images.length > 1) ? product.images : [product.image];
-  let current = 0;
+  const images = (product.images && product.images.length) ? product.images : [product.image];
   const gallery = document.getElementById('product-gallery');
   if (!gallery) return;
 
-  const multi = images.length > 1;
-  const chevL = `<svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>`;
-  const chevR = `<svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>`;
+  // Pre-rendered pages already contain this exact markup (see
+  // scripts/prerender-products.js) — only rebuild when it's missing or stale.
+  const baked = gallery.querySelector(`.pgal[data-product="${product.id}"]`);
+  if (!baked || baked.querySelectorAll('.pgal__slide').length !== images.length) {
+    gallery.innerHTML = buildGalleryHtml(product, images);
+  }
+  if (images.length < 2) return;
 
-  gallery.innerHTML = `
-    <div class="pgal">
-      <div class="pgal__viewport">
-        <div class="pgal__track" id="pgal-track">
-          ${images.map((src, i) => `
-            <div class="pgal__slide">
-              <picture>
-                <source type="image/avif" srcset="${srcsetFor(src, 'avif')}" sizes="${GALLERY_SIZES}" />
-                <source type="image/webp" srcset="${srcsetFor(src, 'webp')}" sizes="${GALLERY_SIZES}" />
-                <img src="${imgSrcFor(src)}" srcset="${srcsetFor(src, 'jpg')}" sizes="${GALLERY_SIZES}" width="1024" height="1024" alt="${product.name}" loading="${i === 0 ? 'eager' : 'lazy'}" ${i === 0 ? 'fetchpriority="high"' : ''} onerror="this.style.background='var(--color-gray-200)'" />
-              </picture>
-            </div>
-          `).join('')}
-        </div>
+  const track  = gallery.querySelector('.pgal__track');
+  const prev   = gallery.querySelector('.pgal__arrow--prev');
+  const next   = gallery.querySelector('.pgal__arrow--next');
+  const thumbs = gallery.querySelectorAll('.pgal__thumb');
+  let current = 0;
 
-        ${multi ? `
-          <button class="pgal__arrow pgal__arrow--prev" id="pgal-prev" aria-label="Previous image">${chevL}</button>
-          <button class="pgal__arrow pgal__arrow--next" id="pgal-next" aria-label="Next image">${chevR}</button>
-          <div class="pgal__dots">
-            ${images.map((_, i) => `<button class="pgal__dot${i === 0 ? ' pgal__dot--on' : ''}" data-i="${i}" aria-label="Image ${i + 1}"></button>`).join('')}
-          </div>
-        ` : ''}
-      </div>
-
-      ${multi ? `
-        <div class="pgal__counter" id="pgal-counter">1 / ${images.length}</div>
-      ` : ''}
-    </div>
-  `;
-
-  if (!multi) return;
-
-  const track   = document.getElementById('pgal-track');
-  const counter = document.getElementById('pgal-counter');
-  const dots    = gallery.querySelectorAll('.pgal__dot');
-
+  // A deck, not a loop: stops at the first and last photo.
   function goTo(index) {
-    current = (index + images.length) % images.length;
+    current = Math.max(0, Math.min(images.length - 1, index));
     track.style.transform = `translateX(-${current * 100}%)`;
-    if (counter) counter.textContent = `${current + 1} / ${images.length}`;
-    dots.forEach((d, i) => d.classList.toggle('pgal__dot--on', i === current));
+    prev.disabled = current === 0;
+    next.disabled = current === images.length - 1;
+    thumbs.forEach((t, i) => {
+      t.classList.toggle('pgal__thumb--on', i === current);
+      t.setAttribute('aria-current', i === current ? 'true' : 'false');
+    });
+    // Centre the active thumb in its strip (scrollIntoView would scroll the page too)
+    const strip = thumbs[current].parentElement;
+    strip.scrollTo({ left: thumbs[current].offsetLeft - (strip.clientWidth - thumbs[current].offsetWidth) / 2, behavior: 'smooth' });
   }
 
-  document.getElementById('pgal-prev').addEventListener('click', () => goTo(current - 1));
-  document.getElementById('pgal-next').addEventListener('click', () => goTo(current + 1));
-  dots.forEach(d => d.addEventListener('click', () => goTo(parseInt(d.dataset.i))));
+  prev.addEventListener('click', () => goTo(current - 1));
+  next.addEventListener('click', () => goTo(current + 1));
+  thumbs.forEach((t, i) => t.addEventListener('click', () => goTo(i)));
+
+  const vp = gallery.querySelector('.pgal__viewport');
+  vp.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(current - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
+  });
 
   // Touch swipe
   let tx = 0;
-  const vp = gallery.querySelector('.pgal__viewport');
   vp.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
   vp.addEventListener('touchend', e => {
     const diff = tx - e.changedTouches[0].clientX;
     if (Math.abs(diff) > 40) goTo(current + (diff > 0 ? 1 : -1));
   });
+}
+
+// Keep in sync with galleryHtml() in scripts/prerender-products.js
+function buildGalleryHtml(product, images) {
+  const multi = images.length > 1;
+  const chevL = `<svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>`;
+  const chevR = `<svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>`;
+  const thumbSrc = (src) => hasOptimisedSiblings(src) ? src.replace(/\.(jpe?g|webp|png|avif)$/i, '-640.webp') : src;
+
+  return `<div class="pgal" data-product="${product.id}">` +
+    `<div class="pgal__viewport"${multi ? ' tabindex="0" aria-label="Product photos, use arrow keys to browse"' : ''}>` +
+    `<div class="pgal__track">` +
+    images.map((src, i) =>
+      `<div class="pgal__slide"><picture>` +
+      `<source type="image/avif" srcset="${srcsetFor(src, 'avif')}" sizes="${GALLERY_SIZES}" />` +
+      `<source type="image/webp" srcset="${srcsetFor(src, 'webp')}" sizes="${GALLERY_SIZES}" />` +
+      `<img src="${imgSrcFor(src)}" srcset="${srcsetFor(src, 'jpg')}" sizes="${GALLERY_SIZES}" width="1024" height="1024" alt="${product.name}${multi ? ` (photo ${i + 1} of ${images.length})` : ''}" loading="${i === 0 ? 'eager' : 'lazy'}"${i === 0 ? ' fetchpriority="high"' : ''} />` +
+      `</picture></div>`
+    ).join('') +
+    `</div>` +
+    (multi
+      ? `<button type="button" class="pgal__arrow pgal__arrow--prev" aria-label="Previous photo" disabled>${chevL}</button>` +
+        `<button type="button" class="pgal__arrow pgal__arrow--next" aria-label="Next photo">${chevR}</button>`
+      : '') +
+    `</div>` +
+    (multi
+      ? `<div class="pgal__thumbs">` +
+        images.map((src, i) =>
+          `<button type="button" class="pgal__thumb${i === 0 ? ' pgal__thumb--on' : ''}" aria-label="Show photo ${i + 1}" aria-current="${i === 0}">` +
+          `<img src="${thumbSrc(src)}" width="72" height="72" alt="" loading="lazy" /></button>`
+        ).join('') +
+        `</div>`
+      : '') +
+    `</div>`;
 }
 
 function setTextById(id, text) {

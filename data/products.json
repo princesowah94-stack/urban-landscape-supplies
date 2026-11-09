@@ -80,6 +80,9 @@
           "price": 1097.5,
           "unit": "per 1 tonne bulk bag"
         }
+      ],
+      "images": [
+        "/images/products/pebbles-crushed-snow-white-1.jpg"
       ]
     },
     {
@@ -114,6 +117,9 @@
           "price": 1000,
           "unit": "per 1 tonne bulk bag"
         }
+      ],
+      "images": [
+        "/images/products/pebbles-charcoal-grey-1.jpg"
       ]
     },
     {
@@ -142,8 +148,7 @@
         "/images/products/pebbles-charcoal-lava-3.jpg",
         "/images/products/pebbles-charcoal-lava-4.jpg",
         "/images/products/pebbles-charcoal-lava-5.jpg",
-        "/images/products/pebbles-charcoal-lava-6.jpg",
-        "/images/products/pebbles-charcoal-lava-7.jpg"
+        "/images/products/pebbles-charcoal-lava-6.jpg"
       ],
       "badge": null,
       "featured": true,
@@ -200,6 +205,9 @@
           "price": 1000,
           "unit": "per 1 tonne bulk bag"
         }
+      ],
+      "images": [
+        "/images/products/pebbles-red-lava-1.jpg"
       ]
     },
     {

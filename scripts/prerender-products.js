@@ -36,6 +36,47 @@ function esc(v) {
   return String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+// Keep in sync with buildGalleryHtml() in js/products.js
+const GALLERY_SIZES = '(min-width: 1024px) 560px, 100vw';
+const isLocal = (src) => src.startsWith('/images/products/');
+const stripExt = (src) => src.replace(/\.(jpe?g|webp|png|avif)$/i, '');
+const srcsetFor = (src, ext) => isLocal(src) ? `${stripExt(src)}-640.${ext} 640w, ${stripExt(src)}-1024.${ext} 1024w` : src;
+const imgSrcFor = (src) => isLocal(src) ? `${stripExt(src)}-1024.jpg` : src;
+const thumbSrc = (src) => isLocal(src) ? `${stripExt(src)}-640.webp` : src;
+
+function galleryHtml(product, images) {
+  const multi = images.length > 1;
+  const name = esc(product.name);
+  const chevL = `<svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>`;
+  const chevR = `<svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>`;
+
+  return `<div class="pgal" data-product="${product.id}">` +
+    `<div class="pgal__viewport"${multi ? ' tabindex="0" aria-label="Product photos, use arrow keys to browse"' : ''}>` +
+    `<div class="pgal__track">` +
+    images.map((src, i) =>
+      `<div class="pgal__slide"><picture>` +
+      `<source type="image/avif" srcset="${srcsetFor(src, 'avif')}" sizes="${GALLERY_SIZES}" />` +
+      `<source type="image/webp" srcset="${srcsetFor(src, 'webp')}" sizes="${GALLERY_SIZES}" />` +
+      `<img src="${imgSrcFor(src)}" srcset="${srcsetFor(src, 'jpg')}" sizes="${GALLERY_SIZES}" width="1024" height="1024" alt="${name}${multi ? ` (photo ${i + 1} of ${images.length})` : ''}" loading="${i === 0 ? 'eager' : 'lazy'}"${i === 0 ? ' fetchpriority="high"' : ''} />` +
+      `</picture></div>`
+    ).join('') +
+    `</div>` +
+    (multi
+      ? `<button type="button" class="pgal__arrow pgal__arrow--prev" aria-label="Previous photo" disabled>${chevL}</button>` +
+        `<button type="button" class="pgal__arrow pgal__arrow--next" aria-label="Next photo">${chevR}</button>`
+      : '') +
+    `</div>` +
+    (multi
+      ? `<div class="pgal__thumbs">` +
+        images.map((src, i) =>
+          `<button type="button" class="pgal__thumb${i === 0 ? ' pgal__thumb--on' : ''}" aria-label="Show photo ${i + 1}" aria-current="${i === 0}">` +
+          `<img src="${thumbSrc(src)}" width="72" height="72" alt="" loading="lazy" /></button>`
+        ).join('') +
+        `</div>`
+      : '') +
+    `</div>`;
+}
+
 function fmtAud(price) {
   return Number(price).toFixed(2);
 }
@@ -144,22 +185,14 @@ function bake(p) {
     `<span class="detail-unit" id="detail-unit">${p.unit || ''}</span>`
   );
 
-  // Bake the first gallery image (the LCP element) so the browser fetches it
-  // from the HTML instead of waiting for products.js + the API. products.js
-  // rebuilds the carousel with the same URLs, so it's already in cache.
-  const first = ((p.images && p.images.length > 1) ? p.images : [p.image])[0];
-  if (first) {
-    const base = first.replace(/\.(jpe?g|webp|png|avif)$/i, '');
-    const local = first.startsWith('/images/products/');
-    const set = (ext) => local ? `${base}-640.${ext} 640w, ${base}-1024.${ext} 1024w` : first;
-    const sizes = '(min-width: 1024px) 560px, 100vw';
+  // Bake the whole gallery (slides, arrows, thumbnails) so the photos and
+  // controls are there before products.js + the API load. products.js sees
+  // the matching data-product + slide count and only binds events.
+  const images = (p.images && p.images.length) ? p.images : [p.image];
+  if (images[0]) {
     html = html.replace(
       /<div class="product-gallery" id="product-gallery">[\s\S]*?<\/div>/,
-      `<div class="product-gallery" id="product-gallery"><div class="pgal"><div class="pgal__viewport"><div class="pgal__track"><div class="pgal__slide"><picture>` +
-      `<source type="image/avif" srcset="${set('avif')}" sizes="${sizes}" />` +
-      `<source type="image/webp" srcset="${set('webp')}" sizes="${sizes}" />` +
-      `<img src="${local ? base + '-1024.jpg' : first}" srcset="${set('jpg')}" sizes="${sizes}" width="1024" height="1024" alt="${esc(p.name)}" loading="eager" fetchpriority="high" />` +
-      `</picture></div></div></div></div></div>`
+      `<div class="product-gallery" id="product-gallery">${galleryHtml(p, images)}</div>`
     );
   }
 
