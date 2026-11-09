@@ -158,70 +158,76 @@ async function initSuburbPage() {
   const region = data.regions.find(r => r.slug === suburb.region);
   const zone   = data.zones[suburb.zone];
 
-  // ── Meta tags ────────────────────────────────────────────
-  document.title = `Landscaping Supplies ${suburb.name} NSW | Urban Landscape Supplies`;
+  // Pre-rendered /delivery/<slug> pages already carry the right title, meta, canonical and
+  // JSON-LD (scripts/prerender-suburbs.js). Only the bare template needs them set here;
+  // overwriting them gave Google a second, older title and duplicate structured data.
+  const prerendered = !!document.querySelector('link[rel="canonical"]');
+  if (!prerendered) {
+    // ── Meta tags ────────────────────────────────────────────
+    document.title = `Landscaping Supplies ${suburb.name} NSW | Urban Landscape Supplies`;
 
-  const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) {
-    metaDesc.setAttribute('content',
-      `Premium mulch, soil, pebbles and bulk landscape materials delivered to ${suburb.name} NSW ${suburb.postcode}. ` +
-      `${zone.label} — delivery quoted per job. Urban Landscape Supplies Sydney.`
-    );
-  }
-
-  // ── Canonical ────────────────────────────────────────────
-  let canon = document.querySelector('link[rel="canonical"]');
-  if (!canon) { canon = document.createElement('link'); canon.rel = 'canonical'; document.head.appendChild(canon); }
-  canon.href = `https://urbanlandscapesupplies.com.au/delivery/${slug}`;
-
-  // ── JSON-LD ───────────────────────────────────────────────
-  const ldScript = document.createElement('script');
-  ldScript.type = 'application/ld+json';
-  ldScript.textContent = JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "Urban Landscape Supplies",
-    "url": "https://urbanlandscapesupplies.com.au",
-    "telephone": "+61433132406",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Sydney",
-      "addressRegion": "NSW",
-      "addressCountry": "AU"
-    },
-    "areaServed": {
-      "@type": "City",
-      "name": suburb.name,
-      "postalCode": suburb.postcode,
-      "containedInPlace": { "@type": "AdministrativeArea", "name": "New South Wales" }
-    },
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": `Landscaping Supplies Delivered to ${suburb.name}`,
-      "itemListElement": [
-        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mulch Delivery" }},
-        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Garden Soil Delivery" }},
-        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Pebbles & Stone Delivery" }},
-        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Bulk Landscape Materials" }}
-      ]
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content',
+        `Premium mulch, soil, pebbles and bulk landscape materials delivered to ${suburb.name} NSW ${suburb.postcode}. ` +
+        `${zone.label} — delivery quoted per job. Urban Landscape Supplies Sydney.`
+      );
     }
-  });
-  document.head.appendChild(ldScript);
 
-  // ── Breadcrumb JSON-LD ────────────────────────────────────
-  const breadcrumbScript = document.createElement('script');
-  breadcrumbScript.type = 'application/ld+json';
-  breadcrumbScript.textContent = JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home",           "item": "https://urbanlandscapesupplies.com.au/" },
-      { "@type": "ListItem", "position": 2, "name": "Delivery Areas", "item": "https://urbanlandscapesupplies.com.au/delivery-areas" },
-      { "@type": "ListItem", "position": 3, "name": region.name,      "item": `https://urbanlandscapesupplies.com.au/delivery-areas#region-${region.slug}` },
-      { "@type": "ListItem", "position": 4, "name": suburb.name,      "item": `https://urbanlandscapesupplies.com.au/delivery/${slug}` }
-    ]
-  });
-  document.head.appendChild(breadcrumbScript);
+    // ── Canonical ────────────────────────────────────────────
+    let canon = document.querySelector('link[rel="canonical"]');
+    if (!canon) { canon = document.createElement('link'); canon.rel = 'canonical'; document.head.appendChild(canon); }
+    canon.href = `https://urbanlandscapesupplies.com.au/delivery/${slug}`;
+
+    // ── JSON-LD ───────────────────────────────────────────────
+    const ldScript = document.createElement('script');
+    ldScript.type = 'application/ld+json';
+    ldScript.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Urban Landscape Supplies",
+      "url": "https://urbanlandscapesupplies.com.au",
+      "telephone": "+61433132406",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Sydney",
+        "addressRegion": "NSW",
+        "addressCountry": "AU"
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": suburb.name,
+        "postalCode": suburb.postcode,
+        "containedInPlace": { "@type": "AdministrativeArea", "name": "New South Wales" }
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": `Landscaping Supplies Delivered to ${suburb.name}`,
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mulch Delivery" }},
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Garden Soil Delivery" }},
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Pebbles & Stone Delivery" }},
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Bulk Landscape Materials" }}
+        ]
+      }
+    });
+    document.head.appendChild(ldScript);
+
+    // ── Breadcrumb JSON-LD ────────────────────────────────────
+    const breadcrumbScript = document.createElement('script');
+    breadcrumbScript.type = 'application/ld+json';
+    breadcrumbScript.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home",           "item": "https://urbanlandscapesupplies.com.au/" },
+        { "@type": "ListItem", "position": 2, "name": "Delivery Areas", "item": "https://urbanlandscapesupplies.com.au/delivery-areas" },
+        { "@type": "ListItem", "position": 3, "name": region.name,      "item": `https://urbanlandscapesupplies.com.au/delivery-areas#region-${region.slug}` },
+        { "@type": "ListItem", "position": 4, "name": suburb.name,      "item": `https://urbanlandscapesupplies.com.au/delivery/${slug}` }
+      ]
+    });
+    document.head.appendChild(breadcrumbScript);
+  }
 
   // ── Populate DOM ──────────────────────────────────────────
 

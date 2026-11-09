@@ -28,7 +28,7 @@ fs.mkdirSync(OUT_DIR, { recursive: true });
 // Same rule as prerender-products.js: relative href/src get ../ so the page
 // works one level deep under /blog/.
 function rewritePathsForSubdir(html) {
-  return html.replace(/(href|src)="(?!\/|https?:\/\/|#|mailto:|tel:|data:|javascript:)([^"]+)"/g,
+  return html.replace(/(href|src)="(?!\/|https?:\/\/|\{\{|#|mailto:|tel:|data:|javascript:)([^"]+)"/g,
     (_, attr, val) => `${attr}="../${val}"`);
 }
 

@@ -40,9 +40,17 @@ const PRERENDER_BLOCK_RE = /\n\s*<!-- BEGIN:prerender -->[\s\S]*?<!-- END:preren
 const ABOUT_PARA_RE    = /<p style="color:var\(--color-text-secondary\);line-height:var\(--leading-loose\);margin-bottom:var\(--sp-4\)">\s*Urban Landscape Supplies delivers premium landscaping products to[\s\S]*?<\/p>/;
 
 // Keyword first, brand last, kept ≤ ~60 chars so Google doesn't truncate it.
-function buildTitle(suburb)   { return `${suburb.name} Landscape Supplies | Urban Landscape Supplies`; }
-function buildMeta(suburb, zone) {
-  return `Premium soil, mulch, pebbles, sand and 1-tonne bulk bags delivered to ${suburb.name} NSW ${suburb.postcode} from our Wetherill Park yard. ${zone.label} — delivery quoted per job.`;
+// Titles lead with the phrase people search ("landscape supplies <suburb>"); the meta names the
+// region too, because GSC shows region searches ("landscape supplies northern beaches").
+function buildTitle(suburb) {
+  if (suburb.slug === 'wetherill-park') return 'Landscape Supplies Wetherill Park | Our Yard, Click & Collect';
+  return `Landscape Supplies ${suburb.name} | Soil & Mulch Delivered`;
+}
+function buildMeta(suburb, region) {
+  if (suburb.slug === 'wetherill-park') {
+    return 'Our landscape supplies yard at 21/130 Hassall St, Wetherill Park. Soil, mulch, sand and pebbles in 1-tonne bulk bags. Free click & collect, or delivered.';
+  }
+  return `Soil, mulch, sand and pebbles in 1-tonne bulk bags, delivered to ${suburb.name} ${suburb.postcode} (${region.name}) from our Wetherill Park yard. Call for a quote.`;
 }
 
 function buildPrerenderBlock(suburb, region, zone, slug) {
@@ -102,7 +110,7 @@ function buildPrerenderBlock(suburb, region, zone, slug) {
     '  <!-- BEGIN:prerender -->',
     `  <link rel="canonical" href="${canonical}" />`,
     `  <meta property="og:title" content="${buildTitle(suburb)}" />`,
-    `  <meta property="og:description" content="${buildMeta(suburb, zone)}" />`,
+    `  <meta property="og:description" content="${buildMeta(suburb, region)}" />`,
     `  <meta property="og:url" content="${canonical}" />`,
     `  <meta property="og:type" content="website" />`,
     `  <meta property="og:site_name" content="Urban Landscape Supplies" />`,
@@ -133,7 +141,7 @@ function processFile(suburb) {
   let html = rewritePathsForSubdir(TEMPLATE);
 
   const title = buildTitle(suburb);
-  const meta  = buildMeta(suburb, zone);
+  const meta  = buildMeta(suburb, region);
 
   if (!STATIC_TITLE_RE.test(html))  { console.warn(`SKIP ${slug} — no <title> match`); return; }
   if (!META_DESC_RE.test(html))     { console.warn(`SKIP ${slug} — no meta description match`); return; }
