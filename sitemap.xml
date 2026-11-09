@@ -4,7 +4,7 @@
   <!-- Core pages -->
   <url>
     <loc>https://urbanlandscapesupplies.com.au/</loc>
-    <lastmod>2026-11-04</lastmod>
+    <lastmod>2026-11-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -24,7 +24,7 @@
   </url>
   <url>
     <loc>https://urbanlandscapesupplies.com.au/about</loc>
-    <lastmod>2026-11-04</lastmod>
+    <lastmod>2026-11-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -50,7 +50,7 @@
   </url>
   <url>
     <loc>https://urbanlandscapesupplies.com.au/coverage-calculator</loc>
-    <lastmod>2026-11-04</lastmod>
+    <lastmod>2026-11-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -246,10 +246,10 @@
   <url><loc>https://urbanlandscapesupplies.com.au/blog</loc>
     <lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://urbanlandscapesupplies.com.au/blog/how-much-mulch-do-i-need</loc>
-    <lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+    <lastmod>2026-11-09</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://urbanlandscapesupplies.com.au/blog/turf-underlay-guide</loc>
-    <lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+    <lastmod>2026-11-09</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://urbanlandscapesupplies.com.au/blog/decorative-pebbles-garden-ideas-sydney</loc>
-    <lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+    <lastmod>2026-11-09</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
 
 </urlset>
