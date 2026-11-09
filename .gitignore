@@ -10,3 +10,6 @@ Project Assets/
 
 # Local backups created by scripts/regen-site-images.sh
 *.before-regen
+
+# Drive originals downloaded by scripts/import-drive-photos.js
+images/_drive-src/
