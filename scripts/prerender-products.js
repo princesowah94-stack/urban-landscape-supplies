@@ -124,8 +124,12 @@ function bake(p) {
   let html = template;
 
   const url = `${SITE_URL}/product/${p.id}`;
-  const title = `${p.name} — ${p.categoryLabel || 'Landscape Supplies'} | Urban Landscape Supplies`;
-  const desc = (p.description || '').replace(/\s+/g, ' ').trim();
+  // Search-facing title/meta: lead with what people type (product + bulk bag + Sydney), keep under
+  // Google's ~60/~160 char cut-offs. The full supplier description still renders on the page.
+  const base = `${p.name} – Bulk Bag Sydney`;
+  const title = `${base} | Urban Landscape Supplies`.length <= 60 ? `${base} | Urban Landscape Supplies` : base;
+  const price = Number(p.price) % 1 ? fmtAud(p.price) : String(p.price);
+  const desc = `${p.name}, $${price} per 1-tonne bulk bag. Delivered across Sydney (quoted per suburb) or collect free from our Wetherill Park yard.`;
   const ogImage = (p.image && (p.image.startsWith('http') ? p.image : `${SITE_URL}/${p.image}`)) || `${SITE_URL}/images/brand/og-image.jpg`;
 
   // Path rewrites first (so subsequent text replacements aren't affected by
