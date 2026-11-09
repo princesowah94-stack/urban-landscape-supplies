@@ -39,7 +39,7 @@ const PHOTOS = {
     { id: '18GREp0uPiUrmPeSyUUgirUe6DxEDV83V' },  // 1C9A0088, in hand
     { id: '1B3WzdtueCh-0GAzULl91Z7Ame2x0foTp', position: 'centre' },  // 20-30mm
     { id: '1ht24_mhyz-wR-Ips5lcEkGcgbAZNRnWu', position: 'centre' },  // 30-50mm
-    { id: '1D8Ut5PXSNFIcG1McHxicbpdkYZCEoOt2', position: 'centre' },  // 50-80mm
+    { id: '1D8Ut5PXSNFIcG1McHxicbpdkYZCEoOt2', position: 'centre' },  // 50-70mm (Drive file is named 50-80mm; site size is correct)
     { id: '1DWFqA65Vl7FkxLOq7UHKp3sioSksUhOY' },  // bag 1C9A0081
   ],
   'crushed-snow-white': [
