@@ -1,0 +1,7 @@
+# Internal files: needed in the repo, never served on the live site.
+docs
+supabase
+scripts
+content
+HANDOVER.md
+Project Assets
