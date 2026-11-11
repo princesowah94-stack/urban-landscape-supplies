@@ -27,6 +27,7 @@ see the bag count on one page each month."
 | Landscapers who reorder | 4–6 a month each | 8–12 regular customers | about 30 conversations, once |
 
 What this means:
+
 - **Free Google search alone won't reach 50 soon.** 64 visits a month cannot produce 75–150 enquiries. Search is
   the slow engine: worth building, but it pays off over months.
 - **Ten regular landscapers is most of the goal.** That is a list and some phone calls, not a marketing campaign.
@@ -52,7 +53,8 @@ Search and the Google listing keep growing in the background (Northern Beaches p
 Judged on his own order records, not on rankings. If we miss, we'll both see the real number and why.
 
 ## Questions only Ronnie can answer
-The numbers:
+**The numbers**
+
 1. What does a bag cost him, and what's left after delivery? Which products make the most?
 2. How many enquiries has he had so far, and what happened to each? (No reply, too dear, delivery too far, still
    deciding?)
@@ -60,17 +62,20 @@ The numbers:
 4. Does he want 50 bags, or does he want a profit number? (If margin is thin on soil, 20 pebble bags may beat 50
    soil bags.)
 
-The audience:
+**The audience**
+
 5. How many Urban Pots customers does he have contact details for? Is he happy to message them about ULS?
 6. Does he already know landscapers or builders who buy from someone else? Who do they buy from, and why?
 7. What can he offer trade customers: a first-order price, free delivery over a certain number of bags, an account?
 
-Google:
+**Google**
+
 8. His Google listing covers both businesses. Which website does its button open? Should ULS have its own listing?
 9. Will he ask every customer for a Google review? I'll give him a one-line text to send.
 10. If he runs ads himself, can we agree which pages they point to, so we can measure them?
 
-Delivery facts for the site:
+**Delivery facts for the site**
+
 11. Does he really deliver to the Northern Beaches and Eastern Suburbs, and how fast? Those pages get the most
     Google impressions, so the promise has to be true.
 

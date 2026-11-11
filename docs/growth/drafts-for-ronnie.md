@@ -13,6 +13,7 @@ Anything in [square brackets] is a choice only he can make.
 > 21/130 Hassall St or we deliver to site.
 >
 > If you've got a job coming up, send me what you need and I'll come back with a price today.
+>
 > [First-order offer, if he wants one: e.g. a set price per bag for 4 or more, or delivery included locally.]
 >
 > 0433 132 406
@@ -43,10 +44,10 @@ If they reply with a job: price it the same day. If they don't reply: one follow
 > It comes in 1-tonne bulk bags, and the pebbles also come in 20kg bags if you only need a little.
 > Pick up from the yard or we'll quote delivery to you.
 >
-> See the range: https://urbanlandscapesupplies.com.au/products
+> See the range: https://urbanlandscapesupplies.com.au/products  
 > Or call me on 0433 132 406.
 >
-> Ronnie
+> Ronnie  
 > Urban Pots Australia & Urban Landscape Supplies
 
 Before sending: only send to customers who agreed to hear from him, and include an unsubscribe line. That's the
