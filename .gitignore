@@ -13,3 +13,6 @@ Project Assets/
 
 # Drive originals downloaded by scripts/import-drive-photos.js
 images/_drive-src/
+
+# Private client planning (this repo is public on GitHub)
+docs/growth/
