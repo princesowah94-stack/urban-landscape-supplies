@@ -14,7 +14,7 @@
    - API routes: network-only
    ============================================================ */
 
-const CACHE_NAME = 'uls-v14';
+const CACHE_NAME = 'uls-v15';
 
 const PRECACHE = [
   '/',

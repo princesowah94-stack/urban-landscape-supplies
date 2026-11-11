@@ -334,6 +334,9 @@
         })
       });
       if (!res.ok) throw new Error('Submission failed');
+      if (typeof window.trackEvent === 'function') {
+        window.trackEvent('generate_lead', { method: 'trade_application' });
+      }
       document.getElementById('trade-form').style.display = 'none';
       document.getElementById('trade-success').style.display = 'block';
       document.getElementById('trade-success').scrollIntoView({ behavior: 'smooth' });

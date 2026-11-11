@@ -42,3 +42,13 @@ window.trackEvent = function trackEvent(eventName, params) {
     window.gtag('event', eventName, params || {});
   }
 };
+
+// Phone and email taps are how most enquiries start, so count them. One listener for the whole
+// page; `link_page` says which page the tap came from.
+document.addEventListener('click', function (e) {
+  const link = e.target.closest && e.target.closest('a[href^="tel:"], a[href^="mailto:"]');
+  if (!link) return;
+  window.trackEvent(link.protocol === 'tel:' ? 'phone_click' : 'email_click', {
+    link_page: location.pathname,
+  });
+});
