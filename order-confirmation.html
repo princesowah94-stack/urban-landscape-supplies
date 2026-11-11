@@ -145,6 +145,23 @@
     }
   }
 
+  // GA4 purchase, keyed by the Supabase order id so the CRM can join website
+  // traffic to real orders. Once per order — reloading the page doesn't recount it.
+  function trackPurchase(order, items) {
+    if (typeof window.trackEvent !== 'function') return;
+    const key = `uls_purchase_tracked_${order.id}`;
+    try { if (localStorage.getItem(key)) return; } catch { /* storage blocked — still track */ }
+    window.trackEvent('purchase', {
+      transaction_id: order.id,
+      currency: 'AUD',
+      value: order.total_cents / 100,
+      items: (items || []).map(i => ({
+        item_id: i.product_id, item_name: i.name, price: i.price_cents / 100, quantity: i.quantity,
+      })),
+    });
+    try { localStorage.setItem(key, '1'); } catch { /* ignore */ }
+  }
+
   function renderError(msg) {
     const summary = document.getElementById('order-summary');
     if (summary) summary.innerHTML = `<p style="color:var(--color-text-muted);font-size:var(--text-sm);margin:0;text-align:center">${msg}</p>`;
@@ -154,7 +171,9 @@
     // Successful payment landed here — clear the cart immediately.
     clearCart?.();
 
-    const id = new URLSearchParams(location.search).get('order');
+    // Checkout redirects with ?id= (api/create-checkout.js); ?order= kept for old links
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id') || params.get('order');
     if (!id) {
       renderError("We couldn't find your order reference. Check your email — we've sent the receipt there.");
       return;
@@ -165,6 +184,7 @@
       if (!res.ok) throw new Error('not ok');
       const { order, items } = await res.json();
       renderSummary(order, items);
+      trackPurchase(order, items);
     } catch {
       renderError("We couldn't load your order summary right now — but your payment went through and you'll get a confirmation email shortly.");
     }
