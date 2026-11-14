@@ -11,6 +11,8 @@ process.env.EMAIL_TO = STAFF;
 
 let failMailTo = [];   // addresses whose email fails ('*' = all)
 let dbFails = false;
+let dbThrows = false;   // database not configured at all
+let dbHangs = false;    // database accepts the request and never answers
 let mails = [];
 let rows = [];
 
@@ -24,16 +26,31 @@ mock.module('nodemailer', {
     }),
   },
 });
+// The fake insert takes 20 ms, like a real one, so a handler that answers
+// without waiting for the save is caught. When dbHangs is set it never answers
+// unless the handler's own time limit cancels it.
 mock.module('../api/_supabase.js', {
   namedExports: {
     supabase: {
-      from: (table) => ({
-        async insert(row) {
-          if (dbFails) return { error: { message: 'db down' } };
-          rows.push({ table, row });
-          return { error: null };
-        },
-      }),
+      from: (table) => {
+        if (dbThrows) throw new Error('Missing required env vars');
+        return {
+          insert(row) {
+            let signal;
+            const run = async () => {
+              if (dbHangs) {
+                return new Promise((resolve) =>
+                  signal?.addEventListener('abort', () => resolve({ error: { message: 'timed out' } })));
+              }
+              await new Promise((r) => setTimeout(r, 20));
+              if (dbFails) return { error: { message: 'db down' } };
+              rows.push({ table, row });
+              return { error: null };
+            };
+            return { abortSignal(s) { signal = s; return this; }, then: (a, b) => run().then(a, b) };
+          },
+        };
+      },
     },
   },
 });
@@ -52,7 +69,7 @@ const QUOTE = {
 };
 
 beforeEach(() => {
-  failMailTo = []; dbFails = false; mails = []; rows = [];
+  failMailTo = []; dbFails = false; dbThrows = false; dbHangs = false; mails = []; rows = [];
   mock.method(console, 'error', () => {}); // the handlers log the faked failures
 });
 
@@ -77,6 +94,20 @@ for (const [name, handler, body, table] of [
 
   test(`${name}: database down, staff still get the email`, async () => {
     dbFails = true;
+    const res = await post(handler, body);
+    assert.equal(res.status, 200);
+    assert.ok(mails.includes(STAFF));
+  });
+
+  test(`${name}: database not configured, staff still get the email`, async () => {
+    dbThrows = true;
+    const res = await post(handler, body);
+    assert.equal(res.status, 200);
+    assert.ok(mails.includes(STAFF));
+  });
+
+  test(`${name}: database never answers, the customer still gets an answer`, { timeout: 12000 }, async () => {
+    dbHangs = true;
     const res = await post(handler, body);
     assert.equal(res.status, 200);
     assert.ok(mails.includes(STAFF));

@@ -39,6 +39,8 @@ export async function POST(request) {
       port: parseInt(process.env.EMAIL_PORT, 10) || 587,
       secure: false,
       auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+      // Give up on a stuck mail server quickly: nodemailer's defaults wait minutes.
+      connectionTimeout: 10000, greetingTimeout: 10000, socketTimeout: 15000,
     });
 
     const safeSubject = SUBJECT_LABELS[subject] || 'General';
@@ -54,7 +56,7 @@ export async function POST(request) {
           phone: phone || null,
           message,
           source: subject ? `contact-form:${subject}` : 'contact-form',
-        });
+        }).abortSignal(AbortSignal.timeout(8000)); // a stuck database must not hold the page open
         if (error) throw new Error(error.message);
       })(),
       transport.sendMail({

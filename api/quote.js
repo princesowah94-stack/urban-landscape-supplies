@@ -56,6 +56,8 @@ export async function POST(request) {
       port: parseInt(process.env.EMAIL_PORT, 10) || 587,
       secure: false,
       auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+      // Give up on a stuck mail server quickly: nodemailer's defaults wait minutes.
+      connectionTimeout: 10000, greetingTimeout: 10000, socketTimeout: 15000,
     });
 
     // Save and email side by side, and wait for all three. A failed email must not
@@ -80,7 +82,7 @@ export async function POST(request) {
           items,
           estimated_total_cents: Math.round(estimatedTotal * 100),
           status:                'new',
-        });
+        }).abortSignal(AbortSignal.timeout(8000)); // a stuck database must not hold the page open
         if (error) throw new Error(error.message);
       })(),
       transport.sendMail({
