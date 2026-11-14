@@ -1,5 +1,4 @@
 import nodemailer from 'nodemailer';
-import { waitUntil } from '@vercel/functions';
 import { corsHeaders, optionsResponse } from './_cors.js';
 import { supabase } from './_supabase.js';
 import { str, text, num, isEmail } from './_validate.js';
@@ -59,7 +58,31 @@ export async function POST(request) {
       auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
     });
 
-    await Promise.all([
+    // Save and email side by side, and wait for all three. A failed email must not
+    // stop the save (and the other way round): the quote only counts as lost when
+    // it is neither saved nor emailed to staff.
+    const [saved, staffMailed, customerMailed] = await Promise.allSettled([
+      (async () => {
+        const { error } = await supabase.from('quotes').insert({
+          reference_id:          referenceId,
+          contact_first_name:    contact.firstName || null,
+          contact_last_name:     contact.lastName || null,
+          contact_email:         contact.email,
+          contact_phone:         contact.phone || null,
+          is_trade:              !!contact.isTrade,
+          delivery_address:      delivery?.address || null,
+          delivery_suburb:       delivery?.suburb || null,
+          delivery_postcode:     delivery?.postcode || null,
+          delivery_date_from:    orNull(delivery?.dateFrom),
+          delivery_date_to:      orNull(delivery?.dateTo),
+          delivery_access:       delivery?.access || null,
+          notes:                 contact.notes || null,
+          items,
+          estimated_total_cents: Math.round(estimatedTotal * 100),
+          status:                'new',
+        });
+        if (error) throw new Error(error.message);
+      })(),
       transport.sendMail({
         from,
         to: process.env.EMAIL_TO,
@@ -110,30 +133,12 @@ export async function POST(request) {
         ].join('\n'),
       }),
     ]);
-
-    // Persist the quote to Supabase after the response (waitUntil keeps the
-    // function alive long enough for the insert to complete).
-    waitUntil((async () => {
-      const { error } = await supabase.from('quotes').insert({
-        reference_id:          referenceId,
-        contact_first_name:    contact.firstName || null,
-        contact_last_name:     contact.lastName || null,
-        contact_email:         contact.email,
-        contact_phone:         contact.phone || null,
-        is_trade:              !!contact.isTrade,
-        delivery_address:      delivery?.address || null,
-        delivery_suburb:       delivery?.suburb || null,
-        delivery_postcode:     delivery?.postcode || null,
-        delivery_date_from:    orNull(delivery?.dateFrom),
-        delivery_date_to:      orNull(delivery?.dateTo),
-        delivery_access:       delivery?.access || null,
-        notes:                 contact.notes || null,
-        items,
-        estimated_total_cents: Math.round(estimatedTotal * 100),
-        status:                'new',
-      });
-      if (error) console.error('Supabase quotes insert error:', error.message);
-    })());
+    if (saved.status === 'rejected') console.error('Supabase quotes insert error:', saved.reason?.message);
+    if (staffMailed.status === 'rejected') console.error('Quote staff email error:', staffMailed.reason?.message);
+    if (customerMailed.status === 'rejected') console.error('Quote customer email error:', customerMailed.reason?.message);
+    if (saved.status === 'rejected' && staffMailed.status === 'rejected') {
+      throw new Error('Quote neither saved nor emailed to staff');
+    }
 
     return Response.json({ success: true, referenceId }, { headers: corsHeaders(request) });
 

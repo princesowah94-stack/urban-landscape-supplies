@@ -44,30 +44,39 @@ export async function POST(request) {
     const safeSubject = SUBJECT_LABELS[subject] || 'General';
     const safeName    = String(name).replace(/[\r\n]/g, '');
 
-    await transport.sendMail({
-      from: `"${process.env.EMAIL_FROM_NAME || 'ULS Website'}" <${process.env.EMAIL_FROM}>`,
-      to: process.env.EMAIL_TO,
-      replyTo: safeReplyTo,
-      subject: `Website Contact [${safeSubject}] — ${safeName}`,
-      text: [
-        `Name:    ${name}`,
-        `Email:   ${email}`,
-        `Phone:   ${phone || 'Not provided'}`,
-        `Subject: ${SUBJECT_LABELS[subject] || subject || 'General'}`,
-        ``,
-        message,
-      ].join('\n'),
-    });
-
-    // Save to Supabase (non-blocking — don't fail the request if DB is down)
-    supabase.from('contacts').insert({
-      name, email,
-      phone: phone || null,
-      message,
-      source: subject ? `contact-form:${subject}` : 'contact-form',
-    }).then(({ error }) => {
-      if (error) console.error('Supabase contact insert error:', error.message);
-    });
+    // Save and email side by side, and wait for both. The enquiry only counts as
+    // lost when BOTH fail: a failed email must not stop the save, and the other
+    // way round. (The function can be frozen once we respond, so nothing is left running.)
+    const [saved, mailed] = await Promise.allSettled([
+      (async () => {
+        const { error } = await supabase.from('contacts').insert({
+          name, email,
+          phone: phone || null,
+          message,
+          source: subject ? `contact-form:${subject}` : 'contact-form',
+        });
+        if (error) throw new Error(error.message);
+      })(),
+      transport.sendMail({
+        from: `"${process.env.EMAIL_FROM_NAME || 'ULS Website'}" <${process.env.EMAIL_FROM}>`,
+        to: process.env.EMAIL_TO,
+        replyTo: safeReplyTo,
+        subject: `Website Contact [${safeSubject}] — ${safeName}`,
+        text: [
+          `Name:    ${name}`,
+          `Email:   ${email}`,
+          `Phone:   ${phone || 'Not provided'}`,
+          `Subject: ${SUBJECT_LABELS[subject] || subject || 'General'}`,
+          ``,
+          message,
+        ].join('\n'),
+      }),
+    ]);
+    if (saved.status === 'rejected') console.error('Supabase contact insert error:', saved.reason?.message);
+    if (mailed.status === 'rejected') console.error('Contact email error:', mailed.reason?.message);
+    if (saved.status === 'rejected' && mailed.status === 'rejected') {
+      throw new Error('Contact enquiry neither saved nor emailed');
+    }
 
     return Response.json({ success: true }, { headers: corsHeaders(request) });
 
