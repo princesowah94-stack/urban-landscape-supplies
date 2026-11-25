@@ -101,11 +101,11 @@ const PRODUCTS = {
     { id: 'sand-nls-sydney', name: 'Sydney Sand', price: 497.50 },
   ],
   pebbles: [
-    { id: 'pebbles-snow-white',         name: 'Regular Snow White Pebbles',   price: 947.50 },
-    { id: 'pebbles-charcoal-grey',      name: 'Charcoal Grey Pebbles',        price: 997.50 },
-    { id: 'pebbles-crushed-snow-white', name: 'Crushed Snow White Pebbles',   price: 1097.50 },
-    { id: 'pebbles-charcoal-lava',      name: 'Charcoal Lava Pebbles',        price: 1147.50 },
-    { id: 'pebbles-red-lava',           name: 'Red Lava Pebbles',             price: 1147.50 },
+    { id: 'pebbles-snow-white',         name: 'Regular Snow White Pebbles',   price: 899.50 },
+    { id: 'pebbles-charcoal-grey',      name: 'Charcoal Grey Pebbles',        price: 1099.50 },
+    { id: 'pebbles-crushed-snow-white', name: 'Crushed Snow White Pebbles',   price: 899.50 },
+    { id: 'pebbles-charcoal-lava',      name: 'Charcoal Lava Pebbles',        price: 1099.50 },
+    { id: 'pebbles-red-lava',           name: 'Red Lava Pebbles',             price: 1099.50 },
   ],
 };
 

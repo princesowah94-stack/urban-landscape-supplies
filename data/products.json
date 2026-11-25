@@ -5,8 +5,8 @@
       "name": "Regular Snow White Pebbles",
       "category": "pebbles",
       "categoryLabel": "Decorative Pebbles",
-      "price": 800,
-      "unit": "per 1 tonne bulk bag",
+      "price": 899.5,
+      "unit": "per tonne · 50 × 20kg bags at $17.99 each",
       "description": "Classic rounded snow white pebbles — the most popular decorative pebble in Sydney gardens. Clean, bright and timeless for any garden style.",
       "features": [
         "Rounded smooth finish",
@@ -37,14 +37,14 @@
         {
           "id": "20kg",
           "label": "20kg Bag",
-          "price": 18,
+          "price": 19.99,
           "unit": "per 20kg bag"
         },
         {
           "id": "bulk",
-          "label": "1 Tonne Bulk Bag",
-          "price": 800,
-          "unit": "per 1 tonne bulk bag"
+          "label": "1 Tonne (50 × 20kg bags)",
+          "price": 899.5,
+          "unit": "per tonne · 50 × 20kg bags at $17.99 each"
         }
       ]
     },
@@ -53,8 +53,8 @@
       "name": "Crushed Snow White Pebbles",
       "category": "pebbles",
       "categoryLabel": "Decorative Pebbles",
-      "price": 1097.5,
-      "unit": "per 1 tonne bulk bag",
+      "price": 899.5,
+      "unit": "per tonne · 50 × 20kg bags at $17.99 each",
       "description": "Angular crushed white stone with a bright, clean appearance. Ideal for contemporary pathways, drainage applications and under-downpipe areas.",
       "features": [
         "Angular crushed stone",
@@ -71,14 +71,14 @@
         {
           "id": "20kg",
           "label": "20kg Bag",
-          "price": 18,
+          "price": 19.99,
           "unit": "per 20kg bag"
         },
         {
           "id": "bulk",
-          "label": "1 Tonne Bulk Bag",
-          "price": 1097.5,
-          "unit": "per 1 tonne bulk bag"
+          "label": "1 Tonne (50 × 20kg bags)",
+          "price": 899.5,
+          "unit": "per tonne · 50 × 20kg bags at $17.99 each"
         }
       ],
       "images": [
@@ -90,8 +90,8 @@
       "name": "Charcoal Grey Pebbles",
       "category": "pebbles",
       "categoryLabel": "Decorative Pebbles",
-      "price": 1000,
-      "unit": "per 1 tonne bulk bag",
+      "price": 1099.5,
+      "unit": "per tonne · 50 × 20kg bags at $21.99 each",
       "description": "Smooth charcoal grey pebbles with subtle earthy variation. A versatile, contemporary choice for garden beds, pathways and water features.",
       "features": [
         "Smooth finish",
@@ -108,14 +108,14 @@
         {
           "id": "20kg",
           "label": "20kg Bag",
-          "price": 22,
+          "price": 23.99,
           "unit": "per 20kg bag"
         },
         {
           "id": "bulk",
-          "label": "1 Tonne Bulk Bag",
-          "price": 1000,
-          "unit": "per 1 tonne bulk bag"
+          "label": "1 Tonne (50 × 20kg bags)",
+          "price": 1099.5,
+          "unit": "per tonne · 50 × 20kg bags at $21.99 each"
         }
       ],
       "images": [
@@ -127,8 +127,8 @@
       "name": "Charcoal Lava Pebbles",
       "category": "pebbles",
       "categoryLabel": "Decorative Pebbles",
-      "price": 1000,
-      "unit": "per 1 tonne bulk bag",
+      "price": 1099.5,
+      "unit": "per tonne · 50 × 20kg bags at $21.99 each",
       "description": "Lightweight volcanic lava pebbles in dark charcoal tones. Highly porous — ideal as a planting medium, pot topper and feature garden accent.",
       "features": [
         "Lightweight volcanic rock",
@@ -158,14 +158,14 @@
         {
           "id": "20kg",
           "label": "20kg Bag",
-          "price": 22,
+          "price": 23.99,
           "unit": "per 20kg bag"
         },
         {
           "id": "bulk",
-          "label": "1 Tonne Bulk Bag",
-          "price": 1000,
-          "unit": "per 1 tonne bulk bag"
+          "label": "1 Tonne (50 × 20kg bags)",
+          "price": 1099.5,
+          "unit": "per tonne · 50 × 20kg bags at $21.99 each"
         }
       ]
     },
@@ -174,8 +174,8 @@
       "name": "Red Lava Pebbles",
       "category": "pebbles",
       "categoryLabel": "Decorative Pebbles",
-      "price": 1000,
-      "unit": "per 1 tonne bulk bag",
+      "price": 1099.5,
+      "unit": "per tonne · 50 × 20kg bags at $21.99 each",
       "description": "Striking volcanic red lava pebbles — warm, bold tones that add drama to garden beds, potted plants and feature areas. Lightweight and highly porous.",
       "features": [
         "Lightweight volcanic rock",
@@ -196,14 +196,14 @@
         {
           "id": "20kg",
           "label": "20kg Bag",
-          "price": 22,
+          "price": 23.99,
           "unit": "per 20kg bag"
         },
         {
           "id": "bulk",
-          "label": "1 Tonne Bulk Bag",
-          "price": 1000,
-          "unit": "per 1 tonne bulk bag"
+          "label": "1 Tonne (50 × 20kg bags)",
+          "price": 1099.5,
+          "unit": "per tonne · 50 × 20kg bags at $21.99 each"
         }
       ],
       "images": [

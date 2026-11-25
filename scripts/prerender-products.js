@@ -129,7 +129,11 @@ function bake(p) {
   const base = `${p.name} – Bulk Bag Sydney`;
   const title = `${base} | Urban Landscape Supplies`.length <= 60 ? `${base} | Urban Landscape Supplies` : base;
   const price = Number(p.price) % 1 ? fmtAud(p.price) : String(p.price);
-  const desc = `${p.name}, $${price} per 1-tonne bulk bag. Delivered across Sydney (quoted per suburb) or collect free from our Wetherill Park yard.`;
+  const bag = (p.bagSizes || []).find((b) => b.id === '20kg');
+  const priceText = bag
+    ? `$${fmtAud(bag.price)} a 20kg bag or $${price} a tonne (50 bags)`
+    : `$${price} per 1-tonne bulk bag`;
+  const desc = `${p.name}, ${priceText}. Delivered across Sydney (quoted per suburb) or collect free from our Wetherill Park yard.`;
   const ogImage = (p.image && (p.image.startsWith('http') ? p.image : `${SITE_URL}/${p.image}`)) || `${SITE_URL}/images/brand/og-image.jpg`;
 
   // Path rewrites first (so subsequent text replacements aren't affected by
